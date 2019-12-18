@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 3.1.2 (Python 3.7.4 on darwin)" generated="20191219 09:53:49.952" rpa="false">
+<suite id="s1" name="TestDataTable-API" source="/Users/dave/Documents/GitHub/TestDataTable/Regression_Tests/TestDataTable-API.robot">
+<test id="s1-t1" name="Create Table regression 1">
+<kw name="Put" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a PUT request to the endpoint.*</doc>
+<arguments>
+<arg>/regression+1</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.272" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+<status status="PASS" starttime="20191219 09:53:50.237" endtime="20191219 09:53:50.273"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.273" level="INFO">
+{
+    "request": {
+        "method": "PUT",
+        "url": "http://localhost/regression+1",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/regression+1",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.243423+00:00",
+            "local": "2019-12-19T09:53:50.243423+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.0020459999999999996,
+        "status": 501,
+        "body": "&lt;!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n        \"http://www.w3.org/TR/html4/strict.dtd\"&gt;\n&lt;html&gt;\n    &lt;head&gt;\n        &lt;meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"&gt;\n        &lt;title&gt;Error response&lt;/title&gt;\n    &lt;/head&gt;\n    &lt;body&gt;\n        &lt;h1&gt;Error response&lt;/h1&gt;\n        &lt;p&gt;Error code: 501&lt;/p&gt;\n        &lt;p&gt;Message: Unsupported method ('PUT').&lt;/p&gt;\n        &lt;p&gt;Error code explanation: HTTPStatus.NOT_IMPLEMENTED - Server does not support this operation.&lt;/p&gt;\n    &lt;/body&gt;\n&lt;/html&gt;\n",
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT",
+            "Connection": "close",
+            "Content-Type": "text/html;charset=utf-8",
+            "Content-Length": "496"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.273" endtime="20191219 09:53:50.279"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.281" level="FAIL">501 is not one of [200]
+
+Failed validating 'enum' in schema:
+    {'enum': [200], 'type': 'number'}
+
+On instance:
+    501</msg>
+<status status="FAIL" starttime="20191219 09:53:50.279" endtime="20191219 09:53:50.281"></status>
+</kw>
+<status status="FAIL" starttime="20191219 09:53:50.236" endtime="20191219 09:53:50.281" critical="yes">501 is not one of [200]
+
+Failed validating 'enum' in schema:
+    {'enum': [200], 'type': 'number'}
+
+On instance:
+    501</status>
+</test>
+<test id="s1-t2" name="Show Tables">
+<kw name="Get" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a GET request to the endpoint.*</doc>
+<arguments>
+<arg>/tables</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.281" endtime="20191219 09:53:50.288"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.289" level="INFO">
+{
+    "request": {
+        "method": "GET",
+        "url": "http://localhost/tables",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/tables",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.287540+00:00",
+            "local": "2019-12-19T09:53:50.287540+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.0047,
+        "status": 200,
+        "body": {
+            "Data": [
+                {
+                    "id": 1,
+                    "table": "Test"
+                },
+                {
+                    "id": 2,
+                    "table": "Test_2"
+                }
+            ]
+        },
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.288" endtime="20191219 09:53:50.290"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.290" endtime="20191219 09:53:50.290"></status>
+</kw>
+<status status="PASS" starttime="20191219 09:53:50.281" endtime="20191219 09:53:50.290" critical="yes"></status>
+</test>
+<test id="s1-t3" name="Table regression 1 exists">
+<kw name="Get" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a GET request to the endpoint.*</doc>
+<arguments>
+<arg>/tables</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.291" endtime="20191219 09:53:50.298"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.298" level="INFO">
+{
+    "request": {
+        "method": "GET",
+        "url": "http://localhost/tables",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/tables",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.297453+00:00",
+            "local": "2019-12-19T09:53:50.297453+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.005078999999999999,
+        "status": 200,
+        "body": {
+            "Data": [
+                {
+                    "id": 1,
+                    "table": "Test"
+                },
+                {
+                    "id": 2,
+                    "table": "Test_2"
+                }
+            ]
+        },
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.298" endtime="20191219 09:53:50.299"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.300" endtime="20191219 09:53:50.300"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<arguments>
+<arg>$.Data[?(@.table=="regression 1")].id</arg>
+</arguments>
+<assign>
+<var>${tbl_id}</var>
+</assign>
+<msg timestamp="20191219 09:53:50.327" level="FAIL">JSONPath query '$.Data[?(@.table=="regression 1")].id' did not match anything.</msg>
+<status status="FAIL" starttime="20191219 09:53:50.300" endtime="20191219 09:53:50.327"></status>
+</kw>
+<status status="FAIL" starttime="20191219 09:53:50.291" endtime="20191219 09:53:50.327" critical="yes">JSONPath query '$.Data[?(@.table=="regression 1")].id' did not match anything.</status>
+</test>
+<test id="s1-t4" name="Create Column Col_A">
+<kw name="Put" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a PUT request to the endpoint.*</doc>
+<arguments>
+<arg>/regression+1/Col_A</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.332" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+<status status="PASS" starttime="20191219 09:53:50.328" endtime="20191219 09:53:50.332"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.333" level="INFO">
+{
+    "request": {
+        "method": "PUT",
+        "url": "http://localhost/regression+1/Col_A",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/regression+1/Col_A",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.331660+00:00",
+            "local": "2019-12-19T09:53:50.331660+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.002462,
+        "status": 501,
+        "body": "&lt;!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n        \"http://www.w3.org/TR/html4/strict.dtd\"&gt;\n&lt;html&gt;\n    &lt;head&gt;\n        &lt;meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"&gt;\n        &lt;title&gt;Error response&lt;/title&gt;\n    &lt;/head&gt;\n    &lt;body&gt;\n        &lt;h1&gt;Error response&lt;/h1&gt;\n        &lt;p&gt;Error code: 501&lt;/p&gt;\n        &lt;p&gt;Message: Unsupported method ('PUT').&lt;/p&gt;\n        &lt;p&gt;Error code explanation: HTTPStatus.NOT_IMPLEMENTED - Server does not support this operation.&lt;/p&gt;\n    &lt;/body&gt;\n&lt;/html&gt;\n",
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT",
+            "Connection": "close",
+            "Content-Type": "text/html;charset=utf-8",
+            "Content-Length": "496"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.332" endtime="20191219 09:53:50.334"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.335" level="FAIL">501 is not one of [200]
+
+Failed validating 'enum' in schema:
+    {'enum': [200], 'type': 'number'}
+
+On instance:
+    501</msg>
+<status status="FAIL" starttime="20191219 09:53:50.334" endtime="20191219 09:53:50.335"></status>
+</kw>
+<status status="FAIL" starttime="20191219 09:53:50.327" endtime="20191219 09:53:50.335" critical="yes">501 is not one of [200]
+
+Failed validating 'enum' in schema:
+    {'enum': [200], 'type': 'number'}
+
+On instance:
+    501</status>
+</test>
+<test id="s1-t5" name="Delete Table regression 1">
+<kw name="Delete" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a DELETE request to the endpoint.*</doc>
+<arguments>
+<arg>/regression+1</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.341" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+<status status="PASS" starttime="20191219 09:53:50.336" endtime="20191219 09:53:50.341"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.342" level="INFO">
+{
+    "request": {
+        "method": "DELETE",
+        "url": "http://localhost/regression+1",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/regression+1",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.340499+00:00",
+            "local": "2019-12-19T09:53:50.340499+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.003074,
+        "status": 501,
+        "body": "&lt;!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n        \"http://www.w3.org/TR/html4/strict.dtd\"&gt;\n&lt;html&gt;\n    &lt;head&gt;\n        &lt;meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"&gt;\n        &lt;title&gt;Error response&lt;/title&gt;\n    &lt;/head&gt;\n    &lt;body&gt;\n        &lt;h1&gt;Error response&lt;/h1&gt;\n        &lt;p&gt;Error code: 501&lt;/p&gt;\n        &lt;p&gt;Message: Unsupported method ('DELETE').&lt;/p&gt;\n        &lt;p&gt;Error code explanation: HTTPStatus.NOT_IMPLEMENTED - Server does not support this operation.&lt;/p&gt;\n    &lt;/body&gt;\n&lt;/html&gt;\n",
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT",
+            "Connection": "close",
+            "Content-Type": "text/html;charset=utf-8",
+            "Content-Length": "499"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.341" endtime="20191219 09:53:50.343"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191219 09:53:50.344" level="FAIL">501 is not one of [201]
+
+Failed validating 'enum' in schema:
+    {'enum': [201], 'type': 'number'}
+
+On instance:
+    501</msg>
+<status status="FAIL" starttime="20191219 09:53:50.343" endtime="20191219 09:53:50.344"></status>
+</kw>
+<status status="FAIL" starttime="20191219 09:53:50.335" endtime="20191219 09:53:50.344" critical="yes">501 is not one of [201]
+
+Failed validating 'enum' in schema:
+    {'enum': [201], 'type': 'number'}
+
+On instance:
+    501</status>
+</test>
+<test id="s1-t6" name="Table regression 1 removed">
+<kw name="Get" library="REST">
+<tags>
+<tag>http</tag>
+</tags>
+<doc>*Sends a GET request to the endpoint.*</doc>
+<arguments>
+<arg>/tables</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.344" endtime="20191219 09:53:50.350"></status>
+</kw>
+<kw name="Output" library="REST">
+<tags>
+<tag>I/O</tag>
+</tags>
+<doc>*Outputs JSON to terminal or a file.*</doc>
+<msg timestamp="20191219 09:53:50.351" level="INFO">
+{
+    "request": {
+        "method": "GET",
+        "url": "http://localhost/tables",
+        "scheme": "http",
+        "netloc": "localhost",
+        "path": "/tables",
+        "query": {},
+        "body": null,
+        "headers": {
+            "Accept": "application/json, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "RESTinstance/1.0.2"
+        },
+        "proxies": {},
+        "timeout": [
+            null,
+            null
+        ],
+        "cert": null,
+        "sslVerify": true,
+        "allowRedirects": true,
+        "timestamp": {
+            "utc": "2019-12-18T23:53:50.349709+00:00",
+            "local": "2019-12-19T09:53:50.349709+10:00"
+        }
+    },
+    "response": {
+        "seconds": 0.003972,
+        "status": 200,
+        "body": {
+            "Data": [
+                {
+                    "id": 1,
+                    "table": "Test"
+                },
+                {
+                    "id": 2,
+                    "table": "Test_2"
+                }
+            ]
+        },
+        "headers": {
+            "Server": "BaseHTTP/0.6 Python/3.7.4",
+            "Date": "Wed, 18 Dec 2019 23:53:50 GMT"
+        }
+    }
+}</msg>
+<status status="PASS" starttime="20191219 09:53:50.350" endtime="20191219 09:53:50.352"></status>
+</kw>
+<kw name="Number" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field as JSON number.*</doc>
+<arguments>
+<arg>response status</arg>
+<arg>200</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.352" endtime="20191219 09:53:50.352"></status>
+</kw>
+<kw name="Missing" library="REST">
+<tags>
+<tag>assertions</tag>
+</tags>
+<doc>*Asserts the field does not exist.*</doc>
+<arguments>
+<arg>$.Data[?(@.table=="regression 1")]</arg>
+</arguments>
+<status status="PASS" starttime="20191219 09:53:50.353" endtime="20191219 09:53:50.375"></status>
+</kw>
+<status status="PASS" starttime="20191219 09:53:50.344" endtime="20191219 09:53:50.375" critical="yes"></status>
+</test>
+<status status="FAIL" starttime="20191219 09:53:49.954" endtime="20191219 09:53:50.376"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="2" fail="4">Critical Tests</stat>
+<stat pass="2" fail="4">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="2" fail="4" id="s1" name="TestDataTable-API">TestDataTable-API</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20191219 09:53:50.272" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+<msg timestamp="20191219 09:53:50.332" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+<msg timestamp="20191219 09:53:50.341" level="WARN">Response body content is not JSON. Content-Type is: text/html;charset=utf-8</msg>
+</errors>
+</robot>
