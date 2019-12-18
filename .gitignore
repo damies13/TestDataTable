@@ -1,0 +1,5 @@
+# patterns of files to ignore / prevent uploading
+*.ini
+*.sqlite
+*.sqlite3
+*.db
