@@ -6,23 +6,23 @@
 
 Returns a list of tables
 
-### PUT /<table name>
+### PUT /&lt;table name&gt;
 
 Creates the table
 
-### DELETE /<table name>
+### DELETE /&lt;table name&gt;
 
 Deletes the table
 
-### GET /<table name>
+### GET /&lt;table name&gt;
 
 Returns a list of columns in the table if the table exists
 
-### GET /<table name>/row
+### GET /&lt;table name&gt;/row
 
 Returns the column name / value pairs for the first record in every column in the table and removes these records from the table
 
-### POST /<table name>/row
+### POST /&lt;table name&gt;/row
 
 With post body containing the column name / value pairs for every column in the table, append a new row with these values to the table.
 
@@ -44,23 +44,23 @@ This operation will fail if:
 
 ## Column operations
 
-### GET /<table name>
+### GET /&lt;table name&gt;
 
 Returns a list of columns in the table if the table exists
 
-### PUT /<table name>/<column name>
+### PUT /&lt;table name&gt;/&lt;column name&gt;
 
 Creates the column
 
-### DELETE /<table name>/<column name>
+### DELETE /&lt;table name&gt;/&lt;column name&gt;
 
 Deletes the column
 
-### GET /<table name>/<column name>
+### GET /&lt;table name&gt;/&lt;column name&gt;
 
 Retrieves the value from the first row in the column and removes it from the table
 
-### POST /<table name>/<column name>
+### POST /&lt;table name&gt;/&lt;column name&gt;
 
 Appends the data value to the last row in the column
 
