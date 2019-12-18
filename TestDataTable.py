@@ -70,6 +70,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<script>"
 				message += "$(function() {"
 				message += "	$(\"#tables\" ).tabs();"
+				message += "	$( \"#buttonbar\" ).controlgroup();"
 				message += "	$.getJSON('tables', function(tables) { "
 				message += "		for (var i = 0; i < tables.Data.length; i++) {"
 				# message += "			console.log(tables.Data[i]);"
@@ -88,9 +89,34 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "});"
 				message += "</script>"
 
+				message += "<style>"
+				message += "#buttonbar { float: right; }"
+				message += "</style>"
+
 				message += "<title>Test Data Table</title>"
 				message += "</head>"
 				message += "<body>"
+
+				# <fieldset>
+				message += "<div id=\"buttonbar\">"
+				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
+				message += "	<button id='new-column' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Column\"><span class=\"ui-icon ui-icon-grip-solid-vertical\"></span>Add Column</button>"
+				message += "	<button>&nbsp;</button>" # spacer
+				# message += "	<button></button>" # spacer
+				message += "	<select id='auto-refresh'>"
+				message += "		<option value='0' >Auto Refresh Off</option>"
+				message += "		<option value='1' >Auto Refresh 1 second</option>"
+				message += "		<option value='5' >Auto Refresh 5 seconds</option>"
+				message += "		<option value='10' >Auto Refresh 10 second</option>"
+				message += "		<option value='60' >Auto Refresh 1 minute</option>"
+				message += "	</select>"
+				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
+				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Help\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
+				message += "</div>"
+				message += "<div>"
+				message += "<p>&nbsp;<br></p>"
+				message += "&nbsp;<br>"
+				message += "</div>"
 
 				message += "<div id='tables'>"
 				message += "<ul>"
