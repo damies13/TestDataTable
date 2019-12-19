@@ -116,7 +116,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		httpcode = 500
 		try:
 			parsed_path = urllib.parse.urlparse(self.path)
-			message = '{"path":"'+str(parsed_path)+'", "message": "Unsupported method"}'
+			message = '{"path":"'+str(parsed_path.path)+'", "message": "Unsupported method"}'
 			core.debugmsg(8, "parsed_path:", parsed_path)
 			patharr = parsed_path.path.split("/")
 			core.debugmsg(8, "patharr:", patharr)
@@ -186,12 +186,12 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		try:
 			parsed_path = urllib.parse.urlparse(self.path)
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			message = "{'path':'"+parsed_path+"'}"
+			message = "{\"path\":\""+parsed_path.path+"\"}"
 				# core.debugmsg(8, "jsonresp:", jsonresp)
 				# message = json.dumps(jsonresp)
 			# else:
 			# 	httpcode = 404
-			# 	message = "Unrecognised request: '{}'".format(parsed_path)
+			# 	message = "Unrecognised request: \"{}\"".format(parsed_path)
 
 		except Exception as e:
 			core.debugmsg(6, "do_POST:", e)
@@ -282,6 +282,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</body>"
 				message += "</html>"
 
+			core.debugmsg(8, "parsed_path:", parsed_path)
 			if (parsed_path.path == '/tables'):
 				pathok = True
 				message = ""
@@ -300,17 +301,24 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message = json.dumps(jsonresp)
 
+			core.debugmsg(8, "parsed_path:", parsed_path)
 			if not pathok:
 				httpcode = 404
-				message = "Unrecognised request: '{}'".format(parsed_path)
+				core.debugmsg(9, "httpcode:", httpcode)
+				message = None
+				# message = "Unrecognised request: {}".format(parsed_path.path)
+				# core.debugmsg(9, "message:", message)
 		except Exception as e:
 			core.debugmsg(6, "do_GET:", e)
 			httpcode = 500
 			message = str(e)
 
+		core.debugmsg(9, "httpcode:", httpcode)
 		self.send_response(httpcode)
 		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+		core.debugmsg(9, "message:", message)
+		if message is not None:
+			self.wfile.write(bytes(message,"utf-8"))
 		return
 	def handle_http(self):
 		return

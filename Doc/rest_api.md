@@ -37,11 +37,9 @@ With post body containing the column name / value pairs for every column in the 
 Example post data:
 ```
 {
-	"data": [
-		"<column name>": "<value>",
-		"<column name>": "<value>",
-		"<column name>": "<value>"
-	]
+	"<column name>": "<value>",
+	"<column name>": "<value>",
+	"<column name>": "<value>"
 }
 ```
 
@@ -79,10 +77,3 @@ Retrieves all the values in the column, does not remove any values
 ### PUT /&lt;table name&gt;/&lt;column name&gt;/&lt;value&gt;
 
 Appends the value to the last row in the column
-
-Example post data:
-```
-{
-	"data": "<value>"
-}
-```
