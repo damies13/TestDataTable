@@ -21,12 +21,165 @@ from sqlite3worker import Sqlite3Worker
 
 
 
+# -- identify records for cleanup
+# -- SELECT ROWID, * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
 
 
 
 
 class TDT_WebServer(BaseHTTPRequestHandler):
 	def do_HEAD(self):
+		return
+
+	def do_DELETE(self):
+		actionfound = False
+		httpcode = 500
+		try:
+			parsed_path = urllib.parse.urlparse(self.path)
+			message = '{"path":"'+str(parsed_path)+'", "message": "Unsupported method"}'
+			core.debugmsg(8, "parsed_path:", parsed_path)
+			patharr = parsed_path.path.split("/")
+			core.debugmsg(8, "patharr:", patharr)
+			if not actionfound and len(patharr) == 2:
+				actionfound = True
+				# delete table
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+				core.debugmsg(9, "results:", results)
+				if len(results)>0:
+					tableid = results[0][0]
+					core.debugmsg(9, "tableid:", tableid)
+
+					# in order to properly delete a table we need to remove all the columns and data from those columns
+					# get columns
+					res_columns = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+					core.debugmsg(9, "res_columns:", res_columns)
+					for col in res_columns:
+						colid = col[0]
+						core.debugmsg(9, "colid:", colid, "	col:", col)
+						# remove data
+						res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE column_id = ?", [colid])
+						core.debugmsg(9, "res_data:", res_data)
+
+					# remove columns
+					res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE table_id = ?", [tableid])
+					core.debugmsg(9, "res_columns:", res_columns)
+
+					# remove table
+					# -- UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=4
+					res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=?", [tableid])
+					core.debugmsg(9, "res_table:", res_table)
+
+					httpcode = 200
+					message = '{"message": "table '+tablename+' deleted"}'
+
+				else:
+					httpcode = 404
+					message = '{"message": "table '+tablename+' does not exists"}'
+
+
+			if not actionfound and len(patharr) == 3:
+				actionfound = True
+				# delete column
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+
+				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+				core.debugmsg(9, "results:", results)
+				if len(results)>0:
+					tableid = results[0][0]
+					core.debugmsg(9, "tableid:", tableid)
+
+					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+					core.debugmsg(9, "results:", results)
+
+
+				else:
+					httpcode = 404
+					message = '{"message": "table '+tablename+' does not exists"}'
+
+		except Exception as e:
+			core.debugmsg(6, "do_DELETE:", e)
+			httpcode = 500
+			message = str(e)
+		self.send_response(httpcode)
+		self.end_headers()
+		self.wfile.write(bytes(message,"utf-8"))
+		return
+
+
+	def do_PUT(self):
+		actionfound = False
+		httpcode = 500
+		try:
+			parsed_path = urllib.parse.urlparse(self.path)
+			message = '{"path":"'+str(parsed_path)+'", "message": "Unsupported method"}'
+			core.debugmsg(8, "parsed_path:", parsed_path)
+			patharr = parsed_path.path.split("/")
+			core.debugmsg(8, "patharr:", patharr)
+
+			if not actionfound and len(patharr) == 2:
+				actionfound = True
+				# create table
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+
+				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+				core.debugmsg(9, "results:", results)
+				if len(results)>0:
+					httpcode = 200
+					message = '{"message": "table '+tablename+' exists"}'
+
+				else:
+
+					results = core.db.execute("INSERT INTO tdt_tables (table_name) VALUES (?)", [tablename])
+					core.debugmsg(9, "results:", results)
+					if results is None:
+						httpcode = 201
+						message = '{"message": "table '+tablename+' created"}'
+
+
+			if not actionfound and len(patharr) == 3:
+				actionfound = True
+				# create column
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+
+				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+				core.debugmsg(9, "results:", results)
+				tableid = results[0][0]
+				core.debugmsg(9, "tableid:", tableid)
+				if len(results)>0:
+					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+					core.debugmsg(9, "results:", results)
+					if len(results)>0:
+						httpcode = 200
+						message = '{"message": "column '+columnname+' exists"}'
+					else:
+						results = core.db.execute("INSERT INTO tdt_columns (table_id, column_name) VALUES (?,?)", [tableid, columnname])
+						core.debugmsg(9, "results:", results)
+						if results is None:
+							httpcode = 201
+							message = '{"message": "column '+columnname+' created"}'
+
+				# core.debugmsg(8, "jsonresp:", jsonresp)
+				# message = json.dumps(jsonresp)
+			# else:
+			# 	httpcode = 404
+			# 	message = "Unrecognised request: '{}'".format(parsed_path)
+
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
+			httpcode = 500
+			message = str(e)
+		self.send_response(httpcode)
+		self.end_headers()
+		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_POST(self):
 		httpcode = 200
@@ -133,17 +286,17 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				pathok = True
 				message = ""
 				jsonresp = {}
-				jsonresp["Data"] = []
+				jsonresp["tables"] = []
 
 				results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
 				core.debugmsg(9, "results:", results)
 				for row in results:
-					core.debugmsg(9, "row:", row)
+					# core.debugmsg(9, "row:", row)
 					# message += str(row)
 					rowdict = {}
 					rowdict["id"] = row[0]
 					rowdict["table"] = row[1]
-					jsonresp["Data"].append(rowdict)
+					jsonresp["tables"].append(rowdict)
 
 				message = json.dumps(jsonresp)
 
