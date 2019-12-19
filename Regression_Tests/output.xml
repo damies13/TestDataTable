@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 3.1.2 (Python 3.7.4 on darwin)" generated="20191219 18:58:18.509" rpa="false">
-<suite id="s1" name="TestDataTable-API" source="/Users/dave/Documents/GitHub/TestDataTable/Regression_Tests/TestDataTable-API.robot">
-<test id="s1-t1" name="Create Table regression 1">
+<robot generator="Robot 3.1.2 (Python 3.7.4 on darwin)" generated="20191220 08:30:37.207" rpa="false">
+<suite id="s1" name="TestDataTable-API REST &amp; TestDataTable-API requests">
+<suite id="s1-s1" name="TestDataTable-API REST" source="/Users/dave/Documents/GitHub/TestDataTable/Regression_Tests/TestDataTable-API_REST.robot">
+<test id="s1-s1-t1" name="Create Table regression 1">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -10,14 +11,14 @@
 <arguments>
 <arg>/regression+1</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.763" endtime="20191219 18:58:18.804"></status>
+<status status="PASS" starttime="20191220 08:30:37.645" endtime="20191220 08:30:37.697"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:18.805" level="INFO">
+<msg timestamp="20191220 08:30:37.698" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -41,23 +42,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:18.774553+00:00",
-            "local": "2019-12-19T18:58:18.774553+10:00"
+            "utc": "2019-12-19T22:30:37.659739+00:00",
+            "local": "2019-12-20T08:30:37.659739+10:00"
         }
     },
     "response": {
-        "seconds": 0.004861,
+        "seconds": 0.00587,
         "status": 201,
         "body": {
             "message": "table regression 1 created"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:18 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:18.805" endtime="20191219 18:58:18.812"></status>
+<status status="PASS" starttime="20191220 08:30:37.698" endtime="20191220 08:30:37.713"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -68,7 +69,7 @@
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.812" endtime="20191219 18:58:18.813"></status>
+<status status="PASS" starttime="20191220 08:30:37.713" endtime="20191220 08:30:37.714"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -81,10 +82,10 @@
 <assign>
 <var>${msg}</var>
 </assign>
-<msg timestamp="20191219 18:58:18.842" level="INFO">
+<msg timestamp="20191220 08:30:37.741" level="INFO">
 "table regression 1 created"</msg>
-<msg timestamp="20191219 18:58:18.842" level="INFO">${msg} = table regression 1 created</msg>
-<status status="PASS" starttime="20191219 18:58:18.813" endtime="20191219 18:58:18.842"></status>
+<msg timestamp="20191220 08:30:37.741" level="INFO">${msg} = table regression 1 created</msg>
+<status status="PASS" starttime="20191220 08:30:37.714" endtime="20191220 08:30:37.741"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -92,11 +93,11 @@
 <arg>"${msg}"</arg>
 <arg>"table regression 1 created"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.843" endtime="20191219 18:58:18.843"></status>
+<status status="PASS" starttime="20191220 08:30:37.741" endtime="20191220 08:30:37.742"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:18.762" endtime="20191219 18:58:18.843" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.645" endtime="20191220 08:30:37.742" critical="yes"></status>
 </test>
-<test id="s1-t2" name="Show Tables">
+<test id="s1-s1-t2" name="Show Tables">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -105,14 +106,14 @@
 <arguments>
 <arg>/tables</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.843" endtime="20191219 18:58:18.852"></status>
+<status status="PASS" starttime="20191220 08:30:37.743" endtime="20191220 08:30:37.752"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:18.852" level="INFO">
+<msg timestamp="20191220 08:30:37.752" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -136,12 +137,12 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:18.851136+00:00",
-            "local": "2019-12-19T18:58:18.851136+10:00"
+            "utc": "2019-12-19T22:30:37.751466+00:00",
+            "local": "2019-12-20T08:30:37.751466+10:00"
         }
     },
     "response": {
-        "seconds": 0.0053170000000000005,
+        "seconds": 0.005986,
         "status": 200,
         "body": {
             "tables": [
@@ -154,18 +155,18 @@
                     "table": "Test_2"
                 },
                 {
-                    "id": 24,
+                    "id": 63,
                     "table": "regression 1"
                 }
             ]
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:18 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:18.852" endtime="20191219 18:58:18.853"></status>
+<status status="PASS" starttime="20191220 08:30:37.752" endtime="20191220 08:30:37.754"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -176,11 +177,11 @@
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.853" endtime="20191219 18:58:18.854"></status>
+<status status="PASS" starttime="20191220 08:30:37.754" endtime="20191220 08:30:37.754"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:18.843" endtime="20191219 18:58:18.854" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.742" endtime="20191220 08:30:37.754" critical="yes"></status>
 </test>
-<test id="s1-t3" name="Table regression 1 exists">
+<test id="s1-s1-t3" name="Table regression 1 exists">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -189,14 +190,14 @@
 <arguments>
 <arg>/tables</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.854" endtime="20191219 18:58:18.862"></status>
+<status status="PASS" starttime="20191220 08:30:37.755" endtime="20191220 08:30:37.762"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:18.862" level="INFO">
+<msg timestamp="20191220 08:30:37.763" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -220,12 +221,12 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:18.861240+00:00",
-            "local": "2019-12-19T18:58:18.861240+10:00"
+            "utc": "2019-12-19T22:30:37.761781+00:00",
+            "local": "2019-12-20T08:30:37.761781+10:00"
         }
     },
     "response": {
-        "seconds": 0.004677,
+        "seconds": 0.0049889999999999995,
         "status": 200,
         "body": {
             "tables": [
@@ -238,18 +239,18 @@
                     "table": "Test_2"
                 },
                 {
-                    "id": 24,
+                    "id": 63,
                     "table": "regression 1"
                 }
             ]
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:18 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:18.862" endtime="20191219 18:58:18.864"></status>
+<status status="PASS" starttime="20191220 08:30:37.762" endtime="20191220 08:30:37.764"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -260,7 +261,7 @@
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.864" endtime="20191219 18:58:18.864"></status>
+<status status="PASS" starttime="20191220 08:30:37.764" endtime="20191220 08:30:37.764"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -273,10 +274,10 @@
 <assign>
 <var>${tbl_id}</var>
 </assign>
-<msg timestamp="20191219 18:58:18.885" level="INFO">
-24</msg>
-<msg timestamp="20191219 18:58:18.885" level="INFO">${tbl_id} = 24</msg>
-<status status="PASS" starttime="20191219 18:58:18.864" endtime="20191219 18:58:18.886"></status>
+<msg timestamp="20191220 08:30:37.786" level="INFO">
+63</msg>
+<msg timestamp="20191220 08:30:37.786" level="INFO">${tbl_id} = 63</msg>
+<status status="PASS" starttime="20191220 08:30:37.764" endtime="20191220 08:30:37.786"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -289,10 +290,10 @@
 <assign>
 <var>${tbl_name}</var>
 </assign>
-<msg timestamp="20191219 18:58:18.907" level="INFO">
+<msg timestamp="20191220 08:30:37.810" level="INFO">
 "regression 1"</msg>
-<msg timestamp="20191219 18:58:18.907" level="INFO">${tbl_name} = regression 1</msg>
-<status status="PASS" starttime="20191219 18:58:18.886" endtime="20191219 18:58:18.907"></status>
+<msg timestamp="20191220 08:30:37.810" level="INFO">${tbl_name} = regression 1</msg>
+<status status="PASS" starttime="20191220 08:30:37.786" endtime="20191220 08:30:37.810"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -300,11 +301,11 @@
 <arg>"${tbl_name}"</arg>
 <arg>"regression 1"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.907" endtime="20191219 18:58:18.908"></status>
+<status status="PASS" starttime="20191220 08:30:37.811" endtime="20191220 08:30:37.811"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:18.854" endtime="20191219 18:58:18.908" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.755" endtime="20191220 08:30:37.811" critical="yes"></status>
 </test>
-<test id="s1-t4" name="Create Table regression 1 again">
+<test id="s1-s1-t4" name="Create Table regression 1 again">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -313,14 +314,14 @@
 <arguments>
 <arg>/regression+1</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.908" endtime="20191219 18:58:18.915"></status>
+<status status="PASS" starttime="20191220 08:30:37.812" endtime="20191220 08:30:37.819"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:18.916" level="INFO">
+<msg timestamp="20191220 08:30:37.819" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -344,23 +345,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:18.914565+00:00",
-            "local": "2019-12-19T18:58:18.914565+10:00"
+            "utc": "2019-12-19T22:30:37.818535+00:00",
+            "local": "2019-12-20T08:30:37.818535+10:00"
         }
     },
     "response": {
-        "seconds": 0.004357000000000001,
+        "seconds": 0.004386,
         "status": 200,
         "body": {
             "message": "table regression 1 exists"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:18 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:18.915" endtime="20191219 18:58:18.916"></status>
+<status status="PASS" starttime="20191220 08:30:37.819" endtime="20191220 08:30:37.820"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -371,7 +372,7 @@
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.917" endtime="20191219 18:58:18.917"></status>
+<status status="PASS" starttime="20191220 08:30:37.820" endtime="20191220 08:30:37.821"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -384,10 +385,10 @@
 <assign>
 <var>${msg}</var>
 </assign>
-<msg timestamp="20191219 18:58:18.939" level="INFO">
+<msg timestamp="20191220 08:30:37.844" level="INFO">
 "table regression 1 exists"</msg>
-<msg timestamp="20191219 18:58:18.940" level="INFO">${msg} = table regression 1 exists</msg>
-<status status="PASS" starttime="20191219 18:58:18.917" endtime="20191219 18:58:18.940"></status>
+<msg timestamp="20191220 08:30:37.845" level="INFO">${msg} = table regression 1 exists</msg>
+<status status="PASS" starttime="20191220 08:30:37.821" endtime="20191220 08:30:37.845"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -395,7 +396,7 @@
 <arg>"${msg}"</arg>
 <arg>"table regression 1 exists"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.940" endtime="20191219 18:58:18.940"></status>
+<status status="PASS" starttime="20191220 08:30:37.845" endtime="20191220 08:30:37.845"></status>
 </kw>
 <kw name="Get" library="REST">
 <tags>
@@ -405,7 +406,7 @@
 <arguments>
 <arg>/tables</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.940" endtime="20191219 18:58:18.948"></status>
+<status status="PASS" starttime="20191220 08:30:37.845" endtime="20191220 08:30:37.853"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -416,7 +417,7 @@
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.948" endtime="20191219 18:58:18.949"></status>
+<status status="PASS" starttime="20191220 08:30:37.853" endtime="20191220 08:30:37.853"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -429,10 +430,10 @@
 <assign>
 <var>${tbl_name}</var>
 </assign>
-<msg timestamp="20191219 18:58:18.971" level="INFO">
+<msg timestamp="20191220 08:30:37.876" level="INFO">
 "regression 1"</msg>
-<msg timestamp="20191219 18:58:18.971" level="INFO">${tbl_name} = regression 1</msg>
-<status status="PASS" starttime="20191219 18:58:18.949" endtime="20191219 18:58:18.971"></status>
+<msg timestamp="20191220 08:30:37.876" level="INFO">${tbl_name} = regression 1</msg>
+<status status="PASS" starttime="20191220 08:30:37.853" endtime="20191220 08:30:37.876"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -440,11 +441,11 @@
 <arg>"${tbl_name}"</arg>
 <arg>"regression 1"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.971" endtime="20191219 18:58:18.972"></status>
+<status status="PASS" starttime="20191220 08:30:37.876" endtime="20191220 08:30:37.877"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:18.908" endtime="20191219 18:58:18.972" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.811" endtime="20191220 08:30:37.877" critical="yes"></status>
 </test>
-<test id="s1-t5" name="Create Column Col_A">
+<test id="s1-s1-t5" name="Create Column Col_A">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -453,14 +454,14 @@
 <arguments>
 <arg>/regression+1/Col_A</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.972" endtime="20191219 18:58:18.982"></status>
+<status status="PASS" starttime="20191220 08:30:37.877" endtime="20191220 08:30:37.886"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:18.983" level="INFO">
+<msg timestamp="20191220 08:30:37.887" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -484,23 +485,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:18.981764+00:00",
-            "local": "2019-12-19T18:58:18.981764+10:00"
+            "utc": "2019-12-19T22:30:37.886014+00:00",
+            "local": "2019-12-20T08:30:37.886014+10:00"
         }
     },
     "response": {
-        "seconds": 0.007304000000000001,
+        "seconds": 0.00664,
         "status": 201,
         "body": {
             "message": "column Col_A created"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:18 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:18.983" endtime="20191219 18:58:18.984"></status>
+<status status="PASS" starttime="20191220 08:30:37.887" endtime="20191220 08:30:37.888"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -511,7 +512,7 @@
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:18.984" endtime="20191219 18:58:18.985"></status>
+<status status="PASS" starttime="20191220 08:30:37.888" endtime="20191220 08:30:37.888"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -524,10 +525,10 @@
 <assign>
 <var>${msg}</var>
 </assign>
-<msg timestamp="20191219 18:58:19.009" level="INFO">
+<msg timestamp="20191220 08:30:37.910" level="INFO">
 "column Col_A created"</msg>
-<msg timestamp="20191219 18:58:19.009" level="INFO">${msg} = column Col_A created</msg>
-<status status="PASS" starttime="20191219 18:58:18.985" endtime="20191219 18:58:19.009"></status>
+<msg timestamp="20191220 08:30:37.911" level="INFO">${msg} = column Col_A created</msg>
+<status status="PASS" starttime="20191220 08:30:37.888" endtime="20191220 08:30:37.911"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -535,11 +536,11 @@
 <arg>"${msg}"</arg>
 <arg>"column Col_A created"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.009" endtime="20191219 18:58:19.010"></status>
+<status status="PASS" starttime="20191220 08:30:37.911" endtime="20191220 08:30:37.911"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:18.972" endtime="20191219 18:58:19.010" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.877" endtime="20191220 08:30:37.911" critical="yes"></status>
 </test>
-<test id="s1-t6" name="Create Column Col_A again">
+<test id="s1-s1-t6" name="Create Column Col_A again">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -548,14 +549,14 @@
 <arguments>
 <arg>/regression+1/Col_A</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.011" endtime="20191219 18:58:19.021"></status>
+<status status="PASS" starttime="20191220 08:30:37.912" endtime="20191220 08:30:37.920"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.021" level="INFO">
+<msg timestamp="20191220 08:30:37.921" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -579,23 +580,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.020204+00:00",
-            "local": "2019-12-19T18:58:19.020204+10:00"
+            "utc": "2019-12-19T22:30:37.919741+00:00",
+            "local": "2019-12-20T08:30:37.919741+10:00"
         }
     },
     "response": {
-        "seconds": 0.006972000000000001,
+        "seconds": 0.005898,
         "status": 200,
         "body": {
             "message": "column Col_A exists"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.021" endtime="20191219 18:58:19.022"></status>
+<status status="PASS" starttime="20191220 08:30:37.920" endtime="20191220 08:30:37.922"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -606,7 +607,7 @@
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.023" endtime="20191219 18:58:19.023"></status>
+<status status="PASS" starttime="20191220 08:30:37.922" endtime="20191220 08:30:37.922"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
@@ -619,10 +620,10 @@
 <assign>
 <var>${msg}</var>
 </assign>
-<msg timestamp="20191219 18:58:19.046" level="INFO">
+<msg timestamp="20191220 08:30:37.945" level="INFO">
 "column Col_A exists"</msg>
-<msg timestamp="20191219 18:58:19.046" level="INFO">${msg} = column Col_A exists</msg>
-<status status="PASS" starttime="20191219 18:58:19.023" endtime="20191219 18:58:19.046"></status>
+<msg timestamp="20191220 08:30:37.945" level="INFO">${msg} = column Col_A exists</msg>
+<status status="PASS" starttime="20191220 08:30:37.922" endtime="20191220 08:30:37.946"></status>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <doc>Fails if the given objects are unequal.</doc>
@@ -630,11 +631,11 @@
 <arg>"${msg}"</arg>
 <arg>"column Col_A exists"</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.046" endtime="20191219 18:58:19.046"></status>
+<status status="PASS" starttime="20191220 08:30:37.946" endtime="20191220 08:30:37.946"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:19.010" endtime="20191219 18:58:19.046" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.912" endtime="20191220 08:30:37.946" critical="yes"></status>
 </test>
-<test id="s1-t7" name="Create Column Col_B and Col_C">
+<test id="s1-s1-t7" name="Create Column Col_B and Col_C">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -643,14 +644,14 @@
 <arguments>
 <arg>/regression+1/Col_B</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.047" endtime="20191219 18:58:19.056"></status>
+<status status="PASS" starttime="20191220 08:30:37.947" endtime="20191220 08:30:37.958"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.056" level="INFO">
+<msg timestamp="20191220 08:30:37.958" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -674,23 +675,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.055293+00:00",
-            "local": "2019-12-19T18:58:19.055293+10:00"
+            "utc": "2019-12-19T22:30:37.957218+00:00",
+            "local": "2019-12-20T08:30:37.957218+10:00"
         }
     },
     "response": {
-        "seconds": 0.0065780000000000005,
+        "seconds": 0.008254,
         "status": 201,
         "body": {
             "message": "column Col_B created"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.056" endtime="20191219 18:58:19.057"></status>
+<status status="PASS" starttime="20191220 08:30:37.958" endtime="20191220 08:30:37.959"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -701,7 +702,7 @@
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.057" endtime="20191219 18:58:19.058"></status>
+<status status="PASS" starttime="20191220 08:30:37.960" endtime="20191220 08:30:37.960"></status>
 </kw>
 <kw name="Put" library="REST">
 <tags>
@@ -711,14 +712,14 @@
 <arguments>
 <arg>/regression+1/Col_C</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.058" endtime="20191219 18:58:19.066"></status>
+<status status="PASS" starttime="20191220 08:30:37.961" endtime="20191220 08:30:37.972"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.066" level="INFO">
+<msg timestamp="20191220 08:30:37.973" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -742,23 +743,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.065310+00:00",
-            "local": "2019-12-19T18:58:19.065310+10:00"
+            "utc": "2019-12-19T22:30:37.971820+00:00",
+            "local": "2019-12-20T08:30:37.971820+10:00"
         }
     },
     "response": {
-        "seconds": 0.006041,
+        "seconds": 0.008237999999999999,
         "status": 201,
         "body": {
             "message": "column Col_C created"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.066" endtime="20191219 18:58:19.067"></status>
+<status status="PASS" starttime="20191220 08:30:37.973" endtime="20191220 08:30:37.974"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -769,11 +770,11 @@
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.067" endtime="20191219 18:58:19.068"></status>
+<status status="PASS" starttime="20191220 08:30:37.974" endtime="20191220 08:30:37.975"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:19.047" endtime="20191219 18:58:19.068" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:37.946" endtime="20191220 08:30:37.975" critical="yes"></status>
 </test>
-<test id="s1-t8" name="Post row of data">
+<test id="s1-s1-t8" name="Post row of data">
 <kw name="Post" library="REST">
 <tags>
 <tag>http</tag>
@@ -783,14 +784,14 @@
 <arg>/regression+1/row</arg>
 <arg>{"Col_A":"Value A","Col_B":"Value B","Col_C":"Value C"}</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.069" endtime="20191219 18:58:19.074"></status>
+<status status="PASS" starttime="20191220 08:30:37.976" endtime="20191220 08:30:37.983"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.075" level="INFO">
+<msg timestamp="20191220 08:30:37.983" level="INFO">
 {
     "request": {
         "method": "POST",
@@ -818,23 +819,23 @@
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.073762+00:00",
-            "local": "2019-12-19T18:58:19.073762+10:00"
+            "utc": "2019-12-19T22:30:37.981886+00:00",
+            "local": "2019-12-20T08:30:37.981886+10:00"
         }
     },
     "response": {
-        "seconds": 0.0029649999999999998,
+        "seconds": 0.003399,
         "status": 200,
         "body": {
             "path": "/regression+1/row"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.074" endtime="20191219 18:58:19.076"></status>
+<status status="PASS" starttime="20191220 08:30:37.983" endtime="20191220 08:30:37.985"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -845,16 +846,16 @@
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.077" level="FAIL">200 is not one of [201]
+<msg timestamp="20191220 08:30:37.988" level="FAIL">200 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
 
 On instance:
     200</msg>
-<status status="FAIL" starttime="20191219 18:58:19.076" endtime="20191219 18:58:19.077"></status>
+<status status="FAIL" starttime="20191220 08:30:37.985" endtime="20191220 08:30:37.988"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.068" endtime="20191219 18:58:19.078" critical="yes">200 is not one of [201]
+<status status="FAIL" starttime="20191220 08:30:37.975" endtime="20191220 08:30:37.988" critical="yes">200 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
@@ -862,7 +863,7 @@ Failed validating 'enum' in schema:
 On instance:
     200</status>
 </test>
-<test id="s1-t9" name="Get Table regression 1">
+<test id="s1-s1-t9" name="Get Table regression 1">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -871,14 +872,14 @@ On instance:
 <arguments>
 <arg>/regression+1</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.078" endtime="20191219 18:58:19.085"></status>
+<status status="PASS" starttime="20191220 08:30:37.988" endtime="20191220 08:30:37.997"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.085" level="INFO">
+<msg timestamp="20191220 08:30:37.997" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -902,21 +903,21 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.084346+00:00",
-            "local": "2019-12-19T18:58:19.084346+10:00"
+            "utc": "2019-12-19T22:30:37.996085+00:00",
+            "local": "2019-12-20T08:30:37.996085+10:00"
         }
     },
     "response": {
-        "seconds": 0.004236,
+        "seconds": 0.0056500000000000005,
         "status": 404,
         "body": "",
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:37 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.085" endtime="20191219 18:58:19.086"></status>
+<status status="PASS" starttime="20191220 08:30:37.997" endtime="20191220 08:30:37.999"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -927,16 +928,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.087" level="FAIL">404 is not one of [200]
+<msg timestamp="20191220 08:30:38.000" level="FAIL">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     404</msg>
-<status status="FAIL" starttime="20191219 18:58:19.086" endtime="20191219 18:58:19.087"></status>
+<status status="FAIL" starttime="20191220 08:30:37.999" endtime="20191220 08:30:38.000"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.078" endtime="20191219 18:58:19.087" critical="yes">404 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:37.988" endtime="20191220 08:30:38.000" critical="yes">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -944,7 +945,7 @@ Failed validating 'enum' in schema:
 On instance:
     404</status>
 </test>
-<test id="s1-t10" name="Get Table regression 1 columns">
+<test id="s1-s1-t10" name="Get Table regression 1 columns">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -953,14 +954,14 @@ On instance:
 <arguments>
 <arg>/regression+1/columns</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.088" endtime="20191219 18:58:19.096"></status>
+<status status="PASS" starttime="20191220 08:30:38.002" endtime="20191220 08:30:38.009"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.096" level="INFO">
+<msg timestamp="20191220 08:30:38.010" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -984,21 +985,21 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.095232+00:00",
-            "local": "2019-12-19T18:58:19.095232+10:00"
+            "utc": "2019-12-19T22:30:38.009039+00:00",
+            "local": "2019-12-20T08:30:38.009039+10:00"
         }
     },
     "response": {
-        "seconds": 0.005226,
+        "seconds": 0.004549,
         "status": 404,
         "body": "",
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.096" endtime="20191219 18:58:19.097"></status>
+<status status="PASS" starttime="20191220 08:30:38.010" endtime="20191220 08:30:38.011"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1009,16 +1010,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.098" level="FAIL">404 is not one of [200]
+<msg timestamp="20191220 08:30:38.012" level="FAIL">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     404</msg>
-<status status="FAIL" starttime="20191219 18:58:19.097" endtime="20191219 18:58:19.098"></status>
+<status status="FAIL" starttime="20191220 08:30:38.011" endtime="20191220 08:30:38.012"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.087" endtime="20191219 18:58:19.098" critical="yes">404 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:38.001" endtime="20191220 08:30:38.012" critical="yes">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -1026,7 +1027,7 @@ Failed validating 'enum' in schema:
 On instance:
     404</status>
 </test>
-<test id="s1-t11" name="Get Table regression 1 row">
+<test id="s1-s1-t11" name="Get Table regression 1 row">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -1035,14 +1036,14 @@ On instance:
 <arguments>
 <arg>/regression+1/row</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.099" endtime="20191219 18:58:19.105"></status>
+<status status="PASS" starttime="20191220 08:30:38.013" endtime="20191220 08:30:38.020"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.106" level="INFO">
+<msg timestamp="20191220 08:30:38.020" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -1066,21 +1067,21 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.105115+00:00",
-            "local": "2019-12-19T18:58:19.105115+10:00"
+            "utc": "2019-12-19T22:30:38.019471+00:00",
+            "local": "2019-12-20T08:30:38.019471+10:00"
         }
     },
     "response": {
-        "seconds": 0.0044989999999999995,
+        "seconds": 0.004587,
         "status": 404,
         "body": "",
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.106" endtime="20191219 18:58:19.107"></status>
+<status status="PASS" starttime="20191220 08:30:38.020" endtime="20191220 08:30:38.021"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1091,16 +1092,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.107" level="FAIL">404 is not one of [200]
+<msg timestamp="20191220 08:30:38.022" level="FAIL">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     404</msg>
-<status status="FAIL" starttime="20191219 18:58:19.107" endtime="20191219 18:58:19.108"></status>
+<status status="FAIL" starttime="20191220 08:30:38.021" endtime="20191220 08:30:38.022"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.098" endtime="20191219 18:58:19.108" critical="yes">404 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:38.012" endtime="20191220 08:30:38.022" critical="yes">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -1108,7 +1109,7 @@ Failed validating 'enum' in schema:
 On instance:
     404</status>
 </test>
-<test id="s1-t12" name="Delete Column Col_C">
+<test id="s1-s1-t12" name="Delete Column Col_C">
 <kw name="Delete" library="REST">
 <tags>
 <tag>http</tag>
@@ -1117,14 +1118,14 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_C</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.108" endtime="20191219 18:58:19.119"></status>
+<status status="PASS" starttime="20191220 08:30:38.023" endtime="20191220 08:30:38.033"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.120" level="INFO">
+<msg timestamp="20191220 08:30:38.033" level="INFO">
 {
     "request": {
         "method": "DELETE",
@@ -1148,12 +1149,12 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.118854+00:00",
-            "local": "2019-12-19T18:58:19.118854+10:00"
+            "utc": "2019-12-19T22:30:38.032371+00:00",
+            "local": "2019-12-20T08:30:38.032371+10:00"
         }
     },
     "response": {
-        "seconds": 0.007940000000000001,
+        "seconds": 0.007424,
         "status": 500,
         "body": {
             "path": "ParseResult(scheme='', netloc='', path='/regression+1/Col_C', params='', query='', fragment='')",
@@ -1161,11 +1162,11 @@ On instance:
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.120" endtime="20191219 18:58:19.121"></status>
+<status status="PASS" starttime="20191220 08:30:38.033" endtime="20191220 08:30:38.034"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1176,16 +1177,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.122" level="FAIL">500 is not one of [200]
+<msg timestamp="20191220 08:30:38.035" level="FAIL">500 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     500</msg>
-<status status="FAIL" starttime="20191219 18:58:19.121" endtime="20191219 18:58:19.122"></status>
+<status status="FAIL" starttime="20191220 08:30:38.034" endtime="20191220 08:30:38.035"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.108" endtime="20191219 18:58:19.122" critical="yes">500 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:38.023" endtime="20191220 08:30:38.036" critical="yes">500 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -1193,7 +1194,7 @@ Failed validating 'enum' in schema:
 On instance:
     500</status>
 </test>
-<test id="s1-t13" name="Get Column Col_A">
+<test id="s1-s1-t13" name="Get Column Col_A">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -1202,14 +1203,14 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_A</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.123" endtime="20191219 18:58:19.130"></status>
+<status status="PASS" starttime="20191220 08:30:38.036" endtime="20191220 08:30:38.044"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.130" level="INFO">
+<msg timestamp="20191220 08:30:38.044" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -1233,21 +1234,21 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.129483+00:00",
-            "local": "2019-12-19T18:58:19.129483+10:00"
+            "utc": "2019-12-19T22:30:38.043307+00:00",
+            "local": "2019-12-20T08:30:38.043307+10:00"
         }
     },
     "response": {
-        "seconds": 0.004378,
+        "seconds": 0.004938,
         "status": 404,
         "body": "",
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.130" endtime="20191219 18:58:19.131"></status>
+<status status="PASS" starttime="20191220 08:30:38.044" endtime="20191220 08:30:38.046"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1258,16 +1259,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.132" level="FAIL">404 is not one of [200]
+<msg timestamp="20191220 08:30:38.047" level="FAIL">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     404</msg>
-<status status="FAIL" starttime="20191219 18:58:19.131" endtime="20191219 18:58:19.132"></status>
+<status status="FAIL" starttime="20191220 08:30:38.046" endtime="20191220 08:30:38.047"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.123" endtime="20191219 18:58:19.133" critical="yes">404 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:38.036" endtime="20191220 08:30:38.047" critical="yes">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -1275,7 +1276,7 @@ Failed validating 'enum' in schema:
 On instance:
     404</status>
 </test>
-<test id="s1-t14" name="Add value to Column Col_A">
+<test id="s1-s1-t14" name="Add value to Column Col_A">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -1284,14 +1285,14 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_A/Value+1</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.133" endtime="20191219 18:58:19.139"></status>
+<status status="PASS" starttime="20191220 08:30:38.049" endtime="20191220 08:30:38.057"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.139" level="INFO">
+<msg timestamp="20191220 08:30:38.058" level="INFO">
 {
     "request": {
         "method": "PUT",
@@ -1315,12 +1316,12 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.138173+00:00",
-            "local": "2019-12-19T18:58:19.138173+10:00"
+            "utc": "2019-12-19T22:30:38.056727+00:00",
+            "local": "2019-12-20T08:30:38.056727+10:00"
         }
     },
     "response": {
-        "seconds": 0.002863,
+        "seconds": 0.004481,
         "status": 500,
         "body": {
             "path": "/regression+1/Col_A/Value+1",
@@ -1328,11 +1329,11 @@ On instance:
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.139" endtime="20191219 18:58:19.140"></status>
+<status status="PASS" starttime="20191220 08:30:38.057" endtime="20191220 08:30:38.059"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1343,16 +1344,16 @@ On instance:
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.141" level="FAIL">500 is not one of [201]
+<msg timestamp="20191220 08:30:38.060" level="FAIL">500 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
 
 On instance:
     500</msg>
-<status status="FAIL" starttime="20191219 18:58:19.140" endtime="20191219 18:58:19.141"></status>
+<status status="FAIL" starttime="20191220 08:30:38.059" endtime="20191220 08:30:38.060"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.133" endtime="20191219 18:58:19.141" critical="yes">500 is not one of [201]
+<status status="FAIL" starttime="20191220 08:30:38.048" endtime="20191220 08:30:38.060" critical="yes">500 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
@@ -1360,7 +1361,7 @@ Failed validating 'enum' in schema:
 On instance:
     500</status>
 </test>
-<test id="s1-t15" name="Add more values to Column Col_A">
+<test id="s1-s1-t15" name="Add more values to Column Col_A">
 <kw name="Put" library="REST">
 <tags>
 <tag>http</tag>
@@ -1369,7 +1370,7 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_A/Value+2</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.141" endtime="20191219 18:58:19.146"></status>
+<status status="PASS" starttime="20191220 08:30:38.061" endtime="20191220 08:30:38.067"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1380,16 +1381,16 @@ On instance:
 <arg>response status</arg>
 <arg>201</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.146" level="FAIL">500 is not one of [201]
+<msg timestamp="20191220 08:30:38.069" level="FAIL">500 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
 
 On instance:
     500</msg>
-<status status="FAIL" starttime="20191219 18:58:19.146" endtime="20191219 18:58:19.147"></status>
+<status status="FAIL" starttime="20191220 08:30:38.068" endtime="20191220 08:30:38.069"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.141" endtime="20191219 18:58:19.147" critical="yes">500 is not one of [201]
+<status status="FAIL" starttime="20191220 08:30:38.061" endtime="20191220 08:30:38.069" critical="yes">500 is not one of [201]
 
 Failed validating 'enum' in schema:
     {'enum': [201], 'type': 'number'}
@@ -1397,7 +1398,7 @@ Failed validating 'enum' in schema:
 On instance:
     500</status>
 </test>
-<test id="s1-t16" name="Get all values for Column Col_A">
+<test id="s1-s1-t16" name="Get all values for Column Col_A">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -1406,14 +1407,14 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_A</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.147" endtime="20191219 18:58:19.155"></status>
+<status status="PASS" starttime="20191220 08:30:38.070" endtime="20191220 08:30:38.079"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.156" level="INFO">
+<msg timestamp="20191220 08:30:38.080" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -1437,21 +1438,21 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.154857+00:00",
-            "local": "2019-12-19T18:58:19.154857+10:00"
+            "utc": "2019-12-19T22:30:38.078685+00:00",
+            "local": "2019-12-20T08:30:38.078685+10:00"
         }
     },
     "response": {
-        "seconds": 0.005339,
+        "seconds": 0.006429000000000001,
         "status": 404,
         "body": "",
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.156" endtime="20191219 18:58:19.157"></status>
+<status status="PASS" starttime="20191220 08:30:38.079" endtime="20191220 08:30:38.081"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1462,16 +1463,16 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.158" level="FAIL">404 is not one of [200]
+<msg timestamp="20191220 08:30:38.082" level="FAIL">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
 
 On instance:
     404</msg>
-<status status="FAIL" starttime="20191219 18:58:19.157" endtime="20191219 18:58:19.158"></status>
+<status status="FAIL" starttime="20191220 08:30:38.081" endtime="20191220 08:30:38.082"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.147" endtime="20191219 18:58:19.158" critical="yes">404 is not one of [200]
+<status status="FAIL" starttime="20191220 08:30:38.069" endtime="20191220 08:30:38.082" critical="yes">404 is not one of [200]
 
 Failed validating 'enum' in schema:
     {'enum': [200], 'type': 'number'}
@@ -1479,7 +1480,7 @@ Failed validating 'enum' in schema:
 On instance:
     404</status>
 </test>
-<test id="s1-t17" name="Get value by id from Column Col_A">
+<test id="s1-s1-t17" name="Get value by id from Column Col_A">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -1488,12 +1489,12 @@ On instance:
 <arguments>
 <arg>/regression+1/Col_A/${id}</arg>
 </arguments>
-<msg timestamp="20191219 18:58:19.159" level="FAIL">Variable '${id}' not found.</msg>
-<status status="FAIL" starttime="20191219 18:58:19.158" endtime="20191219 18:58:19.159"></status>
+<msg timestamp="20191220 08:30:38.083" level="FAIL">Variable '${id}' not found.</msg>
+<status status="FAIL" starttime="20191220 08:30:38.083" endtime="20191220 08:30:38.083"></status>
 </kw>
-<status status="FAIL" starttime="20191219 18:58:19.158" endtime="20191219 18:58:19.159" critical="yes">Variable '${id}' not found.</status>
+<status status="FAIL" starttime="20191220 08:30:38.082" endtime="20191220 08:30:38.084" critical="yes">Variable '${id}' not found.</status>
 </test>
-<test id="s1-t18" name="Delete Table regression 1">
+<test id="s1-s1-t18" name="Delete Table regression 1">
 <kw name="Delete" library="REST">
 <tags>
 <tag>http</tag>
@@ -1502,14 +1503,14 @@ On instance:
 <arguments>
 <arg>/regression+1</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.159" endtime="20191219 18:58:19.173"></status>
+<status status="PASS" starttime="20191220 08:30:38.084" endtime="20191220 08:30:38.099"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.174" level="INFO">
+<msg timestamp="20191220 08:30:38.100" level="INFO">
 {
     "request": {
         "method": "DELETE",
@@ -1533,23 +1534,23 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.172728+00:00",
-            "local": "2019-12-19T18:58:19.172728+10:00"
+            "utc": "2019-12-19T22:30:38.098655+00:00",
+            "local": "2019-12-20T08:30:38.098655+10:00"
         }
     },
     "response": {
-        "seconds": 0.011465,
+        "seconds": 0.012421,
         "status": 200,
         "body": {
             "message": "table regression 1 deleted"
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.174" endtime="20191219 18:58:19.175"></status>
+<status status="PASS" starttime="20191220 08:30:38.099" endtime="20191220 08:30:38.101"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1560,11 +1561,11 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.176" endtime="20191219 18:58:19.176"></status>
+<status status="PASS" starttime="20191220 08:30:38.101" endtime="20191220 08:30:38.101"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:19.159" endtime="20191219 18:58:19.177" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:38.084" endtime="20191220 08:30:38.101" critical="yes"></status>
 </test>
-<test id="s1-t19" name="Table regression 1 removed">
+<test id="s1-s1-t19" name="Table regression 1 removed">
 <kw name="Get" library="REST">
 <tags>
 <tag>http</tag>
@@ -1573,14 +1574,14 @@ On instance:
 <arguments>
 <arg>/tables</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.178" endtime="20191219 18:58:19.186"></status>
+<status status="PASS" starttime="20191220 08:30:38.102" endtime="20191220 08:30:38.110"></status>
 </kw>
 <kw name="Output" library="REST">
 <tags>
 <tag>I/O</tag>
 </tags>
 <doc>*Outputs JSON to terminal or a file.*</doc>
-<msg timestamp="20191219 18:58:19.186" level="INFO">
+<msg timestamp="20191220 08:30:38.111" level="INFO">
 {
     "request": {
         "method": "GET",
@@ -1604,12 +1605,12 @@ On instance:
         "sslVerify": true,
         "allowRedirects": true,
         "timestamp": {
-            "utc": "2019-12-19T08:58:19.184982+00:00",
-            "local": "2019-12-19T18:58:19.184982+10:00"
+            "utc": "2019-12-19T22:30:38.109727+00:00",
+            "local": "2019-12-20T08:30:38.109727+10:00"
         }
     },
     "response": {
-        "seconds": 0.0049640000000000005,
+        "seconds": 0.005193,
         "status": 200,
         "body": {
             "tables": [
@@ -1625,11 +1626,11 @@ On instance:
         },
         "headers": {
             "Server": "BaseHTTP/0.6 Python/3.7.4",
-            "Date": "Thu, 19 Dec 2019 08:58:19 GMT"
+            "Date": "Thu, 19 Dec 2019 22:30:38 GMT"
         }
     }
 }</msg>
-<status status="PASS" starttime="20191219 18:58:19.186" endtime="20191219 18:58:19.188"></status>
+<status status="PASS" starttime="20191220 08:30:38.110" endtime="20191220 08:30:38.112"></status>
 </kw>
 <kw name="Number" library="REST">
 <tags>
@@ -1640,7 +1641,7 @@ On instance:
 <arg>response status</arg>
 <arg>200</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.188" endtime="20191219 18:58:19.188"></status>
+<status status="PASS" starttime="20191220 08:30:38.112" endtime="20191220 08:30:38.113"></status>
 </kw>
 <kw name="Missing" library="REST">
 <tags>
@@ -1650,21 +1651,960 @@ On instance:
 <arguments>
 <arg>$.tables[?(@.table=="regression 1")]</arg>
 </arguments>
-<status status="PASS" starttime="20191219 18:58:19.189" endtime="20191219 18:58:19.212"></status>
+<status status="PASS" starttime="20191220 08:30:38.113" endtime="20191220 08:30:38.136"></status>
 </kw>
-<status status="PASS" starttime="20191219 18:58:19.177" endtime="20191219 18:58:19.213" critical="yes"></status>
+<status status="PASS" starttime="20191220 08:30:38.102" endtime="20191220 08:30:38.136" critical="yes"></status>
 </test>
-<status status="FAIL" starttime="20191219 18:58:18.511" endtime="20191219 18:58:19.213"></status>
+<status status="FAIL" starttime="20191220 08:30:37.230" endtime="20191220 08:30:38.137"></status>
+</suite>
+<suite id="s1-s2" name="TestDataTable-API requests" source="/Users/dave/Documents/GitHub/TestDataTable/Regression_Tests/TestDataTable-API_requests.robot">
+<kw name="Connect to TDT" type="setup">
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>http://localhost</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.190" level="INFO">Creating Session using : alias=TDT, url=http://localhost, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20191220 08:30:38.189" endtime="20191220 08:30:38.190"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.189" endtime="20191220 08:30:38.190"></status>
+</kw>
+<test id="s1-s2-t1" name="Create Table regression 1">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.191" level="INFO">PUT Request using : uri=/regression+1, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.198" level="INFO">${resp} = &lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.190" endtime="20191220 08:30:38.198"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.199" level="INFO">&lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.198" endtime="20191220 08:30:38.199"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp.json()}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.199" level="INFO">{'message': 'table regression 1 created'}</msg>
+<status status="PASS" starttime="20191220 08:30:38.199" endtime="20191220 08:30:38.199"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.200" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.200" endtime="20191220 08:30:38.200"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>"${resp.json()['message']}"</arg>
+<arg>"table regression 1 created"</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.200" endtime="20191220 08:30:38.201"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.190" endtime="20191220 08:30:38.201" critical="yes"></status>
+</test>
+<test id="s1-s2-t2" name="Show Tables">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/tables</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.201" level="INFO">GET Request using : uri=/tables, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.208" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.201" endtime="20191220 08:30:38.208"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.208" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.208" endtime="20191220 08:30:38.208"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.208" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.208" endtime="20191220 08:30:38.208"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.201" endtime="20191220 08:30:38.209" critical="yes"></status>
+</test>
+<test id="s1-s2-t3" name="Table regression 1 exists">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/tables</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.209" level="INFO">GET Request using : uri=/tables, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.215" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.209" endtime="20191220 08:30:38.215"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.215" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.215" endtime="20191220 08:30:38.215"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp.json()}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.216" level="INFO">{'tables': [{'id': 1, 'table': 'Test'}, {'id': 2, 'table': 'Test_2'}, {'id': 64, 'table': 'regression 1'}]}</msg>
+<status status="PASS" starttime="20191220 08:30:38.215" endtime="20191220 08:30:38.216"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.216" level="INFO">{"tables": [{"id": 1, "table": "Test"}, {"id": 2, "table": "Test_2"}, {"id": 64, "table": "regression 1"}]}</msg>
+<status status="PASS" starttime="20191220 08:30:38.216" endtime="20191220 08:30:38.216"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.216" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.216" endtime="20191220 08:30:38.216"></status>
+</kw>
+<kw name="Output">
+<arguments>
+<arg>$.tables.[?(@.table=='regression 1')].id</arg>
+</arguments>
+<assign>
+<var>${tbl_id}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.218" level="FAIL">No keyword with name 'Output' found.</msg>
+<status status="FAIL" starttime="20191220 08:30:38.218" endtime="20191220 08:30:38.218"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.209" endtime="20191220 08:30:38.218" critical="yes">No keyword with name 'Output' found.</status>
+</test>
+<test id="s1-s2-t4" name="Create Table regression 1 again">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.219" level="INFO">PUT Request using : uri=/regression+1, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.225" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.219" endtime="20191220 08:30:38.225"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.225" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.225" endtime="20191220 08:30:38.225"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp.json()}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.225" level="INFO">{'message': 'table regression 1 exists'}</msg>
+<status status="PASS" starttime="20191220 08:30:38.225" endtime="20191220 08:30:38.225"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.226" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.225" endtime="20191220 08:30:38.226"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>"${resp.json()['message']}"</arg>
+<arg>"table regression 1 exists"</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.226" endtime="20191220 08:30:38.226"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/tables</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.226" level="INFO">GET Request using : uri=/tables, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.232" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.226" endtime="20191220 08:30:38.232"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.233" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.232" endtime="20191220 08:30:38.233"></status>
+</kw>
+<kw name="Convert To String" library="BuiltIn">
+<doc>Converts the given item to a Unicode string.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${text}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.233" level="INFO">${text} = {"tables": [{"id": 1, "table": "Test"}, {"id": 2, "table": "Test_2"}, {"id": 64, "table": "regression 1"}]}</msg>
+<status status="PASS" starttime="20191220 08:30:38.233" endtime="20191220 08:30:38.233"></status>
+</kw>
+<kw name="Select Elements" library="JsonValidator">
+<doc>Return list of elements from _json_source_, matching [ http://jsonselect.org/ | JSONSelect] expression.</doc>
+<arguments>
+<arg>${text}</arg>
+<arg>.table:contains("regression 1")~.table</arg>
+</arguments>
+<assign>
+<var>${tbl_name}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.234" level="INFO">${tbl_name} = ['regression 1']</msg>
+<status status="PASS" starttime="20191220 08:30:38.233" endtime="20191220 08:30:38.234"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>"${tbl_name[0]}"</arg>
+<arg>"regression 1"</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.234" endtime="20191220 08:30:38.234"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.218" endtime="20191220 08:30:38.234" critical="yes"></status>
+</test>
+<test id="s1-s2-t5" name="Create Column Col_A">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.235" level="INFO">PUT Request using : uri=/regression+1/Col_A, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.244" level="INFO">${resp} = &lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.235" endtime="20191220 08:30:38.244"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.244" level="INFO">&lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.244" endtime="20191220 08:30:38.244"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.245" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.245" endtime="20191220 08:30:38.245"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>"${resp.json()['message']}"</arg>
+<arg>"column Col_A created"</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.245" endtime="20191220 08:30:38.245"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.234" endtime="20191220 08:30:38.245" critical="yes"></status>
+</test>
+<test id="s1-s2-t6" name="Create Column Col_A again">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.246" level="INFO">PUT Request using : uri=/regression+1/Col_A, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.254" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.246" endtime="20191220 08:30:38.255"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.255" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.255" endtime="20191220 08:30:38.255"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.255" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.255" endtime="20191220 08:30:38.255"></status>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>"${resp.json()['message']}"</arg>
+<arg>"column Col_A exists"</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.255" endtime="20191220 08:30:38.256"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.246" endtime="20191220 08:30:38.256" critical="yes"></status>
+</test>
+<test id="s1-s2-t7" name="Create Column Col_B and Col_C">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_B</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.257" level="INFO">PUT Request using : uri=/regression+1/Col_B, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.268" level="INFO">${resp} = &lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.257" endtime="20191220 08:30:38.268"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.269" level="INFO">&lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.269" endtime="20191220 08:30:38.269"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.270" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.269" endtime="20191220 08:30:38.270"></status>
+</kw>
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_C</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.270" level="INFO">PUT Request using : uri=/regression+1/Col_C, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.282" level="INFO">${resp} = &lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.270" endtime="20191220 08:30:38.282"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.282" level="INFO">&lt;Response [201]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.282" endtime="20191220 08:30:38.282"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.283" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.283" endtime="20191220 08:30:38.283"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.256" endtime="20191220 08:30:38.283" critical="yes"></status>
+</test>
+<test id="s1-s2-t8" name="Post row of data">
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/row</arg>
+<arg>{"Col_A":"Value A","Col_B":"Value B","Col_C":"Value C"}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.284" level="INFO">POST Request using : uri=/regression+1/row, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.289" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.284" endtime="20191220 08:30:38.289"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.290" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.289" endtime="20191220 08:30:38.290"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.290" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.290" level="FAIL">200 != 201</msg>
+<status status="FAIL" starttime="20191220 08:30:38.290" endtime="20191220 08:30:38.290"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.283" endtime="20191220 08:30:38.291" critical="yes">200 != 201</status>
+</test>
+<test id="s1-s2-t9" name="Get Table regression 1">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.291" level="INFO">GET Request using : uri=/regression+1, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.298" level="INFO">${resp} = &lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.291" endtime="20191220 08:30:38.298"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.299" level="INFO">&lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.298" endtime="20191220 08:30:38.299"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.299" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.299" level="FAIL">404 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.299" endtime="20191220 08:30:38.299"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.291" endtime="20191220 08:30:38.300" critical="yes">404 != 200</status>
+</test>
+<test id="s1-s2-t10" name="Get Table regression 1 columns">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/columns</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.300" level="INFO">GET Request using : uri=/regression+1/columns, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.308" level="INFO">${resp} = &lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.300" endtime="20191220 08:30:38.308"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.308" level="INFO">&lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.308" endtime="20191220 08:30:38.308"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.309" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.309" level="FAIL">404 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.309" endtime="20191220 08:30:38.309"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.300" endtime="20191220 08:30:38.309" critical="yes">404 != 200</status>
+</test>
+<test id="s1-s2-t11" name="Get Table regression 1 row">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/row</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.310" level="INFO">GET Request using : uri=/regression+1/row, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.317" level="INFO">${resp} = &lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.310" endtime="20191220 08:30:38.317"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.318" level="INFO">&lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.318" endtime="20191220 08:30:38.318"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.318" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.319" level="FAIL">404 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.318" endtime="20191220 08:30:38.319"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.310" endtime="20191220 08:30:38.319" critical="yes">404 != 200</status>
+</test>
+<test id="s1-s2-t12" name="Delete Column Col_C">
+<kw name="Delete Request" library="RequestsLibrary">
+<doc>Send a DELETE request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_C</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.319" level="INFO">DELETE Request using : uri=/regression+1/Col_C, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.329" level="INFO">${resp} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.319" endtime="20191220 08:30:38.329"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.329" level="INFO">&lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.329" endtime="20191220 08:30:38.329"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.330" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.330" level="FAIL">500 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.329" endtime="20191220 08:30:38.330"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.319" endtime="20191220 08:30:38.330" critical="yes">500 != 200</status>
+</test>
+<test id="s1-s2-t13" name="Get Column Col_A">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.331" level="INFO">GET Request using : uri=/regression+1/Col_A, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.338" level="INFO">${resp} = &lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.331" endtime="20191220 08:30:38.338"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.338" level="INFO">&lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.338" endtime="20191220 08:30:38.338"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.339" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.339" level="FAIL">404 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.338" endtime="20191220 08:30:38.339"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.331" endtime="20191220 08:30:38.339" critical="yes">404 != 200</status>
+</test>
+<test id="s1-s2-t14" name="Add value to Column Col_A">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A/Value+1</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.340" level="INFO">PUT Request using : uri=/regression+1/Col_A/Value+1, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.345" level="INFO">${resp} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.340" endtime="20191220 08:30:38.345"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.346" level="INFO">&lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.345" endtime="20191220 08:30:38.346"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.346" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.346" level="FAIL">500 != 201</msg>
+<status status="FAIL" starttime="20191220 08:30:38.346" endtime="20191220 08:30:38.346"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.339" endtime="20191220 08:30:38.346" critical="yes">500 != 201</status>
+</test>
+<test id="s1-s2-t15" name="Add more values to Column Col_A">
+<kw name="Put Request" library="RequestsLibrary">
+<doc>Send a PUT request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A/Value+2</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.348" level="INFO">PUT Request using : uri=/regression+1/Col_A/Value+2, params=None, files=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.352" level="INFO">${resp} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.347" endtime="20191220 08:30:38.352"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>201</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.353" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.353" level="FAIL">500 != 201</msg>
+<status status="FAIL" starttime="20191220 08:30:38.352" endtime="20191220 08:30:38.353"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.347" endtime="20191220 08:30:38.353" critical="yes">500 != 201</status>
+</test>
+<test id="s1-s2-t16" name="Get all values for Column Col_A">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.354" level="INFO">GET Request using : uri=/regression+1/Col_A, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.363" level="INFO">${resp} = &lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.354" endtime="20191220 08:30:38.363"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.364" level="INFO">&lt;Response [404]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.363" endtime="20191220 08:30:38.364"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.365" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20191220 08:30:38.365" level="FAIL">404 != 200</msg>
+<status status="FAIL" starttime="20191220 08:30:38.364" endtime="20191220 08:30:38.365"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.353" endtime="20191220 08:30:38.365" critical="yes">404 != 200</status>
+</test>
+<test id="s1-s2-t17" name="Get value by id from Column Col_A">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1/Col_A/${id}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.366" level="FAIL">Variable '${id}' not found.</msg>
+<status status="FAIL" starttime="20191220 08:30:38.366" endtime="20191220 08:30:38.367"></status>
+</kw>
+<status status="FAIL" starttime="20191220 08:30:38.365" endtime="20191220 08:30:38.367" critical="yes">Variable '${id}' not found.</status>
+</test>
+<test id="s1-s2-t18" name="Delete Table regression 1">
+<kw name="Delete Request" library="RequestsLibrary">
+<doc>Send a DELETE request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/regression+1</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.368" level="INFO">DELETE Request using : uri=/regression+1, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.384" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.367" endtime="20191220 08:30:38.384"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.384" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.384" endtime="20191220 08:30:38.384"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.385" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.384" endtime="20191220 08:30:38.385"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.367" endtime="20191220 08:30:38.385" critical="yes"></status>
+</test>
+<test id="s1-s2-t19" name="Table regression 1 removed">
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the
+given `alias`</doc>
+<arguments>
+<arg>TDT</arg>
+<arg>/tables</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.386" level="INFO">GET Request using : uri=/tables, params=None, allow_redirects=True, timeout=None
+headers={'User-Agent': 'python-requests/2.22.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+data=None 
+json=None</msg>
+<msg timestamp="20191220 08:30:38.393" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.386" endtime="20191220 08:30:38.393"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp}</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.394" level="INFO">&lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.393" endtime="20191220 08:30:38.394"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+</arguments>
+<msg timestamp="20191220 08:30:38.394" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" starttime="20191220 08:30:38.394" endtime="20191220 08:30:38.394"></status>
+</kw>
+<kw name="Convert To String" library="BuiltIn">
+<doc>Converts the given item to a Unicode string.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${text}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.394" level="INFO">${text} = {"tables": [{"id": 1, "table": "Test"}, {"id": 2, "table": "Test_2"}]}</msg>
+<status status="PASS" starttime="20191220 08:30:38.394" endtime="20191220 08:30:38.394"></status>
+</kw>
+<kw name="Select Elements" library="JsonValidator">
+<doc>Return list of elements from _json_source_, matching [ http://jsonselect.org/ | JSONSelect] expression.</doc>
+<arguments>
+<arg>${text}</arg>
+<arg>.table:contains("regression 1")~.table</arg>
+</arguments>
+<assign>
+<var>${tbl_name}</var>
+</assign>
+<msg timestamp="20191220 08:30:38.395" level="INFO">${tbl_name} = None</msg>
+<status status="PASS" starttime="20191220 08:30:38.394" endtime="20191220 08:30:38.395"></status>
+</kw>
+<kw name="Element Should Not Exist" library="JsonValidator">
+<doc>Check that one or more elements, matching [ http://jsonselect.org/ | JSONSelect] expression, don't exist.</doc>
+<arguments>
+<arg>${text}</arg>
+<arg>.table:contains("regression 1")</arg>
+</arguments>
+<status status="PASS" starttime="20191220 08:30:38.395" endtime="20191220 08:30:38.395"></status>
+</kw>
+<status status="PASS" starttime="20191220 08:30:38.385" endtime="20191220 08:30:38.396" critical="yes"></status>
+</test>
+<status status="FAIL" starttime="20191220 08:30:38.139" endtime="20191220 08:30:38.396"></status>
+</suite>
+<status status="FAIL" starttime="20191220 08:30:37.209" endtime="20191220 08:30:38.398"></status>
 </suite>
 <statistics>
 <total>
-<stat pass="9" fail="10">Critical Tests</stat>
-<stat pass="9" fail="10">All Tests</stat>
+<stat pass="17" fail="21">Critical Tests</stat>
+<stat pass="17" fail="21">All Tests</stat>
 </total>
 <tag>
 </tag>
 <suite>
-<stat pass="9" fail="10" id="s1" name="TestDataTable-API">TestDataTable-API</stat>
+<stat pass="17" fail="21" id="s1" name="TestDataTable-API REST &amp; TestDataTable-API requests">TestDataTable-API REST &amp; TestDataTable-API requests</stat>
+<stat pass="9" fail="10" id="s1-s1" name="TestDataTable-API REST">TestDataTable-API REST &amp; TestDataTable-API requests.TestDataTable-API REST</stat>
+<stat pass="8" fail="11" id="s1-s2" name="TestDataTable-API requests">TestDataTable-API REST &amp; TestDataTable-API requests.TestDataTable-API requests</stat>
 </suite>
 </statistics>
 <errors>
