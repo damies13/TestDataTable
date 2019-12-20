@@ -163,11 +163,33 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 							httpcode = 201
 							message = '{"message": "column '+columnname+' created"}'
 
-				# core.debugmsg(8, "jsonresp:", jsonresp)
-				# message = json.dumps(jsonresp)
-			# else:
-			# 	httpcode = 404
-			# 	message = "Unrecognised request: '{}'".format(parsed_path)
+			if not actionfound and len(patharr) == 4:
+				actionfound = True
+				# append value to column
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+				columnvalue = urllib.parse.unquote_plus(patharr[3])
+				core.debugmsg(9, "columnvalue:", columnvalue)
+
+				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+				core.debugmsg(9, "results:", results)
+				tableid = results[0][0]
+				core.debugmsg(9, "tableid:", tableid)
+				if len(results)>0:
+					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+					core.debugmsg(9, "results:", results)
+					if len(results)>0:
+						columnid = results[0][0]
+						core.debugmsg(9, "columnid:", columnid)
+
+						results = core.db.execute("INSERT INTO tdt_data (column_id, value) VALUES (?,?)", [columnid, columnvalue])
+						core.debugmsg(9, "results:", results)
+						if results is None:
+							httpcode = 201
+							message = '{"message": "column '+columnname+' created"}'
+
 
 		except Exception as e:
 			core.debugmsg(6, "do_PUT:", e)
