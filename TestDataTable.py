@@ -123,17 +123,15 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				tablename = urllib.parse.unquote_plus(patharr[1])
 				core.debugmsg(9, "tablename:", tablename)
 
-				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
-				core.debugmsg(9, "results:", results)
-				if len(results)>0:
+				tableid = core.table_exists(tablename)
+				core.debugmsg(9, "tableid:", tableid)
+				if tableid:
 					httpcode = 200
 					message = '{"message": "table '+tablename+' exists"}'
-
 				else:
-
-					results = core.db.execute("INSERT INTO tdt_tables (table_name) VALUES (?)", [tablename])
-					core.debugmsg(9, "results:", results)
-					if results is None:
+					tableid = core.table_create(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
 						httpcode = 201
 						message = '{"message": "table '+tablename+' created"}'
 
@@ -146,22 +144,18 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				columnname = urllib.parse.unquote_plus(patharr[2])
 				core.debugmsg(9, "columnname:", columnname)
 
-				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
-				core.debugmsg(9, "results:", results)
-				tableid = results[0][0]
-				core.debugmsg(9, "tableid:", tableid)
-				if len(results)>0:
-					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
-					core.debugmsg(9, "results:", results)
-					if len(results)>0:
-						httpcode = 200
-						message = '{"message": "column '+columnname+' exists"}'
-					else:
-						results = core.db.execute("INSERT INTO tdt_columns (table_id, column_name) VALUES (?,?)", [tableid, columnname])
-						core.debugmsg(9, "results:", results)
-						if results is None:
-							httpcode = 201
-							message = '{"message": "column '+columnname+' created"}'
+				columnid = core.column_exists(tablename, columnname)
+				core.debugmsg(9, "columnid:", columnid)
+				if columnid:
+					httpcode = 200
+					message = '{"message": "column '+columnname+' exists"}'
+				else:
+					columnid = core.column_create(tablename, columnname)
+					core.debugmsg(9, "columnid:", columnid)
+					if columnid:
+						httpcode = 201
+						message = '{"message": "column '+columnname+' created"}'
+
 
 			if not actionfound and len(patharr) == 4:
 				actionfound = True
@@ -173,22 +167,12 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				columnvalue = urllib.parse.unquote_plus(patharr[3])
 				core.debugmsg(9, "columnvalue:", columnvalue)
 
-				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
-				core.debugmsg(9, "results:", results)
-				tableid = results[0][0]
-				core.debugmsg(9, "tableid:", tableid)
-				if len(results)>0:
-					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
-					core.debugmsg(9, "results:", results)
-					if len(results)>0:
-						columnid = results[0][0]
-						core.debugmsg(9, "columnid:", columnid)
+				valueid = core.value_create(tablename, columnname, columnvalue)
+				core.debugmsg(9, "valueid:", valueid)
+				if valueid:
+					httpcode = 201
+					message = '{"message": "value '+columnvalue+' added to column '+columnname+'"}'
 
-						results = core.db.execute("INSERT INTO tdt_data (column_id, value) VALUES (?,?)", [columnid, columnvalue])
-						core.debugmsg(9, "results:", results)
-						if results is None:
-							httpcode = 201
-							message = '{"message": "column '+columnname+' created"}'
 
 
 		except Exception as e:
@@ -305,19 +289,46 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				pathok = True
 				message = ""
 				jsonresp = {}
-				jsonresp["tables"] = []
-
-				results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
-				core.debugmsg(9, "results:", results)
-				for row in results:
-					# core.debugmsg(9, "row:", row)
-					# message += str(row)
-					rowdict = {}
-					rowdict["id"] = row[0]
-					rowdict["table"] = row[1]
-					jsonresp["tables"].append(rowdict)
-
+				jsonresp["tables"] = core.tables_getall()
 				message = json.dumps(jsonresp)
+
+			core.debugmsg(8, "parsed_path:", parsed_path)
+			patharr = parsed_path.path.split("/")
+			core.debugmsg(8, "patharr:", patharr)
+			if not pathok and len(patharr) == 2:
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+
+				tableid = core.table_exists(tablename)
+				core.debugmsg(9, "tableid:", tableid)
+				if tableid:
+					pathok = True
+					httpcode = 200
+					jsonresp = {}
+					jsonresp[tablename] = core.table_columns(tablename)
+					i = 0
+					for col in jsonresp[tablename]:
+						core.debugmsg(9, "col:", col)
+						jsonresp[tablename][i]["values"] = core.column_values(tablename, col["column"])
+						i += 1
+					message = json.dumps(jsonresp)
+
+			if not pathok and len(patharr) == 3:
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "tablename:", tablename)
+
+				if columnname == "columns":
+					pathok = True
+					httpcode = 200
+
+					jsonresp = {}
+					jsonresp[tablename] = core.table_columns(tablename)
+
+					message = json.dumps(jsonresp)
+
+
 
 			core.debugmsg(8, "parsed_path:", parsed_path)
 			if not pathok:
@@ -545,7 +556,6 @@ class TDT_Core:
 		results = self.db.execute("DELETE FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600);")
 		core.debugmsg(9, "tdt_tables: results:", results)
 
-
 	def on_closing(self, *others):
 		if self.appstarted:
 			self.keeprunning = False
@@ -572,8 +582,6 @@ class TDT_Core:
 		if self.save_ini:
 			with open(self.tdt_ini, 'w') as configfile:    # save
 			    self.config.write(configfile)
-
-
 
 	def debugmsg(self, lvl, *msg):
 		msglst = []
@@ -612,7 +620,169 @@ class TDT_Core:
 				# print("debugmsg: Exception:", e)
 				pass
 
+	def tables_getall(self):
+		tables = []
+		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
+		core.debugmsg(9, "results:", results)
+		for row in results:
+			# core.debugmsg(9, "row:", row)
+			# message += str(row)
+			rowdict = {}
+			rowdict["table"] = row[1]
+			rowdict["tbl_id"] = row[0]
+			tables.append(rowdict)
+		return tables
 
+	def table_exists(self, tablename):
+		# returns the table id if exists, else returns False
+		id = False
+		try:
+			results = self.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+			self.debugmsg(9, "results:", results)
+			if len(results)>0:
+				id = results[0][0]
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return id
+
+	def table_create(self, tablename):
+		# creates the table
+		try:
+			tableid = self.table_exists(tablename)
+			self.debugmsg(9, "tableid:", tableid)
+			if not tableid:
+				results = self.db.execute("INSERT INTO tdt_tables (table_name) VALUES (?)", [tablename])
+				self.debugmsg(9, "results:", results)
+				if results is None:
+					return self.table_exists(tablename)
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+		return False
+
+	def table_columns(self, tablename):
+		columns = []
+		try:
+			tableid = self.table_exists(tablename)
+			self.debugmsg(9, "tableid:", tableid)
+			if tableid:
+				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+				self.debugmsg(9, "results:", results)
+				if len(results)>0:
+					for res in results:
+						self.debugmsg(9, "res:", res)
+						retcol = {}
+						retcol["column"] = res[2]
+						retcol["col_id"] = res[0]
+						columns.append(retcol)
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+
+		return columns
+
+	def table_delete(self, tablename):
+		return False
+
+	def column_exists(self, tablename, columnname):
+		# returns the column id if exists, else returns False
+		id = False
+		try:
+			tableid = self.table_exists(tablename)
+			self.debugmsg(9, "tableid:", tableid)
+			if tableid:
+				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+				self.debugmsg(9, "results:", results)
+				if len(results)>0:
+					id = results[0][0]
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return id
+
+	def column_create(self, tablename, columnname):
+		# creates the column
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			self.debugmsg(9, "columnid:", columnid)
+			if not columnid:
+				tableid = self.table_exists(tablename)
+				self.debugmsg(9, "tableid:", tableid)
+				if not tableid:
+					tableid = self.table_create(tablename)
+					self.debugmsg(9, "tableid:", tableid)
+				if tableid:
+					results = self.db.execute("INSERT INTO tdt_columns (table_id, column_name) VALUES (?,?)", [tableid, columnname])
+					self.debugmsg(9, "results:", results)
+					if results is None:
+						return self.column_exists(tablename, columnname)
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+		return False
+
+	def column_values(self, tablename, columnname):
+		values = []
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			self.debugmsg(9, "columnid:", columnid)
+			if columnid:
+				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
+				self.debugmsg(9, "results:", results)
+				if len(results)>0:
+					for res in results:
+						self.debugmsg(9, "res:", res)
+						retcol = {}
+						retcol["value"] = res[2]
+						retcol["val_id"] = res[0]
+						values.append(retcol)
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return values
+
+	def column_delete(self, tablename, columnname):
+		return False
+
+	def value_exists(self, tablename, columnname, value):
+		# returns the value id if exists, else returns False
+		# 	useful for add if unique
+		id = False
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			if columnid:
+				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and value = ? and deleted is NULL", [columnid, value])
+				self.debugmsg(9, "results:", results)
+				if len(results)>0:
+					id = results[0][0]
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return id
+
+	def value_create(self, tablename, columnname, value):
+		# creates the value
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			self.debugmsg(9, "columnid:", columnid)
+			if not columnid:
+				columnid = self.column_create(tablename, columnname)
+				self.debugmsg(9, "columnid:", columnid)
+			if columnid:
+				results = self.db.execute("INSERT INTO tdt_data (column_id, value) VALUES (?,?)", [columnid, value])
+				self.debugmsg(9, "results:", results)
+				if results is None:
+					return self.value_exists(tablename, columnname, value)
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+		return False
+
+	def value_delete(self, tablename, columnname, value):
+		return False
+
+
+	# def value_create_unique(self, tablename, columnname, value):
+	# 	# creates the value
+	# 	return False
 
 # web = TDT_WebServer()
 core = TDT_Core()
