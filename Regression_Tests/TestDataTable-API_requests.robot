@@ -24,9 +24,9 @@ Table regression 1 exists
 	log	${resp.json()}
 	log	${resp.content}
 	Should Be Equal As Strings	${resp.status_code}	200
-	${tbl_id}	Output	$.tables.[?(@.table=='regression 1')].id
-	${tbl_id}	Output	$.tables[?(@.table=='regression 1')].id
-	${tbl_name}	Output	$.tables[?(@.table=='regression 1')].table
+	# ${tbl_id}	Output	$.tables.[?(@.table=='regression 1')].id
+	# ${tbl_id}	Output	$.tables[?(@.table=='regression 1')].id
+	# ${tbl_name}	Output	$.tables[?(@.table=='regression 1')].table
 	# Should Be Equal	"${tbl_name}"	"regression 1"
 	# Element should exist    ${json_example}    .author:contains("Evelyn Waugh")
 	# ${tbl_result}	Dictionary Should Contain Value    ${resp.json()['tables']}    "regression 1"
