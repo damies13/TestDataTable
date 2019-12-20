@@ -3,3 +3,5 @@
 *.sqlite
 *.sqlite3
 *.db
+*Tests/*.html
+*Tests/*.xml
