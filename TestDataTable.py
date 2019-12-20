@@ -41,32 +41,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# delete table
 				tablename = urllib.parse.unquote_plus(patharr[1])
 				core.debugmsg(9, "tablename:", tablename)
-				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
-				core.debugmsg(9, "results:", results)
-				if len(results)>0:
-					tableid = results[0][0]
-					core.debugmsg(9, "tableid:", tableid)
 
-					# in order to properly delete a table we need to remove all the columns and data from those columns
-					# get columns
-					res_columns = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
-					core.debugmsg(9, "res_columns:", res_columns)
-					for col in res_columns:
-						colid = col[0]
-						core.debugmsg(9, "colid:", colid, "	col:", col)
-						# remove data
-						res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE column_id = ?", [colid])
-						core.debugmsg(9, "res_data:", res_data)
+				deltbl = core.table_delete(tablename)
 
-					# remove columns
-					res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE table_id = ?", [tableid])
-					core.debugmsg(9, "res_columns:", res_columns)
-
-					# remove table
-					# -- UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=4
-					res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=?", [tableid])
-					core.debugmsg(9, "res_table:", res_table)
-
+				if deltbl:
 					httpcode = 200
 					message = '{"message": "table '+tablename+' deleted"}'
 
@@ -83,19 +61,38 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				columnname = urllib.parse.unquote_plus(patharr[2])
 				core.debugmsg(9, "columnname:", columnname)
 
-				results = core.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
-				core.debugmsg(9, "results:", results)
-				if len(results)>0:
-					tableid = results[0][0]
-					core.debugmsg(9, "tableid:", tableid)
-
-					results = core.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
-					core.debugmsg(9, "results:", results)
-
+				delcol = core.column_delete(tablename, columnname)
+				if delcol:
+					httpcode = 200
+					message = '{"message": "column '+columnname+' deleted"}'
 
 				else:
 					httpcode = 404
-					message = '{"message": "table '+tablename+' does not exists"}'
+					message = '{"message": "column '+columnname+' does not exists"}'
+
+
+
+			if not actionfound and len(patharr) == 4:
+				actionfound = True
+				# delete column
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+				columnvalue = urllib.parse.unquote_plus(patharr[3])
+				core.debugmsg(9, "columnvalue:", columnvalue)
+
+				delcol = core.value_delete(tablename, columnname, columnvalue)
+				if delcol:
+					httpcode = 200
+					message = '{"message": "value '+columnvalue+' deleted"}'
+
+				else:
+					httpcode = 404
+					message = '{"message": "value '+columnvalue+' does not exists"}'
+
+
+
 
 		except Exception as e:
 			core.debugmsg(6, "do_DELETE:", e)
@@ -328,6 +325,35 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 					message = json.dumps(jsonresp)
 
+				columnid = core.column_exists(tablename, columnname)
+				core.debugmsg(9, "columnid:", columnid)
+				# if columnid:
+				# 	pathok = True
+				# 	httpcode = 200
+				#
+				# 	jsonresp = {}
+				# 	jsonresp[columnname] = core.column_values(tablename, columnname)
+				#
+				# 	message = json.dumps(jsonresp)
+
+			if not pathok and len(patharr) == 4:
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "tablename:", tablename)
+				columntype = urllib.parse.unquote_plus(patharr[3])
+				core.debugmsg(9, "columntype:", columntype)
+
+				if columntype == "all":
+					pathok = True
+					httpcode = 200
+
+					jsonresp = {}
+					jsonresp[columnname] = core.column_values(tablename, columnname)
+
+					message = json.dumps(jsonresp)
+
+				# if columntype == "<id>":
 
 
 			core.debugmsg(8, "parsed_path:", parsed_path)
@@ -620,6 +646,10 @@ class TDT_Core:
 				# print("debugmsg: Exception:", e)
 				pass
 
+	#
+	#	reusable table, column and vlaue functions
+	#
+
 	def tables_getall(self):
 		tables = []
 		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
@@ -678,10 +708,27 @@ class TDT_Core:
 		except Exception as e:
 			self.debugmsg(6, "Exception:", e)
 
-
 		return columns
 
 	def table_delete(self, tablename):
+		try:
+			tableid = self.table_exists(tablename)
+			self.debugmsg(9, "tableid:", tableid)
+			if tableid:
+				table_cols = self.table_columns(tablename)
+				for col in table_cols:
+					self.debugmsg(9, "col:", col)
+					delcol = self.column_delete(tablename, col["column"])
+					if not delcol:
+						return False
+				res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=?", [tableid])
+				core.debugmsg(9, "res_table:", res_table)
+				if res_table is None:
+					return True
+			else:
+				return True
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
 		return False
 
 	def column_exists(self, tablename, columnname):
@@ -741,6 +788,26 @@ class TDT_Core:
 		return values
 
 	def column_delete(self, tablename, columnname):
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			self.debugmsg(9, "columnid:", columnid)
+			if columnid:
+				# remove data
+				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE column_id = ?", [columnid])
+				core.debugmsg(9, "res_data:", res_data)
+				if res_data is not None:
+					return False
+
+				# remove column
+				res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE rowid = ?", [columnid])
+				core.debugmsg(9, "res_columns:", res_columns)
+				if res_columns is None:
+					return True
+
+			else:
+				return True
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
 		return False
 
 	def value_exists(self, tablename, columnname, value):
@@ -777,6 +844,19 @@ class TDT_Core:
 		return False
 
 	def value_delete(self, tablename, columnname, value):
+		try:
+			valueid = self.value_exists(tablename, columnname, value)
+			core.debugmsg(9, "valueid:", valueid)
+			if valueid:
+				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?", [valueid])
+				core.debugmsg(9, "res_data:", res_data)
+				if res_data is None:
+					return True
+			else:
+				return True
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
 		return False
 
 
