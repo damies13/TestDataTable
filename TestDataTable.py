@@ -181,19 +181,53 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_POST(self):
-		httpcode = 200
+		actionfound = False
+		httpcode = 500
 		try:
 			parsed_path = urllib.parse.urlparse(self.path)
+			message = '{"path":"'+str(parsed_path.path)+'", "message": "Unsupported method"}'
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			message = "{\"path\":\""+parsed_path.path+"\"}"
-				# core.debugmsg(8, "jsonresp:", jsonresp)
-				# message = json.dumps(jsonresp)
-			# else:
-			# 	httpcode = 404
-			# 	message = "Unrecognised request: \"{}\"".format(parsed_path)
+			patharr = parsed_path.path.split("/")
+			core.debugmsg(8, "patharr:", patharr)
+
+			content_len = int(self.headers.get('Content-Length'))
+			core.debugmsg(8, "content_len:", content_len)
+			post_body = self.rfile.read(content_len)
+			core.debugmsg(8, "post_body:", post_body)
+
+			if not actionfound and len(patharr) == 3:
+				# create column
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+
+				if columnname == "row":
+					actionfound = True
+					tableid = core.table_exists(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
+						# now parse the post data and check all the columns exist
+						#
+						data = json.loads(post_body)
+						core.debugmsg(9, "data:", data)
+						for col in data.keys():
+							result = core.value_create(tablename, col, data[col])
+							core.debugmsg(9, "result:", result)
+							if not result:
+								httpcode = 500
+								message = '{"message": "unable to put value '+data[col]+' into column '+col+' of table '+tablename+'"}'
+
+						httpcode = 201
+						message = '{"message": "values added to table: '+tablename+'"}'
+
+
+					else:
+						httpcode = 404
+						message = '{"message": "table '+tablename+' not found"}'
 
 		except Exception as e:
-			core.debugmsg(6, "do_POST:", e)
+			core.debugmsg(6, "Exception:", e)
 			httpcode = 500
 			message = str(e)
 		self.send_response(httpcode)

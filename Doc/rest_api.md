@@ -32,7 +32,7 @@ Returns the column name / value pairs for every column in the table for the nomi
 
 ### POST /&lt;table name&gt;/row
 
-With post body containing the column name / value pairs for every column in the table, append a new row with these values to the table.
+With post body containing the column name / value pairs, will append values to last row in each column, creating columns that don't exist.
 
 Example post data:
 ```
@@ -43,9 +43,8 @@ Example post data:
 }
 ```
 
-This operation will fail if:
-- not all columns in the table are in the post data
-- columns in the table have different lengths
+if you need to keep the column data together for a row, then it's advised that you do not use api features that manipulate individual columns.
+
 
 
 ## Column operations

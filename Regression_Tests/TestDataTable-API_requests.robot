@@ -91,6 +91,13 @@ Post row of data
 	${resp}=	Post Request	TDT	/regression+1/row	{"Col_A":"Value X", "Col_B":"Value Y", "Col_C":"Value Z"}
 	Should Be Equal As Strings	${resp.status_code}	201
 
+Get all values for Column Col_A
+	${resp}=	Get Request	TDT	/regression+1/Col_A/all
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	200
+
+
 Get Table regression 1 columns
 	${resp}=	Get Request	TDT	/regression+1/columns
 	Log	${resp}
