@@ -136,6 +136,13 @@ Add more values to Column Col_A
 	${resp}=	Put Request	TDT	/regression+1/Col_A/Value+6
 	Should Be Equal As Strings	${resp.status_code}	201
 
+Delete Value 4 from Column Col_A
+	${resp}=	Delete Request	TDT	/regression 1/Col_A/Value 4
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	200
+
+
 Get Table regression 1
 	${resp}=	Get Request	TDT	/regression+1
 	Log	${resp}
@@ -144,21 +151,28 @@ Get Table regression 1
 
 # GET /<table name>/<column name>/all
 Get all values for Column Col_A
-	${resp}=	Get Request	TDT	/regression+1/Col_A
+	${resp}=	Get Request	TDT	/regression+1/Col_A/all
 	Log	${resp}
+	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
+	log	${resp.json()["Col_A"]}
+	log	${resp.json()["Col_A"][0]}
+	log	${resp.json()["Col_A"][0]["val_id"]}
+	# ${value_id}=	Set Variable    ${resp.json()["Col_A"][0]["val_id"]}
+	Set Global Variable    ${value_id}    ${resp.json()["Col_A"][0]["val_id"]}
 
 # GET /<table name>/<column name>/<id>
 Get value by id from Column Col_A
-	${resp}=	Get Request	TDT	/regression+1/Col_A/${id}
+	${resp}=	Get Request	TDT	/regression+1/Col_A/${value_id}
 	Log	${resp}
+	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
 
 
 Delete Table regression 1
 	${resp}=	Delete Request	TDT	/regression+1
 	Log	${resp}
-	# Expect Response	{ "status": "200" }	merge=true
+	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
 
 Table regression 1 removed
