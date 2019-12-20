@@ -21,10 +21,6 @@ from sqlite3worker import Sqlite3Worker
 
 
 
-# -- identify records for cleanup
-# -- SELECT ROWID, * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
-
-
 
 
 class TDT_WebServer(BaseHTTPRequestHandler):
@@ -337,6 +333,7 @@ class TDT_Core:
 	tdt_ini = None
 	save_ini = True
 
+	dbcleanup = None
 	webserver = None
 	httpserver = None
 	db = None
@@ -466,6 +463,9 @@ class TDT_Core:
 			if i > 9:
 				self.debugmsg(9, "keeprunning:", self.keeprunning)
 				i = 0
+				# run_db_cleanup
+				self.dbcleanup = threading.Thread(target=self.run_db_cleanup)
+				self.dbcleanup.start()
 			i +=1
 
 		self.debugmsg(5, "mainloop ended")
@@ -506,6 +506,23 @@ class TDT_Core:
 		self.debugmsg(5, "appstarted:", self.appstarted)
 		self.debugmsg(0, "Starting Test Data Table Server", "http://{}:{}/".format(srvdisphost, srvport))
 		self.httpserver.serve_forever()
+
+	def run_db_cleanup(self):
+		# remove records where the deleted column has had a value set for more than 600 seconds (10 min)
+		#   aka cleanup deleted records
+
+		# -- identify records for cleanup
+		# -- SELECT ROWID, * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
+		# -- DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 36000);
+		results = self.db.execute("DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 600);")
+		core.debugmsg(9, "tdt_data: results:", results)
+		# -- DELETE  FROM tdt_columns WHERE deleted < (strftime('%s', 'now') - 36000);
+		results = self.db.execute("DELETE FROM tdt_columns WHERE deleted < (strftime('%s', 'now') - 600);")
+		core.debugmsg(9, "tdt_columns: results:", results)
+		# -- DELETE  FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 36000);
+		results = self.db.execute("DELETE FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600);")
+		core.debugmsg(9, "tdt_tables: results:", results)
+
 
 	def on_closing(self, *others):
 		if self.appstarted:
