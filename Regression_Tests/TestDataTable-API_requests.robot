@@ -73,6 +73,14 @@ Create Column Col_A again
 	Should Be Equal As Strings	${resp.status_code}	200
 	Should Be Equal	"${resp.json()['message']}"	"column Col_A exists"
 
+Gat value from empty column
+	${resp}=	Get Request	TDT	/regression 1/Col_A
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	200
+	${checkval1}=	Set Variable    ${resp.json()['Col_A']}
+	Should Be Equal As Strings	${checkval1}	None
+
 
 Create Column Col_B and Col_C
 	${resp}=	Put Request	TDT	/regression+1/Col_B
@@ -109,6 +117,12 @@ Get Table regression 1 row
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
+	Should Be Equal As Strings	${resp.json()['regression 1']['Col_C']}	Value C
+	# return data row to table
+	${json_string}=    evaluate    json.dumps(${resp.json()['regression 1']})    json
+	${resp}=	Post Request	TDT	/regression+1/row	${json_string}
+	Should Be Equal As Strings	${resp.status_code}	201
+
 
 # DELETE /<table name>/<column name>
 Delete Column Col_C
@@ -119,14 +133,26 @@ Delete Column Col_C
 
 # GET /<table name>/<column name>
 Get Column Col_A
-	${resp}=	Get Request	TDT	/regression+1/Col_A
+	${resp}=	Get Request	TDT	/regression 1/Col_A
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
+	${checkval1}=	Set Variable    ${resp.json()['Col_A']}
+	${resp}=	Get Request	TDT	/regression 1/Col_A
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	200
+	${checkval2}=	Set Variable    ${resp.json()['Col_A']}
+	Should Not Be Equal    ${checkval1}    ${checkval2}
+	# put the values back
+	${resp}=	Put Request	TDT	/regression 1/Col_A/${checkval2}
+	Should Be Equal As Strings	${resp.status_code}	201
+	${resp}=	Put Request	TDT	/regression 1/Col_A/${checkval1}
+	Should Be Equal As Strings	${resp.status_code}	201
 
 # PUT /<table name>/<column name>/<value>
 Add value to Column Col_A
-	${resp}=	Put Request	TDT	/regression+1/Col_A/Value+1
+	${resp}=	Put Request	TDT	/regression 1/Col_A/Value 1
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
@@ -157,16 +183,16 @@ Get Table regression 1
 	Should Be Equal As Strings	${resp.status_code}	200
 
 # GET /<table name>/<column name>/all
-Get all values for Column Col_A
+Get all values for Column Col_A for Value Id's
 	${resp}=	Get Request	TDT	/regression+1/Col_A/all
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
 	log	${resp.json()["Col_A"]}
-	log	${resp.json()["Col_A"][0]}
-	log	${resp.json()["Col_A"][0]["val_id"]}
+	log	${resp.json()["Col_A"][-1]}
+	log	${resp.json()["Col_A"][-1]["val_id"]}
 	# ${value_id}=	Set Variable    ${resp.json()["Col_A"][0]["val_id"]}
-	Set Global Variable    ${value_id}    ${resp.json()["Col_A"][0]["val_id"]}
+	Set Global Variable    ${value_id}    ${resp.json()["Col_A"][-1]["val_id"]}
 
 # GET /<table name>/<column name>/<id>
 Get value by id from Column Col_A
@@ -175,6 +201,30 @@ Get value by id from Column Col_A
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
 
+Table doesn't exist
+	${resp}=	Get Request	TDT	/regression 1998
+	Log	${resp}
+	# log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	404
+
+Table doesn't exist - columns
+	${resp}=	Get Request	TDT	/regression 1999/columns
+	Log	${resp}
+	# log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	404
+
+Column doesn't exist
+	${resp}=	Get Request	TDT	/regression 1/joe citizen 2019
+	Log	${resp}
+	# log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	404
+
+Value Id doesn't exist
+	${badval}=	Evaluate    ${value_id} * 2
+	${resp}=	Get Request	TDT	/regression+1/Col_A/${badval}
+	Log	${resp}
+	# log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	404
 
 Delete Table regression 1
 	${resp}=	Delete Request	TDT	/regression+1
@@ -191,7 +241,6 @@ Table regression 1 removed
 	${tbl_name}=	Select elements	${text}	.table:contains("regression 1")~.table
 	# Element should not exist	${text}	.tables[?(@.table=="regression 1")]
 	Element should not exist	${text}	.table:contains("regression 1")
-
 
 Add value to create column and table
 	${resp}=	Put Request	TDT	/Regression+Create/Col+Create/Value+Create
