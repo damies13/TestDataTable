@@ -351,24 +351,56 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				core.debugmsg(9, "tablename:", tablename)
 
 				if columnname == "columns":
-					pathok = True
-					httpcode = 200
+					tableid = core.table_exists(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
+						pathok = True
+						httpcode = 200
 
-					jsonresp = {}
-					jsonresp[tablename] = core.table_columns(tablename)
+						jsonresp = {}
+						jsonresp[tablename] = core.table_columns(tablename)
 
-					message = json.dumps(jsonresp)
+						message = json.dumps(jsonresp)
+
+				if columnname == "row":
+					tableid = core.table_exists(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
+						pathok = True
+						httpcode = 200
+
+						jsonresp = {}
+						jsonresp[tablename] = {}
+
+						columns = core.table_columns(tablename)
+						core.debugmsg(9, "columns:", columns)
+						for col in columns:
+							core.debugmsg(9, "col:", col)
+							column_name = col["column"]
+							core.debugmsg(9, "column_name:", column_name)
+							val_data = core.value_consume(tablename, column_name)
+							core.debugmsg(9, "val_data:", val_data)
+							if val_data is None:
+								jsonresp[tablename][column_name] = None
+							else:
+								jsonresp[tablename][column_name] = val_data["value"]
+
+						message = json.dumps(jsonresp)
+
 
 				columnid = core.column_exists(tablename, columnname)
 				core.debugmsg(9, "columnid:", columnid)
-				# if columnid:
-				# 	pathok = True
-				# 	httpcode = 200
-				#
-				# 	jsonresp = {}
-				# 	jsonresp[columnname] = core.column_values(tablename, columnname)
-				#
-				# 	message = json.dumps(jsonresp)
+				if columnid:
+					pathok = True
+					httpcode = 200
+					val_data = core.value_consume(tablename, columnname)
+					if val_data is None:
+						jsonresp = {columnname : None}
+					else:
+						jsonresp = {columnname : val_data["value"]}
+					core.debugmsg(9, "jsonresp:", jsonresp)
+					message = json.dumps(jsonresp)
+
 
 			if not pathok and len(patharr) == 4:
 				tablename = urllib.parse.unquote_plus(patharr[1])
@@ -387,7 +419,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 					message = json.dumps(jsonresp)
 
-				# if columntype == "<id>":
+				data = core.value_consume_byid(tablename, columnname, columntype)
+				if data is not None:
+					pathok = True
+					httpcode = 200
+					jsonresp = {}
+					jsonresp[columnname] = data["value"]
+					message = json.dumps(jsonresp)
 
 
 			core.debugmsg(8, "parsed_path:", parsed_path)
@@ -851,7 +889,7 @@ class TDT_Core:
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			if columnid:
-				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and value = ? and deleted is NULL", [columnid, value])
+				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and (value = ? or ROWID = ?) and deleted is NULL", [columnid, value, value])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					id = results[0][0]
@@ -892,6 +930,64 @@ class TDT_Core:
 			self.debugmsg(6, "Exception:", e)
 
 		return False
+
+	def value_consume(self, tablename, columnname):
+		try:
+			columnid = self.column_exists(tablename, columnname)
+			self.debugmsg(9, "columnid:", columnid)
+			if columnid:
+				# sqlite3.Warning: You can only execute one statement at a time.
+				# 	Also didn't return any result
+					# txn = ""
+					# txn += "BEGIN TRANSACTION; \n\n"
+					# txn += "CREATE TEMP TABLE _ConsumeValue AS \n"
+					# txn += "SELECT ROWID, * FROM tdt_data \n"
+					# txn += "WHERE deleted is NULL \n"
+					# txn += "	AND column_id = 29 \n"
+					# txn += "LIMIT 1; \n\n"
+					# txn += "UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = (SELECT rowid from _ConsumeValue); \n\n"
+					# txn += "SELECT * from _ConsumeValue; \n\n"
+					# txn += "DROP TABLE _ConsumeValue; \n\n"
+					# txn += "END TRANSACTION; \n"
+					# self.debugmsg(9, "txn:", txn)
+					# results = self.db.execute(txn)
+
+				retval = {}
+				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE deleted is NULL AND column_id = ? LIMIT 1;", [columnid])
+				self.debugmsg(9, "results:", results)
+				if len(results)>0:
+					retval["val_id"] = results[0][0]
+					resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [retval["val_id"]])
+					self.debugmsg(9, "resultu:", resultu)
+					retval["value"] = results[0][2]
+					return retval
+			else:
+				return None
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return None
+
+	def value_consume_byid(self, tablename, columnname, value):
+		try:
+			val_id = self.value_exists(tablename, columnname, value)
+			self.debugmsg(9, "val_id:", val_id)
+			if val_id:
+				retval = {}
+				resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [val_id])
+				self.debugmsg(9, "resultu:", resultu)
+
+				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE ROWID = ?;", [val_id])
+				self.debugmsg(9, "results:", results)
+				retval["val_id"] = results[0][0]
+				retval["value"] = results[0][2]
+				return retval
+			else:
+				return None
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return None
 
 
 	# def value_create_unique(self, tablename, columnname, value):
