@@ -20,6 +20,7 @@ Open Help
 	# ${handle} =	Switch Window	NEW
 	${handle} =	Select Window	NEW	120
 	Wait Until Page Contains	Rest Api
+	# Wait Until Element Is Visible	Table operations	60
 	Capture Page Screenshot
 	# ${handle} =	Select Window	TestDataTable/rest_api
 	${helptitle}=	Get Title
@@ -44,15 +45,23 @@ Create New Table
 	Click Button    Create
 	Wait Until Element Is Visible	xpath: //a[text()='Regression GUI']
 
+Select Table
+	${handle} =	Select Window 	MAIN
+	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
+	Click Element    xpath: //li/a[text()='Regression GUI']
+	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='Regression GUI']
 
 Create New Column
 	${handle} =	Select Window 	MAIN
+	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
+	Click Element    xpath: //li/a[text()='Regression GUI']
+	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='Regression GUI']
 	Click Button	Add Column
-	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add column')]
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
 	Capture Page Screenshot
-	Input Text	id:table-name	GUI Column A
-	Click Button    Create
-	Wait Until Element Is Visible	xpath: //td[text()='GUI Column A']
+	Input Text	id:column-name	GUI Column A
+	Click Button    Add
+	Wait Until Element Is Visible	xpath: //div[@name='Regression GUI']//th/span[text()='GUI Column A']
 
 
 Remove Table

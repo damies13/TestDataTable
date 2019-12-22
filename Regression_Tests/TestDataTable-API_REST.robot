@@ -18,7 +18,7 @@ Table regression 1 exists
 	GET	/tables
 	Output
 	Number	response status	200
-	${tbl_id}	Output	$.tables[?(@.table=="regression 1")].id
+	${tbl_id}	Output	$.tables[?(@.table=="regression 1")].tbl_id
 	${tbl_name}	Output	$.tables[?(@.table=="regression 1")].table
 	Should Be Equal	"${tbl_name}"	"regression 1"
 
@@ -111,14 +111,18 @@ Add more values to Column Col_A
 	Number	response status	201
 
 # GET /<table name>/<column name>/all
-Get all values for Column Col_A
-	GET	/regression+1/Col_A
+Get all values for Column Col_A for Value Id's
+	GET	/regression+1/Col_A/all
 	Output
 	Number	response status	200
+	# ${id}	Output	$.Col_A
+	# ${id}	Output	$.Col_A[-1]
+	${id}	Output	$.Col_A[-1].val_id
+	Set Global Variable    ${value_id}    ${id}
 
 # GET /<table name>/<column name>/<id>
 Get value by id from Column Col_A
-	GET	/regression+1/Col_A/${id}
+	GET	/regression+1/Col_A/${value_id}
 	Output
 	Number	response status	200
 

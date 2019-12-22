@@ -6,6 +6,13 @@ Library	RequestsLibrary
 Suite Setup	Connect to TDT
 
 *** Test cases ***
+Create Blank Table
+	${resp}=	Put Request	TDT	/
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	406
+	Should Be Equal	"${resp.json()['message']}"	"table name cannot be blank"
+
 Create Table regression 1
 	${resp}=	Put Request	TDT	/regression+1
 	Log	${resp}
@@ -40,7 +47,7 @@ Table regression 1 exists
 	# .author:contains("Evelyn Waugh")~.price
 	# ${tbl}=	Select elements	${text}	.table:contains("regression 1")
 	# ${tbl}=	Select elements	${text}	.table:contains("regression 1")~.
-	${tbl_id}=	Select elements	${text}	.table:contains("regression 1")~.id
+	${tbl_id}=	Select elements	${text}	.table:contains("regression 1")~.tbl_id
 	${tbl_name}=	Select elements	${text}	.table:contains("regression 1")~.table
 	Should Be Equal	"${tbl_name[0]}"	"regression 1"
 
@@ -56,6 +63,12 @@ Create Table regression 1 again
 	${tbl_name}=	Select elements	${text}	.table:contains("regression 1")~.table
 	Should Be Equal	"${tbl_name[0]}"	"regression 1"
 
+Create Blank Column
+	${resp}=	Put Request	TDT	/regression+1/
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	406
+	Should Be Equal	"${resp.json()['message']}"	"column name cannot be blank"
 
 Create Column Col_A
 	${resp}=	Put Request	TDT	/regression+1/Col_A

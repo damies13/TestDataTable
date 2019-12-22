@@ -119,18 +119,21 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# create table
 				tablename = urllib.parse.unquote_plus(patharr[1])
 				core.debugmsg(9, "tablename:", tablename)
-
-				tableid = core.table_exists(tablename)
-				core.debugmsg(9, "tableid:", tableid)
-				if tableid:
-					httpcode = 200
-					message = '{"message": "table '+tablename+' exists"}'
+				if len(tablename)<1:
+					httpcode = 406
+					message = '{"message": "table name cannot be blank"}'
 				else:
-					tableid = core.table_create(tablename)
+					tableid = core.table_exists(tablename)
 					core.debugmsg(9, "tableid:", tableid)
 					if tableid:
-						httpcode = 201
-						message = '{"message": "table '+tablename+' created"}'
+						httpcode = 200
+						message = '{"message": "table '+tablename+' exists"}'
+					else:
+						tableid = core.table_create(tablename)
+						core.debugmsg(9, "tableid:", tableid)
+						if tableid:
+							httpcode = 201
+							message = '{"message": "table '+tablename+' created"}'
 
 
 			if not actionfound and len(patharr) == 3:
@@ -141,17 +144,22 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				columnname = urllib.parse.unquote_plus(patharr[2])
 				core.debugmsg(9, "columnname:", columnname)
 
-				columnid = core.column_exists(tablename, columnname)
-				core.debugmsg(9, "columnid:", columnid)
-				if columnid:
-					httpcode = 200
-					message = '{"message": "column '+columnname+' exists"}'
+				if len(columnname)<1:
+					httpcode = 406
+					message = '{"message": "column name cannot be blank"}'
 				else:
-					columnid = core.column_create(tablename, columnname)
+
+					columnid = core.column_exists(tablename, columnname)
 					core.debugmsg(9, "columnid:", columnid)
 					if columnid:
-						httpcode = 201
-						message = '{"message": "column '+columnname+' created"}'
+						httpcode = 200
+						message = '{"message": "column '+columnname+' exists"}'
+					else:
+						columnid = core.column_create(tablename, columnname)
+						core.debugmsg(9, "columnid:", columnid)
+						if columnid:
+							httpcode = 201
+							message = '{"message": "column '+columnname+' created"}'
 
 
 			if not actionfound and len(patharr) == 4:
@@ -245,37 +253,43 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message  = "<html>"
 				message += "<head>"
 
-
 				# https://developers.google.com/speed/libraries#jquery-ui
 				# Jquery
 				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>"
 				# Jquery UI
 				message += "<link rel=\"stylesheet\" href=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css\">"
 				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js\"></script>"
-							# message += "<script src=\"https://addyosmani.com/jQuery-contextMenu/jquery.contextMenu.js\"></script>"
-							# message += "<script src=\"https://addyosmani.com/jQuery-contextMenu/jquery.ui.position.js\"></script>"
-							# message += "<link rel=\"stylesheet\" href=\"https://addyosmani.com/jQuery-contextMenu/jquery.contextMenu.css\">"
+
+				message += """	<style>
+								.ui-tabs .ui-tabs-panel {
+									padding: 0em 0em;
+								}
+
+								.tableFixHead          { overflow-y: auto; height: 80%; }
+								.tableFixHead thead    { position: sticky; top: 0; background:#f6f6f6; width: 100%;}	/* background:#e9e9e9; */
+								.tableFixHead thead th { position: sticky; top: 0; }
+								/* .tableFixHead thead th span.ui-icon-close { margin-top: -.8em; margin-right: -.7em; float: right;} */
+								.tableFixHead thead th span { float: left; }
+								/* .tableFixHead thead th span.ui-icon-close { position: absolute; top: 2px; right: -1px; } */
+								.tableFixHead thead th span.ui-icon-close { position: absolute; top: 5px; right: 0px; }
+
+
+								/* Just common table stuff. Really. */
+								/* table  { width: 100%; } */
+								/* table  { border-collapse: collapse; width: 100%; } */
+								/* table  { border-collapse: collapse; } */
+								th, td { padding: 5px 10px; }
+								th     {  border: 1px solid #c5c5c5; color: #454545; padding: 10px 15px 5px 10px;}	/* background:#f6f6f6; */
+								td.data-cell { background: #e6e6e6; border: 1px solid #c5c5c5; color: #454545; }
+								td.has-value { background: #fefefe; border: 1px solid #c5c5c5; color: #454545; }
+
+								</style> """
+
+
 
 				message += "<script>"
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
-							# # register context menu for objects
-							# message += """	$.contextMenu({
-							# 					selector: '#tables ul li',
-							# 					items: $.contextMenu.fromMenu($('#html5menu'))
-							# 				});
-							# 				$.contextMenu('html5');"""
-							# # message += "	$(\"#tables ul li\").contextMenu(\"html5\");"
-
-							# message += """	$(\"#tables ul li\").contextmenu(function() {
-							# 					console.log( $( this ) );
-							# 				}); """
-							# 					# $(\"#tables ul li\").toggleClass( "contextmenu" );
-							# message += """	$(\"#tables ul li a\").contextmenu(function() {
-							# 					console.log( $( this ) );
-							# 				}); """
-
-
 
 				message += "	$( \"#buttonbar\" ).controlgroup();"
 				message += "	refresh();"
@@ -337,7 +351,19 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		width: \"auto\","
 				message += "		modal: true,"
 				message += "		buttons: {"
-				message += "			Create: function() {"
+				message += "			Add: function() {"
+				message += "				console.log(\"#column-name: \" + $('#column-name'));"
+				message += "				var colname = $('#column-name').val();"
+				message += "				console.log(\"colname: \" + colname);"
+				message += "				var tblname = $('#column-table-name').text();"
+				message += "				console.log(\"tblname: \" + tblname);"
+				message += "				$.ajax({"
+				message += "					url: '/'+tblname+'/'+colname,"
+				message += "					type: 'PUT',"
+				message += "					success: function(data) {"
+				message += "						refresh();"
+				message += "					}"
+				message += "				});"
 				message += "				$( this ).dialog( \"close\" );"
 				message += "			},"
 				message += "			Cancel: function() {"
@@ -347,20 +373,78 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	});"
 
 
-				# ui-icon-close			$("#tables ul li .ui-icon-close")
-				# message += "	$(\"#tables ul li .ui-icon-close\").button().on( \"click\", function() {"
-				# message += "	$(\"#tables ul li .ui-icon-close\").on( \"click\", function() {"
-				message += "	tabs.on( \"click\", \"span.ui-icon-close\", function() {"
+				# dialog-delete-column
+				message += "	dlgDelColumn = $( \"#dialog-delete-column\" ).dialog({"
+				message += "		autoOpen: false,"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: true,"
+				message += "		buttons: {"
+				message += "			Delete: function() {"
+				message += "				tblname = $(\"#delete-column-table\").text();"
+				message += "				colname = $(\"#delete-column-name\").text();"
+				message += "				console.log(\"tblname: \"+tblname);"
+				message += "				$.ajax({"
+				message += "					url: '/'+tblname+'/'+colname,"
+				message += "					type: 'DELETE',"
+				message += "					success: function(data) {"
+				message += "						var colhead = $('div[name=\"'+tblname+'\"]').find('th[name=\"'+colname+'\"]');"
+				message += "						var colno = colhead.attr('colno');"
+				message += "						$('td[colno=\"'+colno+'\"]').remove();"
+				message += "						colhead.remove();"
+				message += "						refresh_table(tblname);"
+				message += "					}"
+				message += "				});"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			},"
+				message += "			Cancel: function() {"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			}"
+				message += "		}"
+				message += "	});"
+
+
+				message += "	tabs.on( \"click\", \"li span.ui-icon-close\", function() {"
 				message += "		console.log( $( this ) );"
 				message += "		console.log( $( this ).attr(\"table\") );"
 				message += "		$(\"#delete-table-name\").text($( this ).attr(\"table\"));"
 				message += "		dlgDelTable.dialog( \"open\" );"
 				message += "	});"
 
+				message += "	tabs.on( \"click\", \"th span.ui-icon-close\", function() {"
+				message += "		console.log( $( this ) );"
+				message += "		var tabactive = $( \"#tables\" ).tabs( \"option\", \"active\" );"
+				message += "		console.log('tabactive:'+tabactive);"
+				message += "		var tblname = $(\"#tables ul li:nth-child(\"+(tabactive+1)+\") a \").text();"
+				message += "		console.log(\"tblname: \"+tblname);"
+				message += "		var colname = $( this ).attr(\"column\");"
+				message += "		console.log('colname: '+colname);"
+				message += "		$(\"#delete-column-table\").text(tblname);"
+				message += "		$(\"#delete-column-name\").text(colname);"
+				message += "		dlgDelColumn.dialog( \"open\" );"
+				message += "	});"
+
+				message += "	tabs.on( \"click\", \"li.ui-tabs-tab\", function() {"
+				message += "		console.log( $( this ) );"
+				message += "		var tablename = $( this ).find('a').text();"
+				message += "		console.log('tablename: '+tablename);"
+				message += "		refresh_table(tablename);"
+				message += "	});"
+
 
 				message += "	$( \"#new-table\" ).button().on( \"click\", function() {"
 				message += "		$('#table-name').val('');"
 				message += "		dlgNewTable.dialog( \"open\" );"
+				message += "	});"
+
+				message += "	$( \"#new-column\" ).button().on( \"click\", function() {"
+				message += "		var tabactive = $( \"#tables\" ).tabs( \"option\", \"active\" );"
+				message += "		console.log('tabactive:'+tabactive);"
+				message += "		var tblname = $(\"#tables ul li:nth-child(\"+(tabactive+1)+\") a \").text();"
+				message += "		console.log(\"tblname: \"+tblname);"
+				message += "		$(\"#column-table-name\").text(tblname);"
+				message += "		$('#column-name').val('');"
+				message += "		dlgAddColumn.dialog( \"open\" );"
 				message += "	});"
 
 				message += "	$( \"#refresh\" ).button().on( \"click\", function() {"
@@ -376,51 +460,137 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message += "function refresh() {"
 				message += "	$.getJSON('tables', function(tables) { "
-				message += "		var keeptables = [];"
-				message += "		for (var i = 0; i < tables.tables.length; i++) {"
-				message += "			console.log(tables.tables[i]);"
-				# message += "			//Do something"
-				# https://jqueryui.com/tabs/#manipulation <== how to do add and remove tabs
-				# message += "			if (!$(\"#tables\").length){  }"
-
-				# message += "			var tabid = tables.tables[i].id.toString() +'_'+ tables.tables[i].table;"
-				message += "			var tableid = tables.tables[i].tbl_id;"
-				message += "			var tablenme = tables.tables[i].table;"
-				# message += "			var tablenme = tables.tables[i].table.replace(' ', '_');"
-				# message += "			var tabid = tableid.toString() +'_'+ tablenme;"
-				message += "			var tabid = tableid.toString() +'_'+ tablenme.replace(' ', '_');"
-				message += "			keeptables.push(tabid);"
-				message += "			console.log(\"tabid: \" + tabid);"
-				message += "			console.log($(\"[href='#\"+tabid+\"']\").length);"
-				message += "			if (!$(\"[href='#\"+tabid+\"']\").length){"
-				message += "				$(\"#tables\").append('<div id=\"' + tabid + '\"></div>'); "
-				message += "				$(\"#tables ul\").append('<li><a href=\"#' + tabid + '\">' + tables.tables[i].table + '</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\" table=\"'+tablenme+'\">Remove Tab</span></li>'); "
-				message += "				$( \"#tables\" ).tabs( \"refresh\" );"
-				message += "			}"
-				message += "		}"
-				# var selectedTab = $("#TabList").tabs().data("selected.tabs");
-				message += "		console.log(\"keeptables: \" + keeptables);"
-				message += "		console.log($(\"#tables ul li\").length);"
-				message += "		for (var i = 0; i < $(\"#tables ul li\").length; i++) {"
-				message += "			console.log($(\"#tables ul li\")[i]);"
-				# message += "			var thistbl = $(\"#tables ul li\")[i].children[0][\"href\"];"
-				message += "			var thistbl = $(\"#tables ul li:nth-child(\"+(i+1)+\") a \").attr(\"href\");"
-				message += "			thistbl = thistbl.substr(1);"
-				message += "			console.log(\"thistbl: \"+thistbl);"
-				message += "			if (!keeptables.includes(thistbl)){"
-				message += "				console.log(\"remove thistbl: \"+thistbl);"
-				message += "				$(\"#tables ul li:nth-child(\"+(i+1)+\")\").remove();"
-				message += "			}"
-				message += "		}"
-				message += "		var active = $( \"#tables\" ).tabs( \"option\", \"active\" );"
-				message += "		console.log(\"active: \" + active);"
-				message += "		if (!active) {"
-				# message += "			console.log(\"active: \" + active);"
-				message += "			$( \"#tables\" ).tabs( \"option\", \"active\", 0 );"
-				message += "		}"
+				message += "		refresh_tables(tables);"
 				message += "	});"
-
 				message += "};"
+
+				message += """	function refresh_tables(tables) {
+									var keeptables = [];
+									for (var i = 0; i < tables.tables.length; i++) {
+										console.log(tables.tables[i]);
+										var tableid = tables.tables[i].tbl_id;
+										var tablenme = tables.tables[i].table;
+										var tabid = tableid.toString() +'_'+ tablenme.replace(' ', '_');
+										keeptables.push(tabid);
+										console.log("tabid: " + tabid);
+										console.log($("[href='#"+tabid+"']").length);
+										if (!$("[href='#"+tabid+"']").length){
+											$("#tables").append('<div id="' + tabid + '" name="'+tablenme+'"  class=\"tableFixHead\"></div>');
+											$("#tables ul").append('<li><a href="#' + tabid + '">'
+												+ tablenme
+												+ '</a> <span class="ui-icon ui-icon-close" role="presentation" table="'
+												+ tablenme + '">Remove Tab</span></li>');
+											$( "#tables" ).tabs( "refresh" );
+										}
+									}
+									console.log("keeptables: " + keeptables);
+									console.log($("#tables ul li").length);
+									for (var i = 0; i < $("#tables ul li").length; i++) {
+										console.log($("#tables ul li")[i]);
+										var thistbl = $("#tables ul li:nth-child("+(i+1)+") a ").attr("href");
+										thistbl = thistbl.substr(1);
+										console.log("thistbl: "+thistbl);
+										if (!keeptables.includes(thistbl)){
+											console.log("remove thistbl: "+thistbl);
+											$("#tables ul li:nth-child("+(i+1)+")").remove();
+										}
+									}
+									var active = $( "#tables" ).tabs( "option", "active" );
+									console.log("active: " + active);
+									if (!active) {
+										$( "#tables" ).tabs( "option", "active", 0 );
+									}
+									var active = $( "#tables" ).tabs( "option", "active" );
+									console.log("active: " + active);
+									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").text();
+									console.log("activetbl: "+activetbl);
+									refresh_table(activetbl);
+
+								};"""
+
+				message += """	function refresh_table(tablename) {
+									console.log("refresh_table: tablename:"+tablename);
+									$.getJSON(tablename, function(tabledata) {
+										refresh_table_data(tabledata);
+									});
+								};"""
+
+				message += """	function refresh_table_data(tabledata) {
+									console.log("refresh_table_data: tabledata:");
+									console.log(tabledata);
+									var tbl_name = Object.keys(tabledata)[0];
+									console.log("tbl_name: "+tbl_name);
+									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
+									console.log("tblid: "+tblid);
+									console.log($('div[name="'+tbl_name+'"] table').length);
+									if (!$('div[name="'+tbl_name+'"] table').length){
+										// console.log($('div[name="'+tbl_name+'"]'));
+										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr></tr></thead><tbody></tbody></table>');
+									}
+									var r = 0;
+									for (var i = 0; i < tabledata[tbl_name].length; i++) {
+										var col_name = tabledata[tbl_name][i]["column"];
+										var col_id = tabledata[tbl_name][i]["col_id"];
+										console.log("col_name: "+col_name);
+										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
+											$('table[id="table-'+tblid+'"] thead tr').append('<th id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+i+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span></div></th>');
+										}
+
+										// for each value in column
+										var count = 0;
+										console.log("count: "+count);
+										count = tabledata[tbl_name][i]["values"].length;
+										console.log("count: "+count);
+										for (var j=0; j < count; j++){
+											r=j;
+											var value = tabledata[tbl_name][i]["values"][j]["value"];
+											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
+											console.log("val_id: "+val_id+'  value: '+value);
+											// make sure table row exists
+											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
+												console.log('Insert row: '+j);
+												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
+											}
+											// insert blank cells if not exist
+											for (var k = 0; k < tabledata[tbl_name].length; k++) {
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
+													console.log('Insert cell: '+k+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+												}
+											}
+											// update cell data
+											console.log('update cell: '+i+'-'+j);
+											editcell = $('div[name="'+tbl_name+'"]').find('#'+i+'-'+j);
+											editcell.text(value);
+											editcell.attr("val_id", val_id);
+											if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+
+
+										}
+									}
+									console.log('r: '+r);
+									if (r>0){ r += 1; }
+									for (var i = 0; i < tabledata[tbl_name].length; i++) {
+										var count = 0;
+										console.log("count: "+count);
+										count = r+5;
+										console.log("count: "+count);
+										for (var j=r; j < count; j++){
+											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
+												console.log('Insert row: '+j);
+												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
+											}
+											for (var k = 0; k < tabledata[tbl_name].length; k++) {
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
+													console.log('Insert cell: '+k+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+												}
+											}
+										}
+									}
+
+								};"""
+
 
 				message += "</script>"
 
@@ -436,7 +606,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# Dialogues
 				#
 				message += "<div id=\"dialog-new-table\" title=\"Create table\">"
-				message += "  <label for='table-name'>Table Name</label>"
+				message += "<div>Create a new table</div>"
+				message += "  <label for='table-name'>Table Name:</label>"
 				message += "  <input id='table-name' type='text'>"
 				message += "</div>"
 
@@ -447,30 +618,20 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</div>"
 
 				message += "<div id=\"dialog-add-column\" title=\"Add Column\">"
-				message += "  <label for='column-name'>Column Name</label>"
+				# column-table-name
+				message += "<div>Add column to table \""
+				message += "<span id='column-table-name'></span>"
+				message += "\"</div>"
+				message += "  <label for='column-name'>Column Name:</label>"
 				message += "  <input id='column-name' type='text'>"
 				message += "</div>"
 
-				#
-				# Context menus
-				#
-							# # usefull reference : https://addyosmani.com/jQuery-contextMenu/docs.html
-							# message +=   """<menu id="html5menu" type="context" style="display:none">
-							# 					<command label="rotate" onclick="alert('rotate')">
-							# 					<command label="resize" onclick="alert('resize')">
-							# 					<menu label="share">
-							# 						<command label="twitter" onclick="alert('twitter')">
-							# 						<hr>
-							# 						<command label="facebook" onclick="alert('facebook')">
-							# 					</menu>
-							# 				</menu> """
-							#
-							# message +=   """<menu id="mnuTabs" type="context" style="display:none">
-							# 					<command label="Add Column" onclick="alert('addcol')">
-							# 					<command label="Delete Table" onclick="alert('delete')">
-							# 				</menu> """
-
-
+				message += "<div id=\"dialog-delete-column\" title=\"Delete column?\">"
+				message += "<div>Are you sure you want to delete the column \""
+				message += "<span id='delete-column-name'></span>"
+				message += "\" from table \"<span id='delete-column-table'></span>"
+				message += "\"?</div>"
+				message += "</div>"
 
 
 				#
@@ -502,8 +663,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<ul>"
 				message += "</ul>"
 				message += "</div>"
-				# message += "<div id='tableframes'>"
-				# message += "</div>"
 
 
 				message += "</body>"
