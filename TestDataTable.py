@@ -252,27 +252,176 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# Jquery UI
 				message += "<link rel=\"stylesheet\" href=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css\">"
 				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js\"></script>"
+							# message += "<script src=\"https://addyosmani.com/jQuery-contextMenu/jquery.contextMenu.js\"></script>"
+							# message += "<script src=\"https://addyosmani.com/jQuery-contextMenu/jquery.ui.position.js\"></script>"
+							# message += "<link rel=\"stylesheet\" href=\"https://addyosmani.com/jQuery-contextMenu/jquery.contextMenu.css\">"
 
 				message += "<script>"
 				message += "$(function() {"
-				message += "	$(\"#tables\" ).tabs();"
+				message += "	var tabs = $(\"#tables\" ).tabs();"
+							# # register context menu for objects
+							# message += """	$.contextMenu({
+							# 					selector: '#tables ul li',
+							# 					items: $.contextMenu.fromMenu($('#html5menu'))
+							# 				});
+							# 				$.contextMenu('html5');"""
+							# # message += "	$(\"#tables ul li\").contextMenu(\"html5\");"
+
+							# message += """	$(\"#tables ul li\").contextmenu(function() {
+							# 					console.log( $( this ) );
+							# 				}); """
+							# 					# $(\"#tables ul li\").toggleClass( "contextmenu" );
+							# message += """	$(\"#tables ul li a\").contextmenu(function() {
+							# 					console.log( $( this ) );
+							# 				}); """
+
+
+
 				message += "	$( \"#buttonbar\" ).controlgroup();"
+				message += "	refresh();"
+
+
+
+				message += "	dlgNewTable = $( \"#dialog-new-table\" ).dialog({"
+				message += "		autoOpen: false,"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: true,"
+				message += "		buttons: {"
+				message += "			Create: function() {"
+				message += "				var tblname = $('#table-name').val();"
+				message += "				console.log(\"#table-name: \" + $('#table-name'));"
+				message += "				console.log(\"tblname: \" + tblname);"
+				message += "				$.ajax({"
+				message += "					url: '/'+tblname,"
+				message += "					type: 'PUT',"
+				message += "					success: function(data) {"
+				message += "						refresh();"
+				message += "					}"
+				message += "				});"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			},"
+				message += "			Cancel: function() {"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			}"
+				message += "		}"
+				message += "	});"
+
+				message += "	dlgDelTable = $( \"#dialog-delete-table\" ).dialog({"
+				message += "		autoOpen: false,"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: true,"
+				message += "		buttons: {"
+				message += "			Delete: function() {"
+				message += "				tblname = $(\"#delete-table-name\").text();"
+				message += "				console.log(\"tblname: \"+tblname);"
+				message += "				$.ajax({"
+				message += "					url: '/'+tblname,"
+				message += "					type: 'DELETE',"
+				message += "					success: function(data) {"
+				message += "						refresh();"
+				message += "					}"
+				message += "				});"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			},"
+				message += "			Cancel: function() {"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			}"
+				message += "		}"
+				message += "	});"
+
+				message += "	dlgAddColumn = $( \"#dialog-add-column\" ).dialog({"
+				message += "		autoOpen: false,"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: true,"
+				message += "		buttons: {"
+				message += "			Create: function() {"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			},"
+				message += "			Cancel: function() {"
+				message += "				$( this ).dialog( \"close\" );"
+				message += "			}"
+				message += "		}"
+				message += "	});"
+
+
+				# ui-icon-close			$("#tables ul li .ui-icon-close")
+				# message += "	$(\"#tables ul li .ui-icon-close\").button().on( \"click\", function() {"
+				# message += "	$(\"#tables ul li .ui-icon-close\").on( \"click\", function() {"
+				message += "	tabs.on( \"click\", \"span.ui-icon-close\", function() {"
+				message += "		console.log( $( this ) );"
+				message += "		console.log( $( this ).attr(\"table\") );"
+				message += "		$(\"#delete-table-name\").text($( this ).attr(\"table\"));"
+				message += "		dlgDelTable.dialog( \"open\" );"
+				message += "	});"
+
+
+				message += "	$( \"#new-table\" ).button().on( \"click\", function() {"
+				message += "		$('#table-name').val('');"
+				message += "		dlgNewTable.dialog( \"open\" );"
+				message += "	});"
+
+				message += "	$( \"#refresh\" ).button().on( \"click\", function() {"
+				message += "		refresh();"
+				message += "	});"
+
+				message += "	$( \"#help\" ).button().on( \"click\", function() {"
+				message += "		window.open(\"https://github.com/damies13/TestDataTable/blob/master/Doc/rest_api.md#rest-api\");"
+				message += "	});"
+
+				message += "});"
+
+
+				message += "function refresh() {"
 				message += "	$.getJSON('tables', function(tables) { "
+				message += "		var keeptables = [];"
 				message += "		for (var i = 0; i < tables.tables.length; i++) {"
-				# message += "			console.log(tables.Data[i]);"
+				message += "			console.log(tables.tables[i]);"
 				# message += "			//Do something"
 				# https://jqueryui.com/tabs/#manipulation <== how to do add and remove tabs
-				message += "			$(\"#tables\").append('<div id=\"' + tables.tables[i].id +'_'+ tables.tables[i].table + '\"></div>'); "
-				message += "			$(\"#tables ul\").append('<li><a href=\"#' + tables.tables[i].id +'_'+ tables.tables[i].table + '\">' + tables.tables[i].table + '</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li>'); "
-				message += "			$( \"#tables\" ).tabs( \"refresh\" );"
+				# message += "			if (!$(\"#tables\").length){  }"
+
+				# message += "			var tabid = tables.tables[i].id.toString() +'_'+ tables.tables[i].table;"
+				message += "			var tableid = tables.tables[i].tbl_id;"
+				message += "			var tablenme = tables.tables[i].table;"
+				# message += "			var tablenme = tables.tables[i].table.replace(' ', '_');"
+				# message += "			var tabid = tableid.toString() +'_'+ tablenme;"
+				message += "			var tabid = tableid.toString() +'_'+ tablenme.replace(' ', '_');"
+				message += "			keeptables.push(tabid);"
+				message += "			console.log(\"tabid: \" + tabid);"
+				message += "			console.log($(\"[href='#\"+tabid+\"']\").length);"
+				message += "			if (!$(\"[href='#\"+tabid+\"']\").length){"
+				message += "				$(\"#tables\").append('<div id=\"' + tabid + '\"></div>'); "
+				message += "				$(\"#tables ul\").append('<li><a href=\"#' + tabid + '\">' + tables.tables[i].table + '</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\" table=\"'+tablenme+'\">Remove Tab</span></li>'); "
+				message += "				$( \"#tables\" ).tabs( \"refresh\" );"
+				message += "			}"
+				message += "		}"
+				# var selectedTab = $("#TabList").tabs().data("selected.tabs");
+				message += "		console.log(\"keeptables: \" + keeptables);"
+				message += "		console.log($(\"#tables ul li\").length);"
+				message += "		for (var i = 0; i < $(\"#tables ul li\").length; i++) {"
+				message += "			console.log($(\"#tables ul li\")[i]);"
+				# message += "			var thistbl = $(\"#tables ul li\")[i].children[0][\"href\"];"
+				message += "			var thistbl = $(\"#tables ul li:nth-child(\"+(i+1)+\") a \").attr(\"href\");"
+				message += "			thistbl = thistbl.substr(1);"
+				message += "			console.log(\"thistbl: \"+thistbl);"
+				message += "			if (!keeptables.includes(thistbl)){"
+				message += "				console.log(\"remove thistbl: \"+thistbl);"
+				message += "				$(\"#tables ul li:nth-child(\"+(i+1)+\")\").remove();"
+				message += "			}"
 				message += "		}"
 				message += "		var active = $( \"#tables\" ).tabs( \"option\", \"active\" );"
+				message += "		console.log(\"active: \" + active);"
 				message += "		if (!active) {"
 				# message += "			console.log(\"active: \" + active);"
 				message += "			$( \"#tables\" ).tabs( \"option\", \"active\", 0 );"
 				message += "		}"
 				message += "	});"
-				message += "});"
+
+				message += "};"
+
 				message += "</script>"
 
 				message += "<style>"
@@ -282,6 +431,51 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<title>Test Data Table</title>"
 				message += "</head>"
 				message += "<body>"
+
+				#
+				# Dialogues
+				#
+				message += "<div id=\"dialog-new-table\" title=\"Create table\">"
+				message += "  <label for='table-name'>Table Name</label>"
+				message += "  <input id='table-name' type='text'>"
+				message += "</div>"
+
+				message += "<div id=\"dialog-delete-table\" title=\"Delete table?\">"
+				message += "<div>Are you sure you want to delete the table \""
+				message += "<span id='delete-table-name'></span>"
+				message += "\"?</div>"
+				message += "</div>"
+
+				message += "<div id=\"dialog-add-column\" title=\"Add Column\">"
+				message += "  <label for='column-name'>Column Name</label>"
+				message += "  <input id='column-name' type='text'>"
+				message += "</div>"
+
+				#
+				# Context menus
+				#
+							# # usefull reference : https://addyosmani.com/jQuery-contextMenu/docs.html
+							# message +=   """<menu id="html5menu" type="context" style="display:none">
+							# 					<command label="rotate" onclick="alert('rotate')">
+							# 					<command label="resize" onclick="alert('resize')">
+							# 					<menu label="share">
+							# 						<command label="twitter" onclick="alert('twitter')">
+							# 						<hr>
+							# 						<command label="facebook" onclick="alert('facebook')">
+							# 					</menu>
+							# 				</menu> """
+							#
+							# message +=   """<menu id="mnuTabs" type="context" style="display:none">
+							# 					<command label="Add Column" onclick="alert('addcol')">
+							# 					<command label="Delete Table" onclick="alert('delete')">
+							# 				</menu> """
+
+
+
+
+				#
+				# Main page
+				#
 
 				# <fieldset>
 				message += "<div id=\"buttonbar\">"
