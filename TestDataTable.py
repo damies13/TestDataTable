@@ -488,6 +488,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		window.open(\"https://github.com/damies13/TestDataTable/blob/master/Doc/rest_api.md#rest-api\");"
 				message += "	});"
 
+
+
+
+
 				message += "});"
 
 
@@ -589,15 +593,20 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
 													console.log('Insert cell: '+k+'-'+j);
 													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
+														table_cell_clicked($( this ));
+													});
 												}
 											}
 											// update cell data
 											console.log('update cell: '+i+'-'+j);
 											editcell = $('div[name="'+tbl_name+'"]').find('#'+i+'-'+j);
-											editcell.text(value);
-											editcell.attr("val_id", val_id);
-											if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
-
+											if (!editcell.is("[currval]")){
+												editcell.empty();
+												editcell.text(value);
+												editcell.attr("val_id", val_id);
+												if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+											}
 
 										}
 									}
@@ -617,13 +626,114 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
 													console.log('Insert cell: '+k+'-'+j);
 													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
+														table_cell_clicked($( this ));
+													});
+												} else {
+													var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]');
+													tidyupcell.html("&nbsp;");
+													if (tidyupcell.hasClass("has-value")){ tidyupcell.toggleClass("has-value"); }
 												}
 											}
 										}
 									}
 
+
+
 								};"""
 
+				# /* click to edit data values */
+				message += """	function table_cell_clicked(cell) {
+									console.log('td cell on click:');
+									console.log(cell);
+									console.log(cell.is("[lastclicked]"));
+									if (cell.is("[lastclicked]")){
+										console.log(cell.attr('lastclicked'));
+										var lastclicked = cell.attr('lastclicked');
+										console.log('lastclicked: '+lastclicked);
+										var timediff = Date.now() - Number(lastclicked);
+										console.log('timediff: '+timediff);
+										if (timediff>500 && timediff<2000) {
+											// enter edit mode
+											var currval = "";
+											if (cell.hasClass("has-value")){
+												currval = cell.text();
+											}
+											console.log('currval: '+currval);
+											cell.attr('currval', currval);
+											cell.empty();
+											cell.append("<input type='text' id='editcell'>");
+											var inputfield = cell.find("#editcell");
+											inputfield.val(currval);
+											cell.removeAttr("lastclicked");
+										} else {
+											$("td[lastclicked]").removeAttr("lastclicked");
+										}
+
+									} else {
+										// check if cell has input feild, if so do nothing
+										if (!cell.find("#editcell").length){
+											// next check if another cell has input feild, if so do end edit
+											if ($("td[currval]").length){
+												// exit cell edit
+												var editcell = $("td[currval]");
+												var prevval = editcell.attr("currval");
+												var newval = editcell.find("#editcell").val();
+												console.log('prevval: '+prevval+'	newval:'+newval);
+												if (prevval != newval){
+													// update cell value
+
+													var val_id = editcell.attr("val_id");
+													console.log('val_id: '+val_id);
+
+													var colno = editcell.attr("colno");
+													console.log('colno: '+colno);
+													var columnname = $("th[colno='"+colno+"']").attr("name");
+													console.log('columnname: '+columnname);
+
+													var tbl_id = colno.split("-")[0];
+													console.log('tbl_id: '+tbl_id);
+													var tablename = $("#"+tbl_id).attr("name");
+													console.log('tablename: '+tablename);
+
+													var puturl = "";
+													var resttype = 'PUT';
+													if (val_id.length>0){
+														if (newval.length<1){
+															resttype = 'DELETE';
+															puturl = "/"+tablename+"/"+columnname+"/"+val_id;
+														} else {
+															puturl = "/"+tablename+"/"+columnname+"/"+val_id+"/"+newval;
+														}
+													} else {
+														puturl = "/"+tablename+"/"+columnname+"/"+newval;
+													}
+													console.log('resttype: '+resttype+'	puturl: '+puturl);
+													$.ajax({
+														url: puturl,
+														type: resttype,
+														success: function(data) {
+															refresh();
+														}
+													});
+
+												}
+												editcell.empty();
+												if (newval.length<1){
+													editcell.html("&nbsp;");
+												} else {
+													editcell.text(newval);
+												}
+												editcell.removeAttr("currval");
+											} else {
+												$("td[lastclicked]").removeAttr("lastclicked");
+												cell.attr("lastclicked", Date.now());
+											}
+										}
+									}
+
+
+								};"""
 
 				message += "</script>"
 
