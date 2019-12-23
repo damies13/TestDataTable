@@ -179,6 +179,34 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 					message = '{"message": "value '+columnvalue+' added to column '+columnname+'"}'
 
 
+			if not actionfound and len(patharr) == 5:
+				actionfound = True
+				# replace value by id?
+				tablename = urllib.parse.unquote_plus(patharr[1])
+				core.debugmsg(9, "tablename:", tablename)
+				columnname = urllib.parse.unquote_plus(patharr[2])
+				core.debugmsg(9, "columnname:", columnname)
+				value_id = urllib.parse.unquote_plus(patharr[3])
+				core.debugmsg(9, "value_id:", value_id)
+				columnvalue = urllib.parse.unquote_plus(patharr[4])
+				core.debugmsg(9, "columnvalue:", columnvalue)
+
+				curr_id = core.value_exists(tablename, columnname, value_id)
+				if curr_id:
+					result = core.value_replace_byid(tablename, columnname, curr_id, columnvalue)
+					if result:
+						httpcode = 200
+						message = '{"message": "value id:'+value_id+' replaced with value:'+columnvalue+' in column '+columnname+'"}'
+					else:
+						httpcode = 501
+						message = '{"message": "An unknown error occoured replaceing '+value_id+' with '+columnvalue+' in column '+columnname+'"}'
+
+				else:
+					httpcode = 404
+					message = '{"message": "the value/id ('+value_id+') you are trying to replace doesn\'t exist"}'
+
+
+
 
 		except Exception as e:
 			core.debugmsg(6, "do_PUT:", e)
@@ -1341,6 +1369,24 @@ class TDT_Core:
 			self.debugmsg(6, "Exception:", e)
 
 		return None
+
+	def value_replace_byid(self, tablename, columnname, id, value):
+		try:
+			val_id = self.value_exists(tablename, columnname, id)
+			self.debugmsg(9, "val_id:", val_id)
+			if val_id:
+				resultu = self.db.execute("UPDATE tdt_data SET value = ? WHERE rowid = ?;", [value, val_id])
+				self.debugmsg(9, "resultu:", resultu)
+				if resultu is None:
+					return True
+				else:
+					return False
+			else:
+				return False
+		except Exception as e:
+			self.debugmsg(6, "Exception:", e)
+
+		return False
 
 
 	# def value_create_unique(self, tablename, columnname, value):
