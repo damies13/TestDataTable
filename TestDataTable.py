@@ -665,6 +665,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											cell.append("<input type='text' id='editcell'>");
 											var inputfield = cell.find("#editcell");
 											inputfield.val(currval);
+											inputfield.focus();
 											cell.removeAttr("lastclicked");
 										} else {
 											$("td[lastclicked]").removeAttr("lastclicked");
