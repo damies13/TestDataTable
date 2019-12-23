@@ -25,9 +25,11 @@ from sqlite3worker import Sqlite3Worker
 
 class TDT_WebServer(BaseHTTPRequestHandler):
 	def do_HEAD(self):
+		core.debugmsg(7, " ")
 		return
 
 	def do_DELETE(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -105,6 +107,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 
 	def do_PUT(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -217,6 +220,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_POST(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -271,6 +275,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_GET(self):
+		core.debugmsg(7, " ")
 		httpcode = 200
 		pathok = False
 		try:
@@ -829,13 +834,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			self.wfile.write(bytes(message,"utf-8"))
 		return
 	def handle_http(self):
+		core.debugmsg(7, " ")
 		return
 	def respond(self):
+		core.debugmsg(7, " ")
 		return
 
 	# 	log_request is here to stop BaseHTTPRequestHandler logging to the console
 	# 		https://stackoverflow.com/questions/10651052/how-to-quiet-simplehttpserver/10651257#10651257
 	def log_request(self, code='-', size='-'):
+		core.debugmsg(7, " ")
 		pass
 
 class TDT_Core:
@@ -962,6 +970,7 @@ class TDT_Core:
 		self.debugmsg(9, "end __init__")
 
 	def mainloop(self):
+		self.debugmsg(7, " ")
 		self.debugmsg(5, "appstarted:", self.appstarted)
 		while not self.appstarted:
 			self.debugmsg(9, "sleep(1)")
@@ -983,6 +992,7 @@ class TDT_Core:
 		self.debugmsg(5, "mainloop ended")
 
 	def run_web_server(self):
+		self.debugmsg(7, " ")
 
 
 		srvip = self.config['Server']['BindIP']
@@ -1020,6 +1030,7 @@ class TDT_Core:
 		self.httpserver.serve_forever()
 
 	def run_db_cleanup(self):
+		self.debugmsg(7, " ")
 		# remove records where the deleted column has had a value set for more than 600 seconds (10 min)
 		#   aka cleanup deleted records
 
@@ -1036,6 +1047,7 @@ class TDT_Core:
 		core.debugmsg(9, "tdt_tables: results:", results)
 
 	def on_closing(self, *others):
+		self.debugmsg(7, others)
 		if self.appstarted:
 			self.keeprunning = False
 
@@ -1058,6 +1070,7 @@ class TDT_Core:
 					pass
 
 	def saveini(self):
+		self.debugmsg(7, " ")
 		if self.save_ini:
 			with open(self.tdt_ini, 'w') as configfile:    # save
 			    self.config.write(configfile)
@@ -1104,6 +1117,7 @@ class TDT_Core:
 	#
 
 	def tables_getall(self):
+		self.debugmsg(7, " ")
 		tables = []
 		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
 		core.debugmsg(9, "results:", results)
@@ -1117,6 +1131,7 @@ class TDT_Core:
 		return tables
 
 	def table_exists(self, tablename):
+		self.debugmsg(7, tablename)
 		# returns the table id if exists, else returns False
 		id = False
 		try:
@@ -1130,6 +1145,7 @@ class TDT_Core:
 		return id
 
 	def table_create(self, tablename):
+		self.debugmsg(7, tablename)
 		# creates the table
 		try:
 			tableid = self.table_exists(tablename)
@@ -1144,6 +1160,7 @@ class TDT_Core:
 		return False
 
 	def table_columns(self, tablename):
+		self.debugmsg(7, tablename)
 		columns = []
 		try:
 			tableid = self.table_exists(tablename)
@@ -1164,6 +1181,7 @@ class TDT_Core:
 		return columns
 
 	def table_delete(self, tablename):
+		self.debugmsg(7, tablename)
 		try:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
@@ -1185,6 +1203,7 @@ class TDT_Core:
 		return False
 
 	def column_exists(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		# returns the column id if exists, else returns False
 		id = False
 		try:
@@ -1201,6 +1220,7 @@ class TDT_Core:
 		return id
 
 	def column_create(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		# creates the column
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1221,6 +1241,7 @@ class TDT_Core:
 		return False
 
 	def column_values(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		values = []
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1241,6 +1262,7 @@ class TDT_Core:
 		return values
 
 	def column_delete(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
@@ -1264,6 +1286,7 @@ class TDT_Core:
 		return False
 
 	def value_exists(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		# returns the value id if exists, else returns False
 		# 	useful for add if unique
 		id = False
@@ -1280,6 +1303,7 @@ class TDT_Core:
 		return id
 
 	def value_create(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		# creates the value
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1297,6 +1321,7 @@ class TDT_Core:
 		return False
 
 	def value_delete(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		try:
 			valueid = self.value_exists(tablename, columnname, value)
 			core.debugmsg(9, "valueid:", valueid)
@@ -1313,6 +1338,7 @@ class TDT_Core:
 		return False
 
 	def value_consume(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
@@ -1350,6 +1376,7 @@ class TDT_Core:
 		return None
 
 	def value_consume_byid(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		try:
 			val_id = self.value_exists(tablename, columnname, value)
 			self.debugmsg(9, "val_id:", val_id)
@@ -1371,6 +1398,7 @@ class TDT_Core:
 		return None
 
 	def value_replace_byid(self, tablename, columnname, id, value):
+		self.debugmsg(7, tablename, columnname, id, value)
 		try:
 			val_id = self.value_exists(tablename, columnname, id)
 			self.debugmsg(9, "val_id:", val_id)
