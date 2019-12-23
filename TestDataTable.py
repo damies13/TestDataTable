@@ -725,10 +725,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 													editcell.text(newval);
 												}
 												editcell.removeAttr("currval");
-											} else {
-												$("td[lastclicked]").removeAttr("lastclicked");
-												cell.attr("lastclicked", Date.now());
 											}
+											$("td[lastclicked]").removeAttr("lastclicked");
+											cell.attr("lastclicked", Date.now());
+
 										}
 									}
 
