@@ -564,7 +564,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										// console.log($('div[name="'+tbl_name+'"]'));
 										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr></tr></thead><tbody></tbody></table>');
 									}
-									var r = 0;
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_name = tabledata[tbl_name][i]["column"];
 										var col_id = tabledata[tbl_name][i]["col_id"];
@@ -579,7 +578,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										count = tabledata[tbl_name][i]["values"].length;
 										console.log("count: "+count);
 										for (var j=0; j < count; j++){
-											r=j;
 											var value = tabledata[tbl_name][i]["values"][j]["value"];
 											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
 											console.log("val_id: "+val_id+'  value: '+value);
@@ -610,13 +608,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 										}
 									}
-									console.log('r: '+r);
-									if (r>0){ r += 1; }
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
-										var count = 0;
-										console.log("count: "+count);
-										count = r+5;
-										console.log("count: "+count);
+										var r = tabledata[tbl_name][i]["values"].length;
+										var count = r + 5;
+										console.log(tbl_name+"	column i:"+i+"	count: "+count);
 										for (var j=r; j < count; j++){
 											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
 												console.log('Insert row: '+j);
@@ -629,12 +624,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
 														table_cell_clicked($( this ));
 													});
-												} else {
-													var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]');
-													tidyupcell.html("&nbsp;");
-													if (tidyupcell.hasClass("has-value")){ tidyupcell.toggleClass("has-value"); }
 												}
 											}
+											// only do this for the current column
+											console.log('tidyupcell: '+i+'-'+j+'	i:'+i);
+											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+i+'-'+j+'"]');
+											tidyupcell.html("&nbsp;");
+											if (tidyupcell.hasClass("has-value")){ tidyupcell.toggleClass("has-value"); }
+
 										}
 									}
 
