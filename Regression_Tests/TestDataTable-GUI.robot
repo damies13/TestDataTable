@@ -4,6 +4,8 @@ Library           SeleniumLibrary
 Suite Setup		Open TDT GUI
 Suite Teardown	Close Browser
 
+Default Tags	GUI
+
 *** Variables ***
 ${BROWSER}		ff
 # ${BROWSER}		chrome
@@ -13,6 +15,7 @@ ${BROWSER}		ff
 
 
 Open Help
+	[Tags]	Button	Help
 	${handle} =	Select Window 	MAIN
 	Capture Page Screenshot
 	${maintitle}=	Get Title
@@ -31,10 +34,12 @@ Open Help
 	${handle} =	Select Window	${maintitle}
 
 Click Refresh Button
+	[Tags]	Button
 	${handle} =	Select Window 	MAIN
 	Click Button	Refresh
 
 Create New Table
+	[Tags]	Button	Create	Table	Dialogues
 	${handle} =	Select Window 	MAIN
 	Click Button	Add Table
 	# Click Button	id:new-table
@@ -46,12 +51,14 @@ Create New Table
 	Wait Until Element Is Visible	xpath: //a[text()='Regression GUI']
 
 Select Table
+	[Tags]	Tabs	Table
 	${handle} =	Select Window 	MAIN
 	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
 	Click Element    xpath: //li/a[text()='Regression GUI']
 	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='Regression GUI']
 
 Create New Column
+	[Tags]	Button	Create	Column	Dialogues
 	${handle} =	Select Window 	MAIN
 	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
 	Click Element    xpath: //li/a[text()='Regression GUI']
@@ -65,6 +72,7 @@ Create New Column
 
 
 Remove Table
+	[Tags]	Delete	Table	Dialogues
 	${handle} =	Select Window 	MAIN
 	# Wait Until Element Is Enabled	xpath: //a[text()='Regression GUI']/../span
 	Wait Until Element Is Visible	xpath: //a[text()='Regression GUI']/../span
