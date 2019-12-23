@@ -653,7 +653,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log('lastclicked: '+lastclicked);
 										var timediff = Date.now() - Number(lastclicked);
 										console.log('timediff: '+timediff);
-										if (timediff>500 && timediff<2000) {
+										if (timediff>300 && timediff<2000) {
 											// enter edit mode
 											var currval = "";
 											if (cell.hasClass("has-value")){
