@@ -955,7 +955,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		pass
 
 class TDT_Core:
-	version = "v0.0.1"
+	version = "v0.1.0-alpha"
 	debuglvl = 0
 
 	tdt_ini = None
