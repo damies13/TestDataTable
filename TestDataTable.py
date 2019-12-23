@@ -349,6 +349,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname,"
 				message += "					type: 'PUT',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -373,6 +374,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname,"
 				message += "					type: 'DELETE',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -400,6 +402,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname+'/'+colname,"
 				message += "					type: 'PUT',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -427,6 +430,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname+'/'+colname,"
 				message += "					type: 'DELETE',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						var colhead = $('div[name=\"'+tblname+'\"]').find('th[name=\"'+colname+'\"]');"
 				message += "						var colno = colhead.attr('colno');"
@@ -717,6 +721,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 													$.ajax({
 														url: puturl,
 														type: resttype,
+														dataType: 'json',
 														success: function(data) {
 															refresh();
 														}
