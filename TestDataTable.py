@@ -332,6 +332,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 
 				message += "<script>"
+				message += "var refreshinterval = 0;"
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
@@ -503,11 +504,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		window.open(\"https://github.com/damies13/TestDataTable/blob/master/Doc/rest_api.md#rest-api\");"
 				message += "	});"
 
+				message += "	$( \"#auto-refresh\" ).on( \"selectmenuchange\", function() {"
+				message += "		console.log(\"#auto-refresh:	this:\"+this);"
+				message += "		refreshinterval = this.value;"
+				message += "		auto_refresh(this.value);"
+				message += "	});"
 
 
 
 
 				message += "});"
+
+				message += """	function auto_refresh(value) {
+									console.log("auto_refresh:	refreshinterval:"+refreshinterval);
+									console.log("auto_refresh:	value:"+value);
+									if (refreshinterval == value && value>0){
+										setTimeout(function(){
+											auto_refresh(value);
+										}, value*1000);
+										refresh();
+									}
+								};"""
 
 
 				message += "function refresh() {"
@@ -649,7 +666,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 										}
 									}
-
+									console.log('refresh_table_data: '+Date().toString());
 
 
 								};"""
@@ -803,9 +820,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# message += "	<button></button>" # spacer
 				message += "	<select id='auto-refresh'>"
 				message += "		<option value='0' >Auto Refresh Off</option>"
-				message += "		<option value='1' >Auto Refresh 1 second</option>"
 				message += "		<option value='5' >Auto Refresh 5 seconds</option>"
-				message += "		<option value='10' >Auto Refresh 10 second</option>"
+				message += "		<option value='10' >Auto Refresh 10 seconds</option>"
+				message += "		<option value='30' >Auto Refresh 30 seconds</option>"
 				message += "		<option value='60' >Auto Refresh 1 minute</option>"
 				message += "	</select>"
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
