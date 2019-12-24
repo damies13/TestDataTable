@@ -288,17 +288,21 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		try:
 			parsed_path = urllib.parse.urlparse(self.path)
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			if (parsed_path.path == '/'):
+			if parsed_path.path == '/':
 				pathok = True
 				message  = "<html>"
 				message += "<head>"
 
 				# https://developers.google.com/speed/libraries#jquery-ui
 				# Jquery
-				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>"
+
+
+
+
+				message += "<script src=\""+core.config['Resources']['js_jquery']+"\"></script>"
 				# Jquery UI
-				message += "<link rel=\"stylesheet\" href=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css\">"
-				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js\"></script>"
+				message += "<link rel=\"stylesheet\" href=\""+core.config['Resources']['css_jqueryui']+"\">"
+				message += "<script src=\""+core.config['Resources']['js_jqueryui']+"\"></script>"
 
 				message += """	<style>
 								.ui-tabs .ui-tabs-panel {
@@ -822,7 +826,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</html>"
 
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			if (parsed_path.path == '/tables'):
+			filename, fileext = os.path.splitext(parsed_path.path)
+			core.debugmsg(8, "fileext:", fileext)
+			if not pathok and len(fileext)>0:
+				localfile = "."+parsed_path.path
+				core.debugmsg(8, "localfile:", localfile)
+				core.debugmsg(8, "path.exists:", os.path.exists(localfile))
+				if os.path.exists(localfile):
+					pathok = True
+					core.debugmsg(8, "pathok:", pathok)
+
+					core.debugmsg(9, "httpcode:", httpcode)
+					self.send_response(httpcode)
+					self.end_headers()
+					with open(localfile,"rb") as f:
+						core.debugmsg(8, "file open for read")
+						self.wfile.write(f.read())
+					return
+
+
+			core.debugmsg(8, "parsed_path:", parsed_path)
+			if not pathok and parsed_path.path == '/tables':
 				pathok = True
 				message = ""
 				jsonresp = {}
@@ -1039,6 +1063,22 @@ class TDT_Core:
 			self.config['Server']['DataDir'] = scrdir
 			self.saveini()
 
+
+		if 'Resources' not in self.config:
+			self.config['Resources'] = {}
+			self.saveini()
+
+		if 'js_jquery' not in self.config['Resources']:
+			self.config['Resources']['js_jquery'] = 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'
+			self.saveini()
+
+		if 'js_jqueryui' not in self.config['Resources']:
+			self.config['Resources']['js_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
+			self.saveini()
+
+		if 'css_jqueryui' not in self.config['Resources']:
+			self.config['Resources']['css_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css'
+			self.saveini()
 
 		if self.args.dir:
 			self.save_ini = False

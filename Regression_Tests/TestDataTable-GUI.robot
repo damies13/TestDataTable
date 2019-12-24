@@ -186,7 +186,7 @@ Remove Column
 	Wait Until Element Is Visible	id: dialog-delete-column
 	${dialogueMsg}= 	Get Text    id: dialog-delete-column
 	Capture Page Screenshot
-	Click Button    Delete
+	Click Button    xpath: //div[@id='dialog-delete-column']/..//button[text()='Delete']
 	Wait Until Element Is Not Visible	xpath: //th[@name="GUI Column B"]
 
 
