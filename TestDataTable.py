@@ -312,15 +312,17 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								.tableFixHead          { overflow-y: auto; height: 80%; }
 								.tableFixHead thead    { position: sticky; top: 0; width: 100%;}
 								.tableFixHead thead th { position: sticky; top: 0; }
-								.tableFixHead thead th span { float: left; }
+								/* .tableFixHead thead th span { float: left; } */
+								.tableFixHead thead th span { float: left; padding-top: 5px; }
 								.tableFixHead thead th span.ui-icon-close { position: absolute; top: 5px; right: 0px; }
 
 								th, td { padding: 5px 10px; }
 
 								.has-value { background: #fff !important; }
 
-								</style> """
+								.ui-col-count { position: absolute; top: -5px; font-size: 0.7em; right: 20px; font-weight: normal; }
 
+								</style> """
 
 
 				message += "<script>"
@@ -431,9 +433,12 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "					success: function(data) {"
 				message += "						var colhead = $('div[name=\"'+tblname+'\"]').find('th[name=\"'+colname+'\"]');"
 				message += "						var colno = colhead.attr('colno');"
-				message += "						$('td[colno=\"'+colno+'\"]').remove();"
 				message += "						colhead.remove();"
-				message += "						refresh_table(tblname);"
+				message += "						$('td[colno=\"'+colno+'\"]').remove();"
+				# message += "						refresh_table(tblname);"
+				message += "						setTimeout(function(){"
+				message += "							refresh_table(tblname);"
+				message += "						}, 100);"
 				message += "					}"
 				message += "				});"
 				message += "				$( this ).dialog( \"close\" );"
@@ -593,7 +598,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										var col_id = tabledata[tbl_name][i]["col_id"];
 										console.log("col_name: "+col_name);
 										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
-											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+i+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span></div></th>');
+											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+col_id+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
 										}
 
 
@@ -602,6 +607,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log("count: "+count);
 										count = tabledata[tbl_name][i]["values"].length;
 										console.log("count: "+count);
+										$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"] span[class="ui-col-count"]').text("("+count+")");
 										for (var j=0; j < count; j++){
 											var value = tabledata[tbl_name][i]["values"][j]["value"];
 											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
@@ -613,17 +619,18 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											}
 											// insert blank cells if not exist
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
-													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+k+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
+												var kcol_id = tabledata[tbl_name][k]['col_id'];
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
+													console.log('Insert cell: '+kcol_id+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
 														table_cell_clicked($( this ));
 													});
 												}
 											}
 											// update cell data
-											console.log('update cell: '+i+'-'+j);
-											editcell = $('div[name="'+tbl_name+'"]').find('#'+i+'-'+j);
+											console.log('update cell: '+col_id+'-'+j);
+											editcell = $('div[name="'+tbl_name+'"]').find('#'+col_id+'-'+j);
 											if (!editcell.is("[currval]")){
 												editcell.empty();
 												editcell.text(value);
@@ -634,6 +641,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										}
 									}
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
+										var col_id = tabledata[tbl_name][i]["col_id"];
 										var r = tabledata[tbl_name][i]["values"].length;
 										var count = r + 5;
 										console.log(tbl_name+"	column i:"+i+"	count: "+count);
@@ -643,19 +651,23 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
 											}
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
-													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+k+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
+												var kcol_id = tabledata[tbl_name][k]['col_id'];
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
+													console.log('Insert cell: '+kcol_id+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
 														table_cell_clicked($( this ));
 													});
 												}
 											}
 											// only do this for the current column
-											console.log('tidyupcell: '+i+'-'+j+'	i:'+i);
-											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+i+'-'+j+'"]');
+											console.log('tidyupcell: '+col_id+'-'+j+'	i:'+i);
+											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+col_id+'-'+j+'"]');
 											tidyupcell.html("&nbsp;");
-											if (tidyupcell.hasClass("has-value")){ tidyupcell.toggleClass("has-value"); }
+											if (tidyupcell.hasClass("has-value")){
+												tidyupcell.toggleClass("has-value");
+												tidyupcell.attr("val_id", "");
+											}
 
 										}
 									}
@@ -745,6 +757,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												editcell.empty();
 												if (newval.length<1){
 													editcell.html("&nbsp;");
+													editcell.attr("val_id", "");
 												} else {
 													editcell.text(newval);
 												}
