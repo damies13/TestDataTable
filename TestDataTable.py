@@ -310,22 +310,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								}
 
 								.tableFixHead          { overflow-y: auto; height: 80%; }
-								.tableFixHead thead    { position: sticky; top: 0; background:#f6f6f6; width: 100%;}	/* background:#e9e9e9; */
+								.tableFixHead thead    { position: sticky; top: 0; width: 100%;}
 								.tableFixHead thead th { position: sticky; top: 0; }
-								/* .tableFixHead thead th span.ui-icon-close { margin-top: -.8em; margin-right: -.7em; float: right;} */
 								.tableFixHead thead th span { float: left; }
-								/* .tableFixHead thead th span.ui-icon-close { position: absolute; top: 2px; right: -1px; } */
 								.tableFixHead thead th span.ui-icon-close { position: absolute; top: 5px; right: 0px; }
 
-
-								/* Just common table stuff. Really. */
-								/* table  { width: 100%; } */
-								/* table  { border-collapse: collapse; width: 100%; } */
-								/* table  { border-collapse: collapse; } */
 								th, td { padding: 5px 10px; }
-								th     {  border: 1px solid #c5c5c5; color: #454545; padding: 10px 15px 5px 10px;}	/* background:#f6f6f6; */
-								td.data-cell { background: #e6e6e6; border: 1px solid #c5c5c5; color: #454545; }
-								td.has-value { background: #fefefe; border: 1px solid #c5c5c5; color: #454545; }
+
+								.has-value { background: #fff !important; }
 
 								</style> """
 
@@ -601,8 +593,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										var col_id = tabledata[tbl_name][i]["col_id"];
 										console.log("col_name: "+col_name);
 										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
-											$('table[id="table-'+tblid+'"] thead tr').append('<th id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+i+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span></div></th>');
+											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+i+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span></div></th>');
 										}
+
 
 										// for each value in column
 										var count = 0;
@@ -622,7 +615,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
 												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
 													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+k+'">&nbsp;</td>');
 													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
 														table_cell_clicked($( this ));
 													});
@@ -652,7 +645,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
 												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
 													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+k+'">&nbsp;</td>');
 													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').on( "click", function() {
 														table_cell_clicked($( this ));
 													});
