@@ -1,3 +1,10 @@
+#!/usr/bin/python
+#
+#	Test Data Table
+#
+#    Version v0.1.0-alpha
+#
+
 
 
 import signal
@@ -25,9 +32,11 @@ from sqlite3worker import Sqlite3Worker
 
 class TDT_WebServer(BaseHTTPRequestHandler):
 	def do_HEAD(self):
+		core.debugmsg(7, " ")
 		return
 
 	def do_DELETE(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -105,6 +114,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 
 	def do_PUT(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -217,6 +227,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_POST(self):
+		core.debugmsg(7, " ")
 		actionfound = False
 		httpcode = 500
 		try:
@@ -271,22 +282,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(message,"utf-8"))
 		return
 	def do_GET(self):
+		core.debugmsg(7, " ")
 		httpcode = 200
 		pathok = False
 		try:
 			parsed_path = urllib.parse.urlparse(self.path)
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			if (parsed_path.path == '/'):
+			if parsed_path.path == '/':
 				pathok = True
 				message  = "<html>"
 				message += "<head>"
 
 				# https://developers.google.com/speed/libraries#jquery-ui
 				# Jquery
-				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>"
+
+
+
+
+				message += "<script src=\""+core.config['Resources']['js_jquery']+"\"></script>"
 				# Jquery UI
-				message += "<link rel=\"stylesheet\" href=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css\">"
-				message += "<script src=\"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js\"></script>"
+				message += "<link rel=\"stylesheet\" href=\""+core.config['Resources']['css_jqueryui']+"\">"
+				message += "<script src=\""+core.config['Resources']['js_jqueryui']+"\"></script>"
 
 				message += """	<style>
 								.ui-tabs .ui-tabs-panel {
@@ -294,28 +310,23 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								}
 
 								.tableFixHead          { overflow-y: auto; height: 80%; }
-								.tableFixHead thead    { position: sticky; top: 0; background:#f6f6f6; width: 100%;}	/* background:#e9e9e9; */
+								.tableFixHead thead    { position: sticky; top: 0; width: 100%;}
 								.tableFixHead thead th { position: sticky; top: 0; }
-								/* .tableFixHead thead th span.ui-icon-close { margin-top: -.8em; margin-right: -.7em; float: right;} */
-								.tableFixHead thead th span { float: left; }
-								/* .tableFixHead thead th span.ui-icon-close { position: absolute; top: 2px; right: -1px; } */
+								/* .tableFixHead thead th span { float: left; } */
+								.tableFixHead thead th span { float: left; padding-top: 5px; }
 								.tableFixHead thead th span.ui-icon-close { position: absolute; top: 5px; right: 0px; }
 
-
-								/* Just common table stuff. Really. */
-								/* table  { width: 100%; } */
-								/* table  { border-collapse: collapse; width: 100%; } */
-								/* table  { border-collapse: collapse; } */
 								th, td { padding: 5px 10px; }
-								th     {  border: 1px solid #c5c5c5; color: #454545; padding: 10px 15px 5px 10px;}	/* background:#f6f6f6; */
-								td.data-cell { background: #e6e6e6; border: 1px solid #c5c5c5; color: #454545; }
-								td.has-value { background: #fefefe; border: 1px solid #c5c5c5; color: #454545; }
+
+								.has-value { background: #fff !important; }
+
+								.ui-col-count { position: absolute; top: -5px; font-size: 0.7em; right: 20px; font-weight: normal; }
 
 								</style> """
 
 
-
 				message += "<script>"
+				message += "var refreshinterval = 0;"
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
@@ -337,6 +348,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname,"
 				message += "					type: 'PUT',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -361,6 +373,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname,"
 				message += "					type: 'DELETE',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -388,6 +401,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname+'/'+colname,"
 				message += "					type: 'PUT',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
 				message += "					}"
@@ -415,12 +429,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "				$.ajax({"
 				message += "					url: '/'+tblname+'/'+colname,"
 				message += "					type: 'DELETE',"
+				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						var colhead = $('div[name=\"'+tblname+'\"]').find('th[name=\"'+colname+'\"]');"
 				message += "						var colno = colhead.attr('colno');"
-				message += "						$('td[colno=\"'+colno+'\"]').remove();"
 				message += "						colhead.remove();"
-				message += "						refresh_table(tblname);"
+				message += "						$('td[colno=\"'+colno+'\"]').remove();"
+				# message += "						refresh_table(tblname);"
+				message += "						setTimeout(function(){"
+				message += "							refresh_table(tblname);"
+				message += "						}, 100);"
 				message += "					}"
 				message += "				});"
 				message += "				$( this ).dialog( \"close\" );"
@@ -483,7 +501,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		window.open(\"https://github.com/damies13/TestDataTable/blob/master/Doc/rest_api.md#rest-api\");"
 				message += "	});"
 
+				message += "	$( \"#auto-refresh\" ).on( \"selectmenuchange\", function() {"
+				message += "		console.log(\"#auto-refresh:	this:\"+this);"
+				message += "		refreshinterval = this.value;"
+				message += "		auto_refresh(this.value);"
+				message += "	});"
+
+
+
+
 				message += "});"
+
+				message += """	function auto_refresh(value) {
+									console.log("auto_refresh:	refreshinterval:"+refreshinterval);
+									console.log("auto_refresh:	value:"+value);
+									if (refreshinterval == value && value>0){
+										setTimeout(function(){
+											auto_refresh(value);
+										}, value*1000);
+										refresh();
+									}
+								};"""
 
 
 				message += "function refresh() {"
@@ -555,22 +593,22 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										// console.log($('div[name="'+tbl_name+'"]'));
 										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr></tr></thead><tbody></tbody></table>');
 									}
-									var r = 0;
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_name = tabledata[tbl_name][i]["column"];
 										var col_id = tabledata[tbl_name][i]["col_id"];
 										console.log("col_name: "+col_name);
 										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
-											$('table[id="table-'+tblid+'"] thead tr').append('<th id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+i+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span></div></th>');
+											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+col_id+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
 										}
+
 
 										// for each value in column
 										var count = 0;
 										console.log("count: "+count);
 										count = tabledata[tbl_name][i]["values"].length;
 										console.log("count: "+count);
+										$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"] span[class="ui-col-count"]').text("("+count+")");
 										for (var j=0; j < count; j++){
-											r=j;
 											var value = tabledata[tbl_name][i]["values"][j]["value"];
 											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
 											console.log("val_id: "+val_id+'  value: '+value);
@@ -581,44 +619,158 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											}
 											// insert blank cells if not exist
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
-													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+												var kcol_id = tabledata[tbl_name][k]['col_id'];
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
+													console.log('Insert cell: '+kcol_id+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
+														table_cell_clicked($( this ));
+													});
 												}
 											}
 											// update cell data
-											console.log('update cell: '+i+'-'+j);
-											editcell = $('div[name="'+tbl_name+'"]').find('#'+i+'-'+j);
-											editcell.text(value);
-											editcell.attr("val_id", val_id);
-											if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
-
+											console.log('update cell: '+col_id+'-'+j);
+											editcell = $('div[name="'+tbl_name+'"]').find('#'+col_id+'-'+j);
+											if (!editcell.is("[currval]")){
+												editcell.empty();
+												editcell.text(value);
+												editcell.attr("val_id", val_id);
+												if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+											}
 
 										}
 									}
-									console.log('r: '+r);
-									if (r>0){ r += 1; }
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
-										var count = 0;
-										console.log("count: "+count);
-										count = r+5;
-										console.log("count: "+count);
+										var col_id = tabledata[tbl_name][i]["col_id"];
+										var r = tabledata[tbl_name][i]["values"].length;
+										var count = r + 5;
+										console.log(tbl_name+"	column i:"+i+"	count: "+count);
 										for (var j=r; j < count; j++){
 											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
 												console.log('Insert row: '+j);
 												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
 											}
 											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+k+'-'+j+'"]').length){
-													console.log('Insert cell: '+k+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+k+'-'+j+'" val_id="" class="data-cell" colno="'+tblid+'-'+k+'">&nbsp;</td>');
+												var kcol_id = tabledata[tbl_name][k]['col_id'];
+												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
+													console.log('Insert cell: '+kcol_id+'-'+j);
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
+														table_cell_clicked($( this ));
+													});
 												}
 											}
+											// only do this for the current column
+											console.log('tidyupcell: '+col_id+'-'+j+'	i:'+i);
+											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+col_id+'-'+j+'"]');
+											tidyupcell.html("&nbsp;");
+											if (tidyupcell.hasClass("has-value")){
+												tidyupcell.toggleClass("has-value");
+												tidyupcell.attr("val_id", "");
+											}
+
 										}
 									}
+									console.log('refresh_table_data: '+Date().toString());
+
 
 								};"""
 
+				# /* click to edit data values */
+				message += """	function table_cell_clicked(cell) {
+									console.log('td cell on click:');
+									console.log(cell);
+									console.log(cell.is("[lastclicked]"));
+									if (cell.is("[lastclicked]")){
+										console.log(cell.attr('lastclicked'));
+										var lastclicked = cell.attr('lastclicked');
+										console.log('lastclicked: '+lastclicked);
+										var timediff = Date.now() - Number(lastclicked);
+										console.log('timediff: '+timediff);
+										if (timediff>300 && timediff<2000) {
+											// enter edit mode
+											var currval = "";
+											if (cell.hasClass("has-value")){
+												currval = cell.text();
+											}
+											console.log('currval: '+currval);
+											cell.attr('currval', currval);
+											cell.empty();
+											cell.append("<input type='text' id='editcell'>");
+											var inputfield = cell.find("#editcell");
+											inputfield.val(currval);
+											inputfield.focus();
+											cell.removeAttr("lastclicked");
+										} else {
+											$("td[lastclicked]").removeAttr("lastclicked");
+										}
+
+									} else {
+										// check if cell has input feild, if so do nothing
+										if (!cell.find("#editcell").length){
+											// next check if another cell has input feild, if so do end edit
+											if ($("td[currval]").length){
+												// exit cell edit
+												var editcell = $("td[currval]");
+												var prevval = editcell.attr("currval");
+												var newval = editcell.find("#editcell").val();
+												console.log('prevval: '+prevval+'	newval:'+newval);
+												if (prevval != newval){
+													// update cell value
+
+													var val_id = editcell.attr("val_id");
+													console.log('val_id: '+val_id);
+
+													var colno = editcell.attr("colno");
+													console.log('colno: '+colno);
+													var columnname = $("th[colno='"+colno+"']").attr("name");
+													console.log('columnname: '+columnname);
+
+													var tbl_id = colno.split("-")[0];
+													console.log('tbl_id: '+tbl_id);
+													var tablename = $("#"+tbl_id).attr("name");
+													console.log('tablename: '+tablename);
+
+													var puturl = "";
+													var resttype = 'PUT';
+													if (val_id.length>0){
+														if (newval.length<1){
+															resttype = 'DELETE';
+															puturl = "/"+tablename+"/"+columnname+"/"+val_id;
+														} else {
+															puturl = "/"+tablename+"/"+columnname+"/"+val_id+"/"+newval;
+														}
+													} else {
+														puturl = "/"+tablename+"/"+columnname+"/"+newval;
+													}
+													console.log('resttype: '+resttype+'	puturl: '+puturl);
+													$.ajax({
+														url: puturl,
+														type: resttype,
+														dataType: 'json',
+														success: function(data) {
+															refresh();
+														}
+													});
+
+												}
+												editcell.empty();
+												if (newval.length<1){
+													editcell.html("&nbsp;");
+													editcell.attr("val_id", "");
+												} else {
+													editcell.text(newval);
+												}
+												editcell.removeAttr("currval");
+											}
+											$("td[lastclicked]").removeAttr("lastclicked");
+											cell.attr("lastclicked", Date.now());
+
+										}
+									}
+
+
+								};"""
 
 				message += "</script>"
 
@@ -674,9 +826,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# message += "	<button></button>" # spacer
 				message += "	<select id='auto-refresh'>"
 				message += "		<option value='0' >Auto Refresh Off</option>"
-				message += "		<option value='1' >Auto Refresh 1 second</option>"
 				message += "		<option value='5' >Auto Refresh 5 seconds</option>"
-				message += "		<option value='10' >Auto Refresh 10 second</option>"
+				message += "		<option value='10' >Auto Refresh 10 seconds</option>"
+				message += "		<option value='30' >Auto Refresh 30 seconds</option>"
 				message += "		<option value='60' >Auto Refresh 1 minute</option>"
 				message += "	</select>"
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
@@ -697,7 +849,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</html>"
 
 			core.debugmsg(8, "parsed_path:", parsed_path)
-			if (parsed_path.path == '/tables'):
+			filename, fileext = os.path.splitext(parsed_path.path)
+			core.debugmsg(8, "fileext:", fileext)
+			if not pathok and len(fileext)>0:
+				localfile = "."+parsed_path.path
+				core.debugmsg(8, "localfile:", localfile)
+				core.debugmsg(8, "path.exists:", os.path.exists(localfile))
+				if os.path.exists(localfile):
+					pathok = True
+					core.debugmsg(8, "pathok:", pathok)
+
+					core.debugmsg(9, "httpcode:", httpcode)
+					self.send_response(httpcode)
+					self.end_headers()
+					with open(localfile,"rb") as f:
+						core.debugmsg(8, "file open for read")
+						self.wfile.write(f.read())
+					return
+
+
+			core.debugmsg(8, "parsed_path:", parsed_path)
+			if not pathok and parsed_path.path == '/tables':
 				pathok = True
 				message = ""
 				jsonresp = {}
@@ -829,17 +1001,20 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			self.wfile.write(bytes(message,"utf-8"))
 		return
 	def handle_http(self):
+		core.debugmsg(7, " ")
 		return
 	def respond(self):
+		core.debugmsg(7, " ")
 		return
 
 	# 	log_request is here to stop BaseHTTPRequestHandler logging to the console
 	# 		https://stackoverflow.com/questions/10651052/how-to-quiet-simplehttpserver/10651257#10651257
 	def log_request(self, code='-', size='-'):
+		core.debugmsg(7, " ")
 		pass
 
 class TDT_Core:
-	version = "v0.0.1"
+	version = "v0.1.0-alpha"
 	debuglvl = 0
 
 	tdt_ini = None
@@ -912,6 +1087,22 @@ class TDT_Core:
 			self.saveini()
 
 
+		if 'Resources' not in self.config:
+			self.config['Resources'] = {}
+			self.saveini()
+
+		if 'js_jquery' not in self.config['Resources']:
+			self.config['Resources']['js_jquery'] = 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'
+			self.saveini()
+
+		if 'js_jqueryui' not in self.config['Resources']:
+			self.config['Resources']['js_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
+			self.saveini()
+
+		if 'css_jqueryui' not in self.config['Resources']:
+			self.config['Resources']['css_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css'
+			self.saveini()
+
 		if self.args.dir:
 			self.save_ini = False
 			self.debugmsg(5, "self.args.dir: ", self.args.dir)
@@ -962,6 +1153,7 @@ class TDT_Core:
 		self.debugmsg(9, "end __init__")
 
 	def mainloop(self):
+		self.debugmsg(7, " ")
 		self.debugmsg(5, "appstarted:", self.appstarted)
 		while not self.appstarted:
 			self.debugmsg(9, "sleep(1)")
@@ -983,6 +1175,7 @@ class TDT_Core:
 		self.debugmsg(5, "mainloop ended")
 
 	def run_web_server(self):
+		self.debugmsg(7, " ")
 
 
 		srvip = self.config['Server']['BindIP']
@@ -1020,6 +1213,7 @@ class TDT_Core:
 		self.httpserver.serve_forever()
 
 	def run_db_cleanup(self):
+		self.debugmsg(7, " ")
 		# remove records where the deleted column has had a value set for more than 600 seconds (10 min)
 		#   aka cleanup deleted records
 
@@ -1036,6 +1230,7 @@ class TDT_Core:
 		core.debugmsg(9, "tdt_tables: results:", results)
 
 	def on_closing(self, *others):
+		self.debugmsg(7, others)
 		if self.appstarted:
 			self.keeprunning = False
 
@@ -1058,6 +1253,7 @@ class TDT_Core:
 					pass
 
 	def saveini(self):
+		self.debugmsg(7, " ")
 		if self.save_ini:
 			with open(self.tdt_ini, 'w') as configfile:    # save
 			    self.config.write(configfile)
@@ -1104,6 +1300,7 @@ class TDT_Core:
 	#
 
 	def tables_getall(self):
+		self.debugmsg(7, " ")
 		tables = []
 		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
 		core.debugmsg(9, "results:", results)
@@ -1117,6 +1314,7 @@ class TDT_Core:
 		return tables
 
 	def table_exists(self, tablename):
+		self.debugmsg(7, tablename)
 		# returns the table id if exists, else returns False
 		id = False
 		try:
@@ -1130,6 +1328,7 @@ class TDT_Core:
 		return id
 
 	def table_create(self, tablename):
+		self.debugmsg(7, tablename)
 		# creates the table
 		try:
 			tableid = self.table_exists(tablename)
@@ -1144,6 +1343,7 @@ class TDT_Core:
 		return False
 
 	def table_columns(self, tablename):
+		self.debugmsg(7, tablename)
 		columns = []
 		try:
 			tableid = self.table_exists(tablename)
@@ -1164,6 +1364,7 @@ class TDT_Core:
 		return columns
 
 	def table_delete(self, tablename):
+		self.debugmsg(7, tablename)
 		try:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
@@ -1185,6 +1386,7 @@ class TDT_Core:
 		return False
 
 	def column_exists(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		# returns the column id if exists, else returns False
 		id = False
 		try:
@@ -1201,6 +1403,7 @@ class TDT_Core:
 		return id
 
 	def column_create(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		# creates the column
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1221,6 +1424,7 @@ class TDT_Core:
 		return False
 
 	def column_values(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		values = []
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1241,6 +1445,7 @@ class TDT_Core:
 		return values
 
 	def column_delete(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
@@ -1264,6 +1469,7 @@ class TDT_Core:
 		return False
 
 	def value_exists(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		# returns the value id if exists, else returns False
 		# 	useful for add if unique
 		id = False
@@ -1280,6 +1486,7 @@ class TDT_Core:
 		return id
 
 	def value_create(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		# creates the value
 		try:
 			columnid = self.column_exists(tablename, columnname)
@@ -1297,6 +1504,7 @@ class TDT_Core:
 		return False
 
 	def value_delete(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		try:
 			valueid = self.value_exists(tablename, columnname, value)
 			core.debugmsg(9, "valueid:", valueid)
@@ -1313,6 +1521,7 @@ class TDT_Core:
 		return False
 
 	def value_consume(self, tablename, columnname):
+		self.debugmsg(7, tablename, columnname)
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
@@ -1350,6 +1559,7 @@ class TDT_Core:
 		return None
 
 	def value_consume_byid(self, tablename, columnname, value):
+		self.debugmsg(7, tablename, columnname, value)
 		try:
 			val_id = self.value_exists(tablename, columnname, value)
 			self.debugmsg(9, "val_id:", val_id)
@@ -1371,6 +1581,7 @@ class TDT_Core:
 		return None
 
 	def value_replace_byid(self, tablename, columnname, id, value):
+		self.debugmsg(7, tablename, columnname, id, value)
 		try:
 			val_id = self.value_exists(tablename, columnname, id)
 			self.debugmsg(9, "val_id:", val_id)
