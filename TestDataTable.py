@@ -304,6 +304,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<link rel=\"stylesheet\" href=\""+core.config['Resources']['css_jqueryui']+"\">"
 				message += "<script src=\""+core.config['Resources']['js_jqueryui']+"\"></script>"
 
+				message += "<script src=\""+core.config['Resources']['js_papaparse']+"\"></script>"
+
 				message += """	<style>
 								.ui-tabs .ui-tabs-panel {
 									padding: 0em 0em;
@@ -318,9 +320,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 								th, td { padding: 5px 10px; }
 
+								.data-cell { min-width: 3em; }
 								.has-value { background: #fff !important; }
 
 								.ui-col-count { position: absolute; top: -5px; font-size: 0.7em; right: 20px; font-weight: normal; }
+
+								#dialog-progress .ui-dialog-titlebar { display:none; }
+
+								.ui-dialog { max-width: 90%; }
 
 								</style> """
 
@@ -450,6 +457,35 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	});"
 
 
+				message += "	dlgProgress = $( \"#dialog-progress\" ).dialog({"
+				message += "		autoOpen: false,"
+				# message += "		classes: {\"no-close\": },"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: false,"
+				message += "	});"
+
+				message += """	dlgFileImport = $( \"#dialog-file-import\" ).dialog({
+									autoOpen: false,
+									height: \"auto\",
+									width: \"auto\",
+									modal: true,
+									buttons: {
+										Import: function() {
+											file_import_action();
+											$( this ).dialog( \"close\" );
+											file_import_action();
+										},
+										Cancel: function() {
+											$( this ).dialog( \"close\" );
+										}
+									}
+								});"""
+
+
+
+
+
 				message += "	tabs.on( \"click\", \"li span.ui-icon-close\", function() {"
 				message += "		console.log( $( this ) );"
 				message += "		console.log( $( this ).attr(\"table\") );"
@@ -493,6 +529,17 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		dlgAddColumn.dialog( \"open\" );"
 				message += "	});"
 
+				message += "	$( \"#import-file\" ).button().on( \"click\", function() {"
+				message += "		$( \"#dialog-file-import-file\" ).val("");"
+				message += "		dlgFileImport.dialog( \"open\" );"
+				message += "	});"
+				message += "	$( \"#export-file\" ).button().on( \"click\", function() {"
+				# message += "		$('#table-name').val('');"
+				# message += "		dlgNewTable.dialog( \"open\" );"
+				message += "	});"
+
+
+
 				message += "	$( \"#refresh\" ).button().on( \"click\", function() {"
 				message += "		refresh();"
 				message += "	});"
@@ -506,6 +553,26 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		refreshinterval = this.value;"
 				message += "		auto_refresh(this.value);"
 				message += "	});"
+
+
+
+				# dialog-file-import-file
+				message += "	$( \"#dialog-file-import-file\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-file:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-delimiter
+				message += "	$( \"#dialog-file-import-delimiter\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-delimiter:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-header-row
+				message += "	$( \"#dialog-file-import-header-row\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-header-row:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-encoding
+				# dialog-file-import-comments
 
 
 
@@ -772,6 +839,124 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 								};"""
 
+				message += """	function file_import_preview() {
+									console.log("file_import_preview:");
+									var file = $("#dialog-file-import-file").val();
+									console.log("file_import_preview: file: "+file);
+									var delim = $("#dialog-file-import-delimiter").val();
+									console.log("file_import_preview: delim: '"+delim+"'");
+									var hrow = $("#dialog-file-import-header-row").prop("checked");
+									console.log("file_import_preview: hrow: "+hrow);
+									var encd = $("#dialog-file-import-encoding").val();
+									console.log("file_import_preview: encd: "+encd);
+									var scmt = $("#dialog-file-import-comments").val();
+									console.log("file_import_preview: scmt: "+scmt);
+
+									if (scmt.length<1){
+										scmt = false;
+										console.log("file_import_preview: scmt: "+scmt);
+									}
+
+									console.log("file_import_preview: file obj: ");
+									console.log($("#dialog-file-import-file")[0]['files'][0]);
+
+									/* {
+										delimiter: "",	// auto-detect
+										newline: "",	// auto-detect
+										quoteChar: '"',
+										escapeChar: '"',
+										header: false,
+										transformHeader: undefined,
+										dynamicTyping: false,
+										preview: 0,
+										encoding: "",
+										worker: false,
+										comments: false,
+										step: undefined,
+										complete: undefined,
+										error: undefined,
+										download: false,
+										downloadRequestHeaders: undefined,
+										skipEmptyLines: false,
+										chunk: undefined,
+										fastMode: undefined,
+										beforeFirstChunk: undefined,
+										withCredentials: undefined,
+										transform: undefined,
+										delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP]
+									} */
+
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										encoding: encd,
+										comments: scmt,
+										preview: 5,
+										complete: function(results) {
+											console.log("Finished:", results.data);
+											var keys = Object.keys(results.data[0])
+											console.log(keys);
+											console.log("file_import_preview: hrow: "+hrow);
+											r = 0;
+											$("#dialog-file-import-preview table").html("<tr id='preview-tablerow-"+r+"'></tr>");
+											/* do columns */
+											i = 0;
+
+											var rowtemplate = `<tr id='preview-tablerow-zzrowzz'>`;
+											for (var key in keys) {
+												$("#preview-tablerow-"+r+"").append("<th class=\\"ui-widget-header\\"><input id=\\"preview-c"+i+"\\" type=\\"text\\" size=\\"10\\"></th>");
+												console.log("#preview-c"+i+":", keys[key]);
+												$("#preview-c"+i).val(keys[key]);
+												rowtemplate += `<td id='preview-tablecell-zzrowzz-${i}' class=\\"data-cell ui-state-default\\">&nbsp;</td>`;
+
+												i++;
+											}
+											rowtemplate += `</tr>`;
+											console.log("rowtemplate:", rowtemplate);
+
+											for (var row in results.data) {
+												var rowdata = results.data[row];
+												r++;
+												/* $("#dialog-file-import-preview table").append("<tr id='preview-tablerow-"+r+"'></tr>"); */
+												$("#dialog-file-import-preview table").append(rowtemplate.replace(/zzrowzz/g, r));
+												console.log("rowtemplate:", rowtemplate.replace(/zzrowzz/g, r));
+
+												i = 0;
+												for (var key in rowdata) {
+													/* $("#preview-tablerow-"+r+"").append("<td class=\\"ui-widget-header\\"><input id=\\"preview-c"+i+"\\" type=\\"text\\" size=\\"10\\"></th>"); */
+													$("#preview-tablecell-"+r+"-"+i).text(rowdata[key]);
+													i++;
+												}
+											}
+										}
+									}
+
+
+
+									Papa.parse($("#dialog-file-import-file")[0]['files'][0], config);
+
+								};"""
+
+				# <tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+
+
+				# dialog-file-import-file
+				# dialog-file-import-delimiter
+				# dialog-file-import-header-row
+				# dialog-file-import-encoding
+				# dialog-file-import-comments
+				message += """	function file_import_action() {
+									console.log("file_import_action:");
+								};"""
+
+				message += """	function file_import_delimiter_tab() {
+									console.log("file_import_delimiter_tab: '	'");
+									$("#dialog-file-import-delimiter").val("	");
+									file_import_preview();
+								};"""
+
+
 				message += "</script>"
 
 				message += "<style>"
@@ -814,6 +999,59 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</div>"
 
 
+				message += """	<div id="dialog-progress" title="Progress">
+									<div>Progress</div>
+									<div id="dialog-progress-bar"></div>
+									<div id="dialog-progress-msg"></div>
+								</div>"""
+
+
+				message += """	<div id="dialog-file-import" title="Text File Import">
+									<table>
+									<tr><td colspan="5">
+										<label for='dialog-file-import-file'>Select File:</label>
+										<input id='dialog-file-import-file' type='file'>
+									</td></tr>
+									<tr><td>
+										<label for='dialog-file-import-delimiter'>File Delimiter:</label>
+										<input id='dialog-file-import-delimiter' type='text' size='5' maxlength='1' placeholder='auto'>
+										<a href="javascript:file_import_delimiter_tab();" id='dialog-file-import-insert-tab'>tab</a>
+									</td><td>
+										<label for='dialog-file-import-header-row'>Header Row:</label>
+										<input id='dialog-file-import-header-row' type='checkbox' checked='true'>
+									</td><td>
+										<label for='dialog-file-import-encoding'>Encoding:</label>
+										<input type="text" id="dialog-file-import-encoding" placeholder="default" size="7">
+									</td><td>
+										<label for='dialog-file-import-comments'>Comment char:</label>
+										<input type="text" size="7" maxlength="10" placeholder="default" id="dialog-file-import-comments">
+									</td></tr>
+									</table>
+									<br>
+									<div>Preview:</div>
+									<div id='dialog-file-import-preview' style="overflow-x: auto;">
+										<table>
+											<thead>
+												<tr>
+													<th class="ui-widget-header"><input id="preview-c1" type="text" value="Column 1" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c2" type="text" value="Column 2" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c3" type="text" value="Column 3" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c4" type="text" value="Column 4" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c5" type="text" value="Column 5" size="10"></th>
+												<tr>
+											</thead>
+										<tbody>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+										</tbody>
+										</table>
+									</div>
+								</div>"""
+
+
 				#
 				# Main page
 				#
@@ -823,7 +1061,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
 				message += "	<button id='new-column' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Column\"><span class=\"ui-icon ui-icon-grip-solid-vertical\"></span>Add Column</button>"
 				message += "	<button>&nbsp;</button>" # spacer
-				# message += "	<button></button>" # spacer
+
+				message += """	<button id='import-file' class='ui-button ui-widget ui-corner-all ui-button-icon-only' title="Import File">
+									<span class='ui-icon ui-icon-folder-open'></span>
+									Import File</button> """
+
+				message += """	<button id='export-file' class='ui-button ui-widget ui-corner-all ui-button-icon-only' title="Export File">
+									<span class='ui-icon ui-icon-disk'></span>
+									Export File</button> """
+
+				message += "	<button>&nbsp;</button>" # spacer
 				message += "	<select id='auto-refresh'>"
 				message += "		<option value='0' >Auto Refresh Off</option>"
 				message += "		<option value='5' >Auto Refresh 5 seconds</option>"
@@ -1102,6 +1349,11 @@ class TDT_Core:
 		if 'css_jqueryui' not in self.config['Resources']:
 			self.config['Resources']['css_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css'
 			self.saveini()
+
+		if 'js_papaparse' not in self.config['Resources']:
+			self.config['Resources']['js_papaparse'] = 'https://unpkg.com/papaparse@latest/papaparse.min.js'
+			self.saveini()
+
 
 		if self.args.dir:
 			self.save_ini = False
