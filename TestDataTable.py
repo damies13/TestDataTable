@@ -326,6 +326,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								.ui-col-count { position: absolute; top: -5px; font-size: 0.7em; right: 20px; font-weight: normal; }
 
 								#dialog-progress .ui-dialog-titlebar { display:none; }
+								.progress-label { position: absolute; left: 40%; top: 28px; font-weight: bold; text-shadow: 1px 1px 0 #fff; }
+								.ui-progressbar .ui-progressbar-value { height: 20px; }
 
 								.ui-dialog { max-width: 90%; }
 
@@ -465,6 +467,11 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		modal: false,"
 				message += "	});"
 
+				message += """	var progressbar = $("#dialog-progress").progressbar({
+									value: false
+								}); """
+
+
 				message += """	dlgFileImport = $( \"#dialog-file-import\" ).dialog({
 									autoOpen: false,
 									height: \"auto\",
@@ -472,7 +479,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									modal: true,
 									buttons: {
 										Import: function() {
-											file_import_action();
 											$( this ).dialog( \"close\" );
 											file_import_action();
 										},
@@ -649,10 +655,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								};"""
 
 				message += """	function refresh_table_data(tabledata) {
-									console.log("refresh_table_data: tabledata:");
-									console.log(tabledata);
+									console.log("refresh_table_data_new: tabledata:", tabledata);
 									var tbl_name = Object.keys(tabledata)[0];
 									console.log("tbl_name: "+tbl_name);
+									/* ensure columns */
 									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
 									console.log("tblid: "+tblid);
 									console.log($('div[name="'+tbl_name+'"] table').length);
@@ -667,81 +673,98 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
 											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+col_id+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
 										}
+									}
+
+									/* start populating rows */
+									refresh_table_data_row(0, tabledata);
+								};"""
+
+				message += """	function refresh_table_data_row(row, tabledata) {
+									console.log("refresh_table_data_row: row: "+row+"	tabledata:", tabledata);
+									var tbl_name = Object.keys(tabledata)[0];
+									console.log("tbl_name: "+tbl_name);
+									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
+									console.log("tblid: "+tblid);
 
 
-										// for each value in column
-										var count = 0;
-										console.log("count: "+count);
-										count = tabledata[tbl_name][i]["values"].length;
-										console.log("count: "+count);
-										$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"] span[class="ui-col-count"]').text("("+count+")");
-										for (var j=0; j < count; j++){
-											var value = tabledata[tbl_name][i]["values"][j]["value"];
-											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
-											console.log("val_id: "+val_id+'  value: '+value);
-											// make sure table row exists
-											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
-												console.log('Insert row: '+j);
-												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									console.log('tabactive:'+tabactive);
+									var tabactivename = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									console.log("tabactive: "+tabactive);
+
+									if (tbl_name == tabactivename){
+
+										/* ensure row exists */
+										if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').length){
+											console.log('Insert row: '+row);
+											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+row+'"></tr>');
+										}
+
+										var maxcount = 0;
+										for (var k = 0; k < tabledata[tbl_name].length; k++) {
+											/* ensure cells exists */
+											var kcol_id = tabledata[tbl_name][k]['col_id'];
+											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').length){
+												console.log('Insert cell: '+kcol_id+'-'+row);
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').append('<td id="'+kcol_id+'-'+row+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').on( "click", function() {
+													table_cell_clicked($( this ));
+												});
 											}
-											// insert blank cells if not exist
-											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												var kcol_id = tabledata[tbl_name][k]['col_id'];
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
-													console.log('Insert cell: '+kcol_id+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
-														table_cell_clicked($( this ));
-													});
+
+											/* update column count */
+											count = tabledata[tbl_name][k]["values"].length;
+											console.log("count: "+count);
+											$('th[id="'+kcol_id+'"] span[class="ui-col-count"]').text("("+count+")");
+											if (count>maxcount){
+												maxcount = count
+											}
+
+											/* populate cell data */
+											if (row < count){
+
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+row);
+												if (!editcell.is("[currval]")){
+
+													var value = tabledata[tbl_name][k]["values"][row]["value"];
+													var val_id = tabledata[tbl_name][k]["values"][row]["val_id"];
+													console.log("val_id: "+val_id+'  value: '+value);
+
+													editcell.empty();
+													editcell.text(value);
+													editcell.attr("val_id", val_id);
+													if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
 												}
-											}
-											// update cell data
-											console.log('update cell: '+col_id+'-'+j);
-											editcell = $('div[name="'+tbl_name+'"]').find('#'+col_id+'-'+j);
-											if (!editcell.is("[currval]")){
-												editcell.empty();
-												editcell.text(value);
-												editcell.attr("val_id", val_id);
-												if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+											} else {
+												/* depopulate cell data (ensure empty) */
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+row);
+												if (!editcell.is("[currval]")){
+													editcell.empty();
+													editcell.html("&nbsp;");
+													editcell.attr("val_id", "");
+													if (editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+												}
+
 											}
 
 										}
-									}
-									for (var i = 0; i < tabledata[tbl_name].length; i++) {
-										var col_id = tabledata[tbl_name][i]["col_id"];
-										var r = tabledata[tbl_name][i]["values"].length;
-										var count = r + 5;
-										console.log(tbl_name+"	column i:"+i+"	count: "+count);
-										for (var j=r; j < count; j++){
-											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
-												console.log('Insert row: '+j);
-												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
-											}
-											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												var kcol_id = tabledata[tbl_name][k]['col_id'];
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
-													console.log('Insert cell: '+kcol_id+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
-														table_cell_clicked($( this ));
-													});
-												}
-											}
-											// only do this for the current column
-											console.log('tidyupcell: '+col_id+'-'+j+'	i:'+i);
-											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+col_id+'-'+j+'"]');
-											tidyupcell.html("&nbsp;");
-											if (tidyupcell.hasClass("has-value")){
-												tidyupcell.toggleClass("has-value");
-												tidyupcell.attr("val_id", "");
-											}
 
+										/* keep going? */
+										if (row < maxcount + 4) {
+											var delay = 50;
+											if (row>500){
+												delay = Math.round(row/10);
+											}
+											setTimeout(function(){
+												refresh_table_data_row(row+1, tabledata);
+											}, delay);
 										}
-									}
-									console.log('refresh_table_data: '+Date().toString());
 
+									}
 
 								};"""
+
+
 
 				# /* click to edit data values */
 				message += """	function table_cell_clicked(cell) {
@@ -860,39 +883,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									console.log("file_import_preview: file obj: ");
 									console.log($("#dialog-file-import-file")[0]['files'][0]);
 
-									/* {
-										delimiter: "",	// auto-detect
-										newline: "",	// auto-detect
-										quoteChar: '"',
-										escapeChar: '"',
-										header: false,
-										transformHeader: undefined,
-										dynamicTyping: false,
-										preview: 0,
-										encoding: "",
-										worker: false,
-										comments: false,
-										step: undefined,
-										complete: undefined,
-										error: undefined,
-										download: false,
-										downloadRequestHeaders: undefined,
-										skipEmptyLines: false,
-										chunk: undefined,
-										fastMode: undefined,
-										beforeFirstChunk: undefined,
-										withCredentials: undefined,
-										transform: undefined,
-										delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP]
-									} */
-
-
 									var config = {
 										delimiter: delim,
 										header: hrow,
 										encoding: encd,
 										comments: scmt,
 										preview: 5,
+										skipEmptyLines: true,
 										complete: function(results) {
 											console.log("Finished:", results.data);
 											var keys = Object.keys(results.data[0])
@@ -925,7 +922,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												i = 0;
 												for (var key in rowdata) {
 													/* $("#preview-tablerow-"+r+"").append("<td class=\\"ui-widget-header\\"><input id=\\"preview-c"+i+"\\" type=\\"text\\" size=\\"10\\"></th>"); */
-													$("#preview-tablecell-"+r+"-"+i).text(rowdata[key]);
+													$("#preview-tablecell-"+r+"-"+i).text(rowdata[key].trim());
 													i++;
 												}
 											}
@@ -948,6 +945,132 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# dialog-file-import-comments
 				message += """	function file_import_action() {
 									console.log("file_import_action:");
+									var file = $("#dialog-file-import-file").val();
+									console.log("file_import_preview: file: "+file);
+									var delim = $("#dialog-file-import-delimiter").val();
+									console.log("file_import_preview: delim: '"+delim+"'");
+									var hrow = $("#dialog-file-import-header-row").prop("checked");
+									console.log("file_import_preview: hrow: "+hrow);
+									var encd = $("#dialog-file-import-encoding").val();
+									console.log("file_import_preview: encd: "+encd);
+									var scmt = $("#dialog-file-import-comments").val();
+									console.log("file_import_preview: scmt: "+scmt);
+
+									if (scmt.length<1){
+										scmt = false;
+										console.log("file_import_preview: scmt: "+scmt);
+									}
+
+									console.log("file_import_preview: file obj: ");
+									console.log($("#dialog-file-import-file")[0]['files'][0]);
+
+									var size = $("#dialog-file-import-file")[0]['files'][0]['size'];
+									console.log("file_import_preview: size: "+size);
+
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									console.log('tabactive:'+tabactive);
+									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									console.log("tblname: "+tblname);
+
+									/* 	# dialog-progress
+										#  <div id="dialog-progress-bar"><div id="dialog-progress-msg"></div></div> */
+									$("#dialog-progress-subject").text("Importing file: '"+$("#dialog-file-import-file")[0]['files'][0]['name']+"' into table: '"+tblname+"'");
+									dlgProgress.dialog( \"open\" );
+									$("#dialog-progress").css("min-height", "50px");
+									$("#dialog-progress").prev().css("display","none");
+									$("div[aria-describedby='dialog-progress']").css("top", "1%");
+									$("div[aria-describedby='dialog-progress']").css("left", "1%");
+									dlgProgressMsg = $("#dialog-progress-msg")
+									dlgProgressMsg.text("Loading....");
+
+									var colheads = $("#preview-tablerow-0 th input");
+									console.log("file_import_preview: colheads: ",colheads);
+									var columns = [];
+									for (var colno=0; colno<colheads.length; colno++){
+										console.log("file_import_preview: colno: "+colno+"	colheads[colno]:", colheads[colno]);
+										columns.push(colheads[colno]['value']);
+									}
+									console.log("columns: ", columns);
+									var progresssize = 0;
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										encoding: encd,
+										comments: scmt,
+										skipEmptyLines: true,
+										worker: false,
+										complete: function(results) {
+											console.log("Finished:", results);
+											count = 0;
+											delay = 50;
+											IntvId = setInterval(function(){
+												if (count < results.data.length+1){
+													var pcnt = Math.round(count/results.data.length * 100);
+													if (count>500){
+														delay = Math.round(count/10);
+														console.log("delay:", delay);
+													}
+
+													var lastrow = 0;
+													if (count == results.data.length){
+														lastrow = 1;
+													}
+
+													var tblrow = {};
+													var i = 0;
+													for (cellid in results.data[count]){
+														console.log("cellid:", cellid);
+														tblrow[columns[i]] = results.data[count][cellid].trim()
+														i++;
+													}
+													console.log("tblrow:", tblrow);
+
+													var stblrow = JSON.stringify(tblrow);
+													console.log("stblrow:", stblrow);
+
+													var posturl = "/"+tblname+"/row";
+													console.log("posturl:", posturl);
+
+													/* dlgProgressMsg.text(pcnt+"%");
+													$("#dialog-progress").progressbar( "value", pcnt ); */
+													$.ajax({
+														url: posturl,
+														dataType: 'text',
+														type: 'post',
+														data: stblrow,
+														success: function( data, textStatus, jQxhr ){
+															dlgProgressMsg.text(pcnt+"%");
+															$("#dialog-progress").progressbar( "value", pcnt );
+															if (lastrow){
+																close_file_import_progress();
+															}
+														}
+													});
+													count++;
+												} else {
+													clearInterval(IntvId);
+												}
+
+											}, delay);
+
+										}
+									}
+
+
+									Papa.parse($("#dialog-file-import-file")[0]['files'][0], config);
+
+
+
+								};"""
+
+				message += """	function close_file_import_progress() {
+									dlgProgressMsg.text(100+"%");
+									$("#dialog-progress").progressbar( "value", 100 );
+									setTimeout(function(){
+										dlgProgress.dialog( \"close\" );
+									}, 500);
+									refresh_table_data(tblname);
 								};"""
 
 				message += """	function file_import_delimiter_tab() {
@@ -1000,9 +1123,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 
 				message += """	<div id="dialog-progress" title="Progress">
-									<div>Progress</div>
-									<div id="dialog-progress-bar"></div>
-									<div id="dialog-progress-msg"></div>
+									<div id="dialog-progress-subject">Progress</div>
+									<!-- <br /> -->
+									<div id="dialog-progress-bar"><div id="dialog-progress-msg" class="progress-label"></div></div>
 								</div>"""
 
 
@@ -1396,6 +1519,15 @@ class TDT_Core:
 				self.debugmsg(6, "CREATE TABLE tdt_data", result)
 
 				createschema = False
+			# Never do this it changes the row id's and breaks the data
+			# else:
+			# 	# VACUUM frees up space and defragments the file, especially after large deletes
+			# 	results = self.db.execute("VACUUM")
+			# 	self.debugmsg(9, "VACUUM: results:", results)
+			# 	self.db.close()
+			# 	self.db = None
+			# 	self.db = Sqlite3Worker(dbfile)
+
 
 
 		self.debugmsg(5, "run_web_server")
