@@ -336,6 +336,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message += "<script>"
 				message += "var refreshinterval = 0;"
+				message += "var refreshrunning = false;"
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
@@ -516,6 +517,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		console.log( $( this ) );"
 				message += "		var tablename = $( this ).find('a').text();"
 				message += "		console.log('tablename: '+tablename);"
+				message += "		refreshrunning = false;"
 				message += "		refresh_table(tablename);"
 				message += "	});"
 
@@ -648,10 +650,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								};"""
 
 				message += """	function refresh_table(tablename) {
-									console.log("refresh_table: tablename:"+tablename);
-									$.getJSON(tablename, function(tabledata) {
-										refresh_table_data(tabledata);
-									});
+									if (!refreshrunning){
+										refreshrunning = true;
+										console.log("refresh_table: tablename:"+tablename);
+										$.getJSON(tablename, function(tabledata) {
+											refresh_table_data(tabledata);
+										});
+									}
 								};"""
 
 				message += """	function refresh_table_data(tabledata) {
@@ -664,7 +669,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									console.log($('div[name="'+tbl_name+'"] table').length);
 									if (!$('div[name="'+tbl_name+'"] table').length){
 										// console.log($('div[name="'+tbl_name+'"]'));
-										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr></tr></thead><tbody></tbody></table>');
+										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr><th class="ui-widget-header">Row</th></tr></thead><tbody></tbody></table>');
 									}
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_name = tabledata[tbl_name][i]["column"];
@@ -680,24 +685,25 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 								};"""
 
 				message += """	function refresh_table_data_row(row, tabledata) {
-									console.log("refresh_table_data_row: row: "+row+"	tabledata:", tabledata);
+									console.log("refresh_table_data_row: row: "+row);
+									/* console.log("refresh_table_data_row: row: "+row+"	tabledata:", tabledata); */
 									var tbl_name = Object.keys(tabledata)[0];
-									console.log("tbl_name: "+tbl_name);
+									/* console.log("tbl_name: "+tbl_name); */
 									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
-									console.log("tblid: "+tblid);
+									/* console.log("tblid: "+tblid); */
 
 
 									var tabactive = $( "#tables" ).tabs( "option", "active" );
-									console.log('tabactive:'+tabactive);
+									/* console.log('tabactive:'+tabactive); */
 									var tabactivename = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
-									console.log("tabactive: "+tabactive);
+									/* console.log("tabactive: "+tabactive); */
 
 									if (tbl_name == tabactivename){
 
 										/* ensure row exists */
 										if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').length){
 											console.log('Insert row: '+row);
-											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+row+'"></tr>');
+											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+row+'"><td class="ui-widget-header">'+(row+1)+'</td></tr>');
 										}
 
 										var maxcount = 0;
@@ -705,7 +711,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											/* ensure cells exists */
 											var kcol_id = tabledata[tbl_name][k]['col_id'];
 											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').length){
-												console.log('Insert cell: '+kcol_id+'-'+row);
+												/* console.log('Insert cell: '+kcol_id+'-'+row); */
 												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').append('<td id="'+kcol_id+'-'+row+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
 												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').on( "click", function() {
 													table_cell_clicked($( this ));
@@ -714,7 +720,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 											/* update column count */
 											count = tabledata[tbl_name][k]["values"].length;
-											console.log("count: "+count);
+											/* console.log("count: "+count); */
 											$('th[id="'+kcol_id+'"] span[class="ui-col-count"]').text("("+count+")");
 											if (count>maxcount){
 												maxcount = count
@@ -728,7 +734,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 													var value = tabledata[tbl_name][k]["values"][row]["value"];
 													var val_id = tabledata[tbl_name][k]["values"][row]["val_id"];
-													console.log("val_id: "+val_id+'  value: '+value);
+													/* console.log("val_id: "+val_id+'  value: '+value); */
 
 													editcell.empty();
 													editcell.text(value);
@@ -751,13 +757,12 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 										/* keep going? */
 										if (row < maxcount + 4) {
-											var delay = 50;
-											if (row>500){
-												delay = Math.round(row/10);
-											}
+											var delay = 1;
 											setTimeout(function(){
 												refresh_table_data_row(row+1, tabledata);
 											}, delay);
+										} else {
+											refreshrunning = false;
 										}
 
 									}
