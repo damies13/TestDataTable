@@ -684,9 +684,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									refresh_table_data_row(0, tabledata);
 								};"""
 
-				message += """	function refresh_table_data_row(row, tabledata) {
-									console.log("refresh_table_data_row: row: "+row);
-									/* console.log("refresh_table_data_row: row: "+row+"	tabledata:", tabledata); */
+				message += """	function refresh_table_data_row(rt_row, tabledata) {
+									console.log("refresh_table_data_row: rt_row: "+rt_row);
+									/* console.log("refresh_table_data_row: rt_row: "+rt_row+"	tabledata:", tabledata); */
 									var tbl_name = Object.keys(tabledata)[0];
 									/* console.log("tbl_name: "+tbl_name); */
 									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
@@ -701,19 +701,19 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									if (tbl_name == tabactivename){
 
 										/* ensure row exists */
-										if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').length){
-											console.log('Insert row: '+row);
-											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+row+'"><td class="ui-widget-header">'+(row+1)+'</td></tr>');
+										if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"]').length){
+											console.log('Insert rt_row: '+rt_row);
+											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+rt_row+'"><td class="ui-widget-header">'+(rt_row+1)+'</td></tr>');
 										}
 
 										var maxcount = 0;
 										for (var k = 0; k < tabledata[tbl_name].length; k++) {
 											/* ensure cells exists */
 											var kcol_id = tabledata[tbl_name][k]['col_id'];
-											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').length){
-												/* console.log('Insert cell: '+kcol_id+'-'+row); */
-												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"]').append('<td id="'+kcol_id+'-'+row+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
-												$('div[name="'+tbl_name+'"] table tbody tr[id="'+row+'"] td[id="'+kcol_id+'-'+row+'"]').on( "click", function() {
+											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"] td[id="'+kcol_id+'-'+rt_row+'"]').length){
+												/* console.log('Insert cell: '+kcol_id+'-'+rt_row); */
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"]').append('<td id="'+kcol_id+'-'+rt_row+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"] td[id="'+kcol_id+'-'+rt_row+'"]').on( "click", function() {
 													table_cell_clicked($( this ));
 												});
 											}
@@ -727,13 +727,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											}
 
 											/* populate cell data */
-											if (row < count){
+											if (rt_row < count){
 
-												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+row);
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+rt_row);
 												if (!editcell.is("[currval]")){
 
-													var value = tabledata[tbl_name][k]["values"][row]["value"];
-													var val_id = tabledata[tbl_name][k]["values"][row]["val_id"];
+													var value = tabledata[tbl_name][k]["values"][rt_row]["value"];
+													var val_id = tabledata[tbl_name][k]["values"][rt_row]["val_id"];
 													/* console.log("val_id: "+val_id+'  value: '+value); */
 
 													editcell.empty();
@@ -743,7 +743,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												}
 											} else {
 												/* depopulate cell data (ensure empty) */
-												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+row);
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+rt_row);
 												if (!editcell.is("[currval]")){
 													editcell.empty();
 													editcell.html("&nbsp;");
@@ -756,10 +756,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										}
 
 										/* keep going? */
-										if (row < maxcount + 4) {
+										if (rt_row < maxcount + 4) {
 											var delay = 1;
 											setTimeout(function(){
-												refresh_table_data_row(row+1, tabledata);
+												refresh_table_data_row(rt_row+1, tabledata);
 											}, delay);
 										} else {
 											refreshrunning = false;
@@ -1007,26 +1007,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										worker: false,
 										complete: function(results) {
 											console.log("Finished:", results);
-											count = 0;
+											imp_count = 0;
 											delay = 50;
 											IntvId = setInterval(function(){
-												if (count < results.data.length+1){
-													var pcnt = Math.round(count/results.data.length * 100);
-													if (count>500){
-														delay = Math.round(count/10);
+												if (imp_count < results.data.length+1){
+													var pcnt = Math.round(imp_count/results.data.length * 100);
+													if (imp_count>200){
+														/* This is required to prevent overloading the browser session queue */
+														delay = Math.round(imp_count/10);
 														console.log("delay:", delay);
 													}
 
 													var lastrow = 0;
-													if (count == results.data.length){
+													if (imp_count == results.data.length){
 														lastrow = 1;
 													}
 
 													var tblrow = {};
 													var i = 0;
-													for (cellid in results.data[count]){
+													for (cellid in results.data[imp_count]){
 														console.log("cellid:", cellid);
-														tblrow[columns[i]] = results.data[count][cellid].trim()
+														tblrow[columns[i]] = results.data[imp_count][cellid].trim()
 														i++;
 													}
 													console.log("tblrow:", tblrow);
@@ -1052,7 +1053,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 															}
 														}
 													});
-													count++;
+													imp_count++;
 												} else {
 													clearInterval(IntvId);
 												}
