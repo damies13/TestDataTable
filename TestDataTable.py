@@ -529,7 +529,27 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									}
 								});"""
 
-
+				# dialog-file-export
+				message += """	dlgFileExport = $( \"#dialog-file-export\" ).dialog({
+									autoOpen: false,
+									height: \"auto\",
+									width: \"auto\",
+									modal: true,
+									buttons: {
+										Save: function() {
+											/* $("#dialog-file-export output").css("display", "");
+											$("#dialog-file-export output a").trigger("click"); */
+											var a = document.getElementById("dialog-file-export").querySelector("output").querySelector("a");
+											console.log("a:",a);
+											a.click();
+											$( this ).dialog( \"close\" );
+											/* file_import_action(); */
+										},
+										Cancel: function() {
+											$( this ).dialog( \"close\" );
+										}
+									}
+								});"""
 
 
 
@@ -581,10 +601,17 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		$( \"#dialog-file-import-file\" ).val("");"
 				message += "		dlgFileImport.dialog( \"open\" );"
 				message += "	});"
-				message += "	$( \"#export-file\" ).button().on( \"click\", function() {"
-				# message += "		$('#table-name').val('');"
-				# message += "		dlgNewTable.dialog( \"open\" );"
-				message += "	});"
+
+				message += """	$( \"#export-file\" ).button().on( \"click\", function() {
+									$('#export-file-table-name').val('');
+									var active = $( "#tables" ).tabs( "option", "active" );
+									console.log("active: " + active);
+									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").text();
+									$('#export-file-table-name').val(activetbl);
+									$("#dialog-file-export output").css("display", "None");
+									dlgFileExport.dialog( \"open\" );
+									file_export_preview();
+								});"""
 
 
 
@@ -620,9 +647,32 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		file_import_preview();"
 				message += "	});"
 				# dialog-file-import-encoding
+				message += "	$( \"#dialog-file-import-encoding\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-encoding:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
 				# dialog-file-import-comments
+				message += "	$( \"#dialog-file-import-comments\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-comments:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
 
 
+				# dialog-file-export-file
+				message += "	$( \"#dialog-file-export-file\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-file:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
+				# dialog-file-export-delimiter
+				message += "	$( \"#dialog-file-export-delimiter\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-delimiter:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
+				# dialog-file-export-header-row
+				message += "	$( \"#dialog-file-export-header-row\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-header-row:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
 
 
 				message += "});"
@@ -1131,6 +1181,82 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									file_import_preview();
 								};"""
 
+				message += """	function file_export_delimiter_tab() {
+									console.log("file_export_delimiter_tab: '	'");
+									$("#dialog-file-export-delimiter").val("	");
+									file_export_preview();
+								};"""
+
+				message += """	function file_export_preview() {
+									console.log("file_export_preview:");
+									var table = $("#export-file-table-name").val();
+									var delim = $("#dialog-file-export-delimiter").val();
+									if (delim.length<1){
+										delim = ",";
+									}
+
+									fileext = "";
+									switch(delim) {
+										case ",":
+  											fileext = ".csv";
+											break;
+										case "	":
+  											fileext = ".tsv";
+											break;
+										default:
+  											fileext = ".txt";
+									}
+									var d = new Date();
+									var datestring = "_" + d.getFullYear() + ("0"+(d.getMonth()+1)).slice(-2) + ("0" + d.getDate()).slice(-2) + "_" + ("0" + d.getHours()).slice(-2) + ("0" + d.getMinutes()).slice(-2) + ("0" + d.getSeconds()).slice(-2);
+									$("#dialog-file-export-filename").val(table + datestring + fileext);
+									$("#dialog-file-export-preview textarea").val("loading table: "+table+" .......");
+
+									var hrow = $("#dialog-file-export-header-row").prop("checked");
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										skipEmptyLines: true
+									}
+
+									var geturl = "/"+table+"/papaparse";
+									console.log("geturl:", geturl);
+									$.ajax({
+										url: geturl,
+										success: function( data, textStatus, jQxhr ){
+
+											window.URL = window.webkitURL || window.URL;
+
+											console.log("data: ", data);
+											$("#dialog-file-export-preview textarea").val("parseing table data: "+table+" .......");
+											var text = Papa.unparse(data, config);
+											$("#dialog-file-export-preview textarea").val(text);
+
+											var output = $("#dialog-file-export output");
+											var prevLink = $("#dialog-file-export output a");
+											if (prevLink) {
+												window.URL.revokeObjectURL(prevLink.href);
+												$("#dialog-file-export output a").remove();
+											}
+
+											const MIME_TYPE = 'text/plain';
+  											var bb = new Blob([text], {type: MIME_TYPE});
+
+											var a = document.createElement('a');
+											a.download = $("#dialog-file-export-filename").val();
+											a.href = window.URL.createObjectURL(bb);
+											a.textContent = 'Download ready';
+
+											a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+											output.append(a);
+
+
+										}
+									});
+
+								};"""
+
+
 
 				message += "</script>"
 
@@ -1180,7 +1306,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									<div id="dialog-progress-bar"><div id="dialog-progress-msg" class="progress-label"></div></div>
 								</div>"""
 
-
 				message += """	<div id="dialog-file-import" title="Text File Import">
 									<table>
 									<tr><td colspan="5">
@@ -1225,6 +1350,31 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										</table>
 									</div>
 								</div>"""
+
+				message += """	<div id="dialog-file-export" title="Text File Export">
+									<table>
+									<tr><td>
+										<label for='dialog-file-export-delimiter'>File Delimiter:</label>
+										<input id='dialog-file-export-delimiter' type='text' size='5' maxlength='1' placeholder='auto'>
+										<a href="javascript:file_export_delimiter_tab();" id='dialog-file-export-insert-tab'>tab</a>
+									</td><td>
+										<label for='dialog-file-export-header-row'>Header Row:</label>
+										<input id='dialog-file-export-header-row' type='checkbox' checked='true'>
+									</td></tr>
+									<tr><td colspan="5">
+										<label for='dialog-file-export-filename'>Output File:</label>
+										<input id='dialog-file-export-filename' type='text' size='60'>
+									</td></tr>
+									</table>
+									<input id='export-file-table-name' type='hidden'>
+									<br>
+									<div>Preview:</div>
+									<div id='dialog-file-export-preview' style="overflow-x: auto;">
+									<textarea class='data-cell ui-state-default' disabled='' rows='6' cols='80' style='resize:none;'></textarea>
+									</div>
+									<output style="display: None;"></output>
+								</div>"""
+
 
 
 				#
@@ -1324,6 +1474,37 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				core.debugmsg(9, "tablename:", tablename)
 				columnname = urllib.parse.unquote_plus(patharr[2])
 				core.debugmsg(9, "tablename:", tablename)
+
+				if columnname == "papaparse":
+					tableid = core.table_exists(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
+						pathok = True
+						httpcode = 200
+
+						jsonresp = []
+
+						columnnames = core.table_columns(tablename)
+						i = 0
+						for col in columnnames:
+							core.debugmsg(9, "col:", col)
+							columndata = core.column_values(tablename, col["column"])
+							core.debugmsg(9, "columndata:", columndata)
+							j = 0
+							for val in columndata:
+								core.debugmsg(9, "val:", val)
+								core.debugmsg(9, "j:", j, "	len(jsonresp):",len(jsonresp))
+								if len(jsonresp)-1 < j:
+									newrow = {}
+									core.debugmsg(9, "newrow:", newrow)
+									jsonresp.append(newrow)
+								jsonresp[j][col["column"]] = val['value']
+								j += 1
+
+							# core.debugmsg(9, "jsonresp:", jsonresp)
+							i += 1
+
+						message = json.dumps(jsonresp)
 
 				if columnname == "columns":
 					tableid = core.table_exists(tablename)
