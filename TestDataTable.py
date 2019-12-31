@@ -25,7 +25,7 @@ import json
 # https://pypi.org/project/sqlite3worker/
 # pip3 install sqlite3worker
 from sqlite3worker import Sqlite3Worker
-
+import uuid
 
 
 
@@ -268,10 +268,24 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 						httpcode = 201
 						message = '{"message": "values added to table: '+tablename+'"}'
 
-
 					else:
 						httpcode = 404
 						message = '{"message": "table '+tablename+' not found"}'
+
+
+				if columnname == "papaparse":
+					actionfound = True
+					data = json.loads(post_body)
+					core.debugmsg(9, "data:", data)
+					for row in data:
+						core.debugmsg(9, "row:", row)
+						for val in row:
+							core.debugmsg(9, "val:", val)
+							core.value_create(tablename, val, row[val])
+
+					httpcode = 201
+					message = '{"message": "values added to table: '+tablename+'"}'
+
 
 		except Exception as e:
 			core.debugmsg(6, "Exception:", e)
@@ -337,6 +351,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<script>"
 				message += "var refreshinterval = 0;"
 				message += "var refreshrunning = false;"
+				# message += "var chunksize = 1048576;" # 1Mb
+				message += "var chunksize = 1024*10;" # 1Mb
+				message += "var chunkprocessed = 0;" # 1Mb
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
@@ -1090,12 +1107,31 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									var colheads = $("#preview-tablerow-0 th input");
 									console.log("file_import_preview: colheads: ",colheads);
 									var columns = [];
+									var col_name = "";
 									for (var colno=0; colno<colheads.length; colno++){
 										console.log("file_import_preview: colno: "+colno+"	colheads[colno]:", colheads[colno]);
-										columns.push(colheads[colno]['value']);
+										col_name = colheads[colno]['value'].trim();
+										columns.push(col_name);
+										/* PUT /<table name>/<column name> */
+
+										var puturl = "/"+tblname+"/"+col_name;
+										console.log("puturl:", puturl);
+										$.ajax({
+											url: puturl,
+											dataType: 'text',
+											type: 'put',
+											success: function( data, textStatus, jQxhr ){
+												console.log("Created col_name:", col_name);
+											}
+										});
+
 									}
 									console.log("columns: ", columns);
 									var progresssize = 0;
+									chunkprocessed = 0;
+
+									var chunkInCount = 0;
+									var chunkOutCount = 0;
 
 									var config = {
 										delimiter: delim,
@@ -1104,68 +1140,55 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										comments: scmt,
 										skipEmptyLines: true,
 										worker: false,
-										complete: function(results) {
-											console.log("Finished:", results);
-											imp_count = 0;
-											delay = 50;
-											IntvId = setInterval(function(){
-												if (imp_count < results.data.length+1){
-													var pcnt = Math.round(imp_count/results.data.length * 100);
-													if (imp_count>200){
-														/* This is required to prevent overloading the browser session queue */
-														delay = Math.round(imp_count/10);
-														console.log("delay:", delay);
+										beforeFirstChunk: function(chunk) {
+											var index = chunk.match( /\\r\\n|\\r|\\n/ ).index;
+											var headings = chunk.substr(0, index).split( ',' );
+											for (var colno=0; colno<columns.length; colno++){
+												headings[colno] = columns[colno];
+											}
+											return headings.join() + chunk.substr(index);
+										},
+										chunkSize: chunksize,
+										chunk: function(results) {
+											console.log("chunk:", results);
+											console.log("chunk: data:", results.data);
+
+											progresssize += chunksize;
+											var pcnt = Math.round(progresssize/size * 100);
+											if (pcnt>100){
+												pcnt = 100;
+												lastrow = true;
+											}
+
+											var posturl = "/"+tblname+"/papaparse";
+											console.log("posturl:", posturl);
+
+											var stbldata = JSON.stringify(results.data);
+											console.log("stbldata:", stbldata);
+
+											chunkInCount++;
+											console.log("chunkInCount:", chunkInCount);
+
+											$.ajax({
+												url: posturl,
+												dataType: 'text',
+												type: 'post',
+												data: stbldata,
+												success: function( data, textStatus, jQxhr ){
+													dlgProgressMsg.text(pcnt+"%");
+													$("#dialog-progress").progressbar( "value", pcnt );
+													chunkOutCount++;
+													console.log("chunkOutCount:", chunkOutCount);
+													if (chunkInCount==chunkOutCount){
+														close_file_import_progress();
 													}
-
-													var lastrow = 0;
-													if (imp_count == results.data.length){
-														lastrow = 1;
-													}
-
-													var tblrow = {};
-													var i = 0;
-													for (cellid in results.data[imp_count]){
-														console.log("cellid:", cellid);
-														tblrow[columns[i]] = results.data[imp_count][cellid].trim()
-														i++;
-													}
-													console.log("tblrow:", tblrow);
-
-													var stblrow = JSON.stringify(tblrow);
-													console.log("stblrow:", stblrow);
-
-													var posturl = "/"+tblname+"/row";
-													console.log("posturl:", posturl);
-
-													/* dlgProgressMsg.text(pcnt+"%");
-													$("#dialog-progress").progressbar( "value", pcnt ); */
-													$.ajax({
-														url: posturl,
-														dataType: 'text',
-														type: 'post',
-														data: stblrow,
-														success: function( data, textStatus, jQxhr ){
-															dlgProgressMsg.text(pcnt+"%");
-															$("#dialog-progress").progressbar( "value", pcnt );
-															if (lastrow){
-																close_file_import_progress();
-															}
-														}
-													});
-													imp_count++;
-												} else {
-													clearInterval(IntvId);
 												}
-
-											}, delay);
+											});
 
 										}
 									}
 
-
 									Papa.parse($("#dialog-file-import-file")[0]['files'][0], config);
-
-
 
 								};"""
 
@@ -1175,6 +1198,10 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									setTimeout(function(){
 										dlgProgress.dialog( \"close\" );
 									}, 500);
+
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									console.log("tblname: "+tblname);
 									refresh_table_data(tblname);
 								};"""
 
@@ -1745,13 +1772,16 @@ class TDT_Core:
 				createschema = True
 			self.db = Sqlite3Worker(dbfile)
 			if createschema:
-				result = self.db.execute("CREATE TABLE tdt_tables (table_name TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_tables (ID INTEGER, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_tables (ID TEXT, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_tables", result)
 
-				result = self.db.execute("CREATE TABLE tdt_columns (table_id NUMBER, column_name TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_columns (ID INTEGER, table_id NUMBER, column_name TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_columns (ID TEXT, table_id NUMBER, column_name TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_columns", result)
 
-				result = self.db.execute("CREATE TABLE tdt_data (column_id NUMBER, value TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_data (ID INTEGER, column_id NUMBER, value TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_data (ID TEXT, column_id NUMBER, value TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_data", result)
 
 				#  create indexes
@@ -1769,13 +1799,13 @@ class TDT_Core:
 
 				createschema = False
 			# Never do this it changes the row id's and breaks the data
-			# else:
-			# 	# VACUUM frees up space and defragments the file, especially after large deletes
-			# 	results = self.db.execute("VACUUM")
-			# 	self.debugmsg(9, "VACUUM: results:", results)
-			# 	self.db.close()
-			# 	self.db = None
-			# 	self.db = Sqlite3Worker(dbfile)
+			else:
+				# VACUUM frees up space and defragments the file, especially after large deletes
+				results = self.db.execute("VACUUM")
+				self.debugmsg(9, "VACUUM: results:", results)
+				self.db.close()
+				self.db = None
+				self.db = Sqlite3Worker(dbfile)
 
 
 
@@ -1851,7 +1881,7 @@ class TDT_Core:
 		#   aka cleanup deleted records
 
 		# -- identify records for cleanup
-		# -- SELECT ROWID, * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
+		# -- SELECT * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
 		# -- DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 36000);
 		results = self.db.execute("DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 600);")
 		core.debugmsg(9, "tdt_data: results:", results)
@@ -1935,7 +1965,7 @@ class TDT_Core:
 	def tables_getall(self):
 		self.debugmsg(7, " ")
 		tables = []
-		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
+		results = core.db.execute("SELECT ID, table_name from tdt_tables where deleted is NULL")
 		core.debugmsg(9, "results:", results)
 		for row in results:
 			# core.debugmsg(9, "row:", row)
@@ -1951,7 +1981,7 @@ class TDT_Core:
 		# returns the table id if exists, else returns False
 		id = False
 		try:
-			results = self.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+			results = self.db.execute("SELECT ID, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
 			self.debugmsg(9, "results:", results)
 			if len(results)>0:
 				id = results[0][0]
@@ -1967,7 +1997,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if not tableid:
-				results = self.db.execute("INSERT INTO tdt_tables (table_name) VALUES (?)", [tablename])
+				results = self.db.execute("INSERT INTO tdt_tables (ID, table_name) VALUES (?,?)", [uuid.uuid4().hex, tablename])
 				self.debugmsg(9, "results:", results)
 				if results is None:
 					return self.table_exists(tablename)
@@ -1982,7 +2012,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if tableid:
-				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+				results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
@@ -2008,7 +2038,7 @@ class TDT_Core:
 					delcol = self.column_delete(tablename, col["column"])
 					if not delcol:
 						return False
-				res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=?", [tableid])
+				res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ID=?", [tableid])
 				core.debugmsg(9, "res_table:", res_table)
 				if res_table is None:
 					return True
@@ -2026,7 +2056,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if tableid:
-				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+				results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					id = results[0][0]
@@ -2048,10 +2078,12 @@ class TDT_Core:
 					tableid = self.table_create(tablename)
 					self.debugmsg(9, "tableid:", tableid)
 				if tableid:
-					results = self.db.execute("INSERT INTO tdt_columns (table_id, column_name) VALUES (?,?)", [tableid, columnname])
+					results = self.db.execute("INSERT INTO tdt_columns (ID, table_id, column_name) VALUES (?,?,?)", [uuid.uuid4().hex, tableid, columnname])
 					self.debugmsg(9, "results:", results)
 					if results is None:
 						return self.column_exists(tablename, columnname)
+			else:
+				return columnid
 		except Exception as e:
 			self.debugmsg(6, "Exception:", e)
 		return False
@@ -2063,7 +2095,7 @@ class TDT_Core:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
 			if columnid:
-				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
+				results = self.db.execute("SELECT ID, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
@@ -2090,7 +2122,7 @@ class TDT_Core:
 					return False
 
 				# remove column
-				res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE rowid = ?", [columnid])
+				res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE ID = ?", [columnid])
 				core.debugmsg(9, "res_columns:", res_columns)
 				if res_columns is None:
 					return True
@@ -2109,7 +2141,7 @@ class TDT_Core:
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			if columnid:
-				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and (value = ? or ROWID = ?) and deleted is NULL", [columnid, value, value])
+				results = self.db.execute("SELECT ID, column_id, value FROM tdt_data WHERE column_id = ? and (value = ? or ID = ?) and deleted is NULL", [columnid, value, value])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					id = results[0][0]
@@ -2128,7 +2160,7 @@ class TDT_Core:
 				columnid = self.column_create(tablename, columnname)
 				self.debugmsg(9, "columnid:", columnid)
 			if columnid:
-				results = self.db.execute("INSERT INTO tdt_data (column_id, value) VALUES (?,?)", [columnid, value])
+				results = self.db.execute("INSERT INTO tdt_data (ID, column_id, value) VALUES (?,?,?)", [uuid.uuid4().hex, columnid, value])
 				self.debugmsg(9, "results:", results)
 				if results is None:
 					return self.value_exists(tablename, columnname, value)
@@ -2142,7 +2174,7 @@ class TDT_Core:
 			valueid = self.value_exists(tablename, columnname, value)
 			core.debugmsg(9, "valueid:", valueid)
 			if valueid:
-				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?", [valueid])
+				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?", [valueid])
 				core.debugmsg(9, "res_data:", res_data)
 				if res_data is None:
 					return True
@@ -2164,7 +2196,7 @@ class TDT_Core:
 					# txn = ""
 					# txn += "BEGIN TRANSACTION; \n\n"
 					# txn += "CREATE TEMP TABLE _ConsumeValue AS \n"
-					# txn += "SELECT ROWID, * FROM tdt_data \n"
+					# txn += "SELECT * FROM tdt_data \n"
 					# txn += "WHERE deleted is NULL \n"
 					# txn += "	AND column_id = 29 \n"
 					# txn += "LIMIT 1; \n\n"
@@ -2176,11 +2208,11 @@ class TDT_Core:
 					# results = self.db.execute(txn)
 
 				retval = {}
-				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE deleted is NULL AND column_id = ? LIMIT 1;", [columnid])
+				results = self.db.execute("SELECT * FROM tdt_data WHERE deleted is NULL AND column_id = ? LIMIT 1;", [columnid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					retval["val_id"] = results[0][0]
-					resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [retval["val_id"]])
+					resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?;", [retval["val_id"]])
 					self.debugmsg(9, "resultu:", resultu)
 					retval["value"] = results[0][2]
 					return retval
@@ -2198,10 +2230,10 @@ class TDT_Core:
 			self.debugmsg(9, "val_id:", val_id)
 			if val_id:
 				retval = {}
-				resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [val_id])
+				resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?;", [val_id])
 				self.debugmsg(9, "resultu:", resultu)
 
-				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE ROWID = ?;", [val_id])
+				results = self.db.execute("SELECT * FROM tdt_data WHERE ID = ?;", [val_id])
 				self.debugmsg(9, "results:", results)
 				retval["val_id"] = results[0][0]
 				retval["value"] = results[0][2]
@@ -2219,7 +2251,7 @@ class TDT_Core:
 			val_id = self.value_exists(tablename, columnname, id)
 			self.debugmsg(9, "val_id:", val_id)
 			if val_id:
-				resultu = self.db.execute("UPDATE tdt_data SET value = ? WHERE rowid = ?;", [value, val_id])
+				resultu = self.db.execute("UPDATE tdt_data SET value = ? WHERE ID = ?;", [value, val_id])
 				self.debugmsg(9, "resultu:", resultu)
 				if resultu is None:
 					return True
