@@ -361,6 +361,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
+				message += "						setTimeout(function(){"
+				message += "							$(\"li a:last\").trigger(\"click\");"
+				message += "						}, 500);"
 				message += "					}"
 				message += "				});"
 				message += "				$( this ).dialog( \"close\" );"
@@ -1750,6 +1753,19 @@ class TDT_Core:
 
 				result = self.db.execute("CREATE TABLE tdt_data (column_id NUMBER, value TEXT, deleted DATETIME)")
 				self.debugmsg(6, "CREATE TABLE tdt_data", result)
+
+				#  create indexes
+
+				result = self.db.execute("CREATE INDEX \"tables_name\" ON \"tdt_tables\" (\"table_name\");")
+				result = self.db.execute("CREATE INDEX \"tables_del\" ON \"tdt_tables\" (\"deleted\");")
+
+				result = self.db.execute("CREATE INDEX \"columns_name\" ON \"tdt_columns\" (\"column_name\");")
+				result = self.db.execute("CREATE INDEX \"columns_tbl_id\" ON \"tdt_columns\" (\"table_id\");")
+				result = self.db.execute("CREATE INDEX \"columns_del\" ON \"tdt_columns\" (\"deleted\");")
+
+				result = self.db.execute("CREATE INDEX \"data_value\" ON \"tdt_data\" (\"value\");")
+				result = self.db.execute("CREATE INDEX \"data_col_id\" ON \"tdt_data\" (\"column_id\");")
+				result = self.db.execute("CREATE INDEX \"data_del\" ON \"tdt_data\" (\"deleted\");")
 
 				createschema = False
 			# Never do this it changes the row id's and breaks the data
