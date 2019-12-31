@@ -371,6 +371,28 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		}"
 				message += "	});"
 
+				message += """ $('#table-name').keypress(function(e) {
+									if (e.keyCode == $.ui.keyCode.ENTER) {
+										var tblname = $('#table-name').val();
+										console.log(\"#table-name: \" + $('#table-name'));
+										console.log(\"tblname: \" + tblname);
+										$.ajax({
+											url: '/'+tblname,
+											type: 'PUT',
+											dataType: 'json',
+											success: function(data) {
+												refresh();
+												setTimeout(function(){
+													$("li a:last").trigger("click");
+												}, 500);
+
+											}
+										});
+										$( \"#dialog-new-table\" ).dialog( \"close\" );
+									}
+								}); """
+
+
 				message += "	dlgDelTable = $( \"#dialog-delete-table\" ).dialog({"
 				message += "		autoOpen: false,"
 				message += "		height: \"auto\","
@@ -424,6 +446,24 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		}"
 				message += "	});"
 
+				message += """ $('#column-name').keypress(function(e) {
+									if (e.keyCode == $.ui.keyCode.ENTER) {
+										console.log(\"#column-name: \" + $('#column-name'));
+										var colname = $('#column-name').val();
+										console.log(\"colname: \" + colname);
+										var tblname = $('#column-table-name').text();
+										console.log(\"tblname: \" + tblname);
+										$.ajax({
+											url: '/'+tblname+'/'+colname,
+											type: 'PUT',
+											dataType: 'json',
+											success: function(data) {
+												refresh();
+											}
+										});
+										$( \"#dialog-add-column\" ).dialog( \"close\" );
+									}
+								}); """
 
 				# dialog-delete-column
 				message += "	dlgDelColumn = $( \"#dialog-delete-column\" ).dialog({"
@@ -644,8 +684,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									var active = $( "#tables" ).tabs( "option", "active" );
 									console.log("active: " + active);
 									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").text();
-									console.log("activetbl: "+activetbl);
-									refresh_table(activetbl);
+									if (activetbl.length <1){
+										active = 0;
+										console.log("active: " + active);
+										var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").trigger("click");
+									} else {
+										console.log("activetbl: "+activetbl);
+										refresh_table(activetbl);
+									}
 
 								};"""
 
