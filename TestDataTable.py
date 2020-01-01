@@ -1770,7 +1770,14 @@ class TDT_Core:
 			dbfile = os.path.join(self.config['Server']['DataDir'], "TestDataTable.sqlite3")
 			if not os.path.exists(dbfile):
 				createschema = True
-			self.db = Sqlite3Worker(dbfile)
+			# chaning this setting did help to speed up bulk inserts a little, but it
+			# 	also slowed individual inserts, selects, deletes etc a lot!
+			# I'll leave this here as we may want to try tuning this later, maybe a value of 200 or 500
+			# 	might be optimal, 1000 is definatly too big, I think 500 might be too big as well.
+			# 	But 200 might not be enought to make an appreciable speed up in bulk inserts. will need some testing
+			queue_size = 100 # use default value
+			# queue_size = 1000 # default is 100
+			self.db = Sqlite3Worker(dbfile, queue_size)
 			if createschema:
 				# result = self.db.execute("CREATE TABLE tdt_tables (ID INTEGER, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
 				result = self.db.execute("CREATE TABLE tdt_tables (ID TEXT, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID))")
@@ -2263,6 +2270,7 @@ class TDT_Core:
 			self.debugmsg(6, "Exception:", e)
 
 		return False
+
 
 
 	# def value_create_unique(self, tablename, columnname, value):
