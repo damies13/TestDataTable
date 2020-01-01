@@ -277,7 +277,8 @@ Column doesn't exist
 
 Value Id doesn't exist
 	[Tags]	Values	Negative Case
-	${badval}=	Evaluate    ${value_id} * 2
+	# ${badval}=	Evaluate    ${value_id} * 2
+	${badval}=	Set Variable	5c1d0000920000000000000000000000
 	${resp}=	Get Request	TDT	/regression+1/Col_A/${badval}
 	Log	${resp}
 	# log	${resp.json()}
