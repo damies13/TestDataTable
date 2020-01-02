@@ -9,11 +9,9 @@ Default Tags	API 	RequestsLibrary
 
 *** Variables ***
 # ${Table}		TT3
-${Table}		Demo 2
-${Col 1}		Rand
-# ${Col 2}		street_no_1
-${Col 2}		D3
-${Col 3}		road_name
+${Table}		TT20
+${Col 1}		GC_20k
+${Col 2}		BNE_20k
 
 # ${STT_MIN}			15
 # ${STT_MAX}			45
@@ -21,17 +19,24 @@ ${STT_MIN}			1
 ${STT_MAX}			5
 
 *** Test cases ***
-
-# GET /<table name>/<column name>
-Get Hold Return Value
+Get Hold Return Value GC
 	FOR    ${index}    IN RANGE    10
-		${resp}=	Get Request	TDT	/${Table}/${Col 2}
-		Should Be Equal As Strings	${resp.status_code}	200
-		${checkval}=	Set Variable    ${resp.json()['${Col 2}']}
+		${column}=	Set Variable	${Col 1}
+		Get TDT Value	${Table}	${column}
 		Standard Think Time
 		# put the values back
-		${resp}=	Put Request	TDT	/${Table}/${Col 2}/${checkval}
-		Should Be Equal As Strings	${resp.status_code}	201
+		Return TDT Value	${Table}	${column}	${${column}}
+		Standard Think Time
+	END
+
+# GET /<table name>/<column name>
+Get Hold Return Value BNE
+	FOR    ${index}    IN RANGE    10
+		${column}=	Set Variable	${Col 2}
+		Get TDT Value	${Table}	${column}
+		Standard Think Time
+		# put the values back
+		Return TDT Value	${Table}	${column}	${${column}}
 		Standard Think Time
 	END
 
@@ -39,8 +44,25 @@ Get Hold Return Value
 
 *** Keywords ***
 Connect to TDT
+	[Documentation] 	Connect to TDT: http://localhost
 	Create Session	TDT	http://localhost
+	Log 	Connect to TDT:http://localhost
 
+Get TDT Value
+	[Arguments] 	${table}	${column}
+	[Documentation] 	Get TDT Value /${table}/${column}
+	${resp}=	Get Request	TDT	/${table}/${column}
+	Should Be Equal As Strings	${resp.status_code}	200
+	# ${TDT["${column}"]}=	Set Variable    ${resp.json()['${column}']}
+	${checkval}=	Set Variable    ${resp.json()['${column}']}
+	Set Global Variable    ${${column}}    ${checkval}
+	[return]	${checkval}
+
+Return TDT Value
+	[Arguments] 	${table}	${column}	${value}
+	[Documentation] 	Return TDT Value /${table}/${column}
+	${resp}=	Put Request	TDT	/${table}/${column}/${value}
+	Should Be Equal As Strings	${resp.status_code}	201
 
 
 Standard Think Time
