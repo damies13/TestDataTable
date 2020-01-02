@@ -107,9 +107,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			core.debugmsg(6, "do_DELETE:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
 		return
 
 
@@ -222,9 +227,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			core.debugmsg(6, "do_PUT:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
+
 		return
 	def do_POST(self):
 		core.debugmsg(7, " ")
@@ -291,9 +303,15 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			core.debugmsg(6, "Exception:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
 		return
 	def do_GET(self):
 		core.debugmsg(7, " ")
@@ -1142,7 +1160,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										worker: false,
 										beforeFirstChunk: function(chunk) {
 											var index = chunk.match( /\\r\\n|\\r|\\n/ ).index;
-											var headings = chunk.substr(0, index).split( ',' );
+											var headings = chunk.substr(0, index).split( delim );
 											for (var colno=0; colno<columns.length; colno++){
 												headings[colno] = columns[colno];
 											}
@@ -1152,13 +1170,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										chunk: function(results) {
 											console.log("chunk:", results);
 											console.log("chunk: data:", results.data);
-
-											progresssize += chunksize;
-											var pcnt = Math.round(progresssize/size * 100);
-											if (pcnt>100){
-												pcnt = 100;
-												lastrow = true;
-											}
 
 											var posturl = "/"+tblname+"/papaparse";
 											console.log("posturl:", posturl);
@@ -1175,6 +1186,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 												type: 'post',
 												data: stbldata,
 												success: function( data, textStatus, jQxhr ){
+
+													progresssize += chunksize;
+													var pcnt = Math.round(progresssize/size * 100);
+													if (pcnt>100){
+														pcnt = 100;
+														lastrow = true;
+													}
+
 													dlgProgressMsg.text(pcnt+"%");
 													$("#dialog-progress").progressbar( "value", pcnt );
 													chunkOutCount++;
@@ -1626,12 +1645,18 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			httpcode = 500
 			message = str(e)
 
-		core.debugmsg(9, "httpcode:", httpcode)
-		self.send_response(httpcode)
-		self.end_headers()
-		core.debugmsg(9, "message:", message)
-		if message is not None:
-			self.wfile.write(bytes(message,"utf-8"))
+		try:
+			core.debugmsg(9, "httpcode:", httpcode)
+			self.send_response(httpcode)
+			self.end_headers()
+			core.debugmsg(9, "message:", message)
+			if message is not None:
+				self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
+
 		return
 	def handle_http(self):
 		core.debugmsg(7, " ")
