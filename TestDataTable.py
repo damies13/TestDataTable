@@ -343,7 +343,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									padding: 0em 0em;
 								}
 
-								.tableFixHead          { overflow-y: auto; height: 80%; }
+								.tableFixHead          { overflow-y: auto; height: 88%; }
 								.tableFixHead thead    { position: sticky; top: 0; width: 100%;}
 								.tableFixHead thead th { position: sticky; top: 0; }
 								/* .tableFixHead thead th span { float: left; } */
@@ -805,12 +805,31 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										// console.log($('div[name="'+tbl_name+'"]'));
 										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr><th class="ui-widget-header">Row</th></tr></thead><tbody></tbody></table>');
 									}
+									var safecols = [];
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_name = tabledata[tbl_name][i]["column"];
-										var col_id = tabledata[tbl_name][i]["col_id"];
 										console.log("col_name: "+col_name);
-										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
-											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+col_id+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
+										var col_id = tabledata[tbl_name][i]["col_id"];
+										var colno = tblid+'-'+col_id;
+										console.log("colno: "+colno);
+										safecols.push(colno);
+										if (!$('table[id="table-'+tblid+'"] thead tr th[colno="'+colno+'"]').length){
+											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+colno+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
+										}
+									}
+									console.log("safecols: ",safecols);
+									/* remove columns that no longer exist on the server */
+									var dispcols = $('table[id="table-'+tblid+'"] thead tr th');
+									console.log("dispcols: ",dispcols);
+									for (var i = 0; i < dispcols.length; i++) {
+										console.log("dispcols["+i+"]: ",dispcols[i]);
+										var thiscolno = $(dispcols[i]).attr('colno');
+										console.log("thiscolno: ",thiscolno);
+										if (thiscolno && safecols.indexOf(thiscolno) < 0){
+											/* remove column */
+											console.log("remove thiscolno: ",thiscolno);
+											$('th[colno=\"'+thiscolno+'\"]').remove();
+											$('td[colno=\"'+thiscolno+'\"]').remove();
 										}
 									}
 
@@ -897,6 +916,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											}, delay);
 										} else {
 											refreshrunning = false;
+											$("tr").filter(function() {
+												return parseInt($(this).attr("id")) > (maxcount+4);
+											}).remove();
 										}
 
 									}
@@ -1455,16 +1477,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
 				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Help\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
 				message += "</div>"
-				message += "<div>"
-				message += "<p>&nbsp;<br></p>"
-				message += "&nbsp;<br>"
+
+				message += "<div style=\"height: 5%;\">"
 				message += "</div>"
 
 				message += "<div id='tables'>"
 				message += "<ul>"
 				message += "</ul>"
 				message += "</div>"
-
 
 				message += "</body>"
 				message += "</html>"
