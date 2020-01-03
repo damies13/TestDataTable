@@ -2,6 +2,7 @@
 Library	Collections
 Library	JsonValidator
 Library	RequestsLibrary
+Library  String
 
 Suite Setup	Connect to TDT
 
@@ -13,10 +14,10 @@ ${Table}		TT20
 ${Col 1}		GC_20k
 ${Col 2}		BNE_20k
 
-# ${STT_MIN}			15
-# ${STT_MAX}			45
-${STT_MIN}			1
-${STT_MAX}			5
+${STT_MIN}			15
+${STT_MAX}			45
+# ${STT_MIN}			1
+# ${STT_MAX}			2
 
 *** Test cases ***
 Get Hold Return Value GC
@@ -40,6 +41,25 @@ Get Hold Return Value BNE
 		Standard Think Time
 	END
 
+Data cycle test
+	FOR    ${index}    IN RANGE    10
+		Create Perf_P1 Value
+		${column}=	Set Variable	P1
+		Standard Think Time
+		${p1val}=	Get Perf Column 	${column}
+		Standard Think Time
+		${column}=	Set Variable	P2
+		Set Perf Column 	${column}	${p1val}
+		Standard Think Time
+		${p2val}=	Get Perf Column 	${column}
+		Standard Think Time
+		${column}=	Set Variable	P3
+		Set Perf Column 	${column}	${p2val}
+		Standard Think Time
+	END
+	${column}=	Set Variable	P3
+	Delete Perf Column	${column}
+	Standard Think Time
 
 
 *** Keywords ***
@@ -69,3 +89,30 @@ Standard Think Time
 	${number}    Evaluate    random.randint(${STT_MIN}, ${STT_MAX})    random
 	Log      Standard Think Time (${number})
 	Sleep    ${number}
+
+
+Create Perf_P1 Value
+	[Documentation] 	Create Value in Table Perf Col P1
+	${number}    Evaluate    random.randint(5, 30)    random
+	${RANDVAL}= 	Generate Random String	${number}
+	Put Request	TDT	/Perf/P1/${RANDVAL}
+	[Return]	${RANDVAL}
+
+Get Perf Column
+	[Arguments] 	${column}
+	[Documentation] 	Get Value from Perf ${column}
+	${resp}=	Get Request	TDT	/Perf/${column}
+	Should Be Equal As Strings	${resp.status_code}	200
+	[return]	${resp.json()['${column}']}
+
+Set Perf Column
+	[Arguments] 	${column}	${value}
+	[Documentation] 	Set Value to Perf ${column}
+	${resp}=	Put Request	TDT	/Perf/${column}/${value}
+	Should Be Equal As Strings	${resp.status_code}	201
+
+Delete Perf Column
+	[Arguments] 	${column}
+	[Documentation] 	Delete Value from Perf ${column}
+	${resp}=	Delete Request	TDT	/Perf/${column}
+	Should Be Equal As Strings	${resp.status_code}	200
