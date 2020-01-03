@@ -1764,6 +1764,10 @@ class TDT_Core:
 			self.config['Server']['DataDir'] = scrdir
 			self.saveini()
 
+		if 'DBFile' not in self.config['Server']:
+			self.config['Server']['DBFile'] = "TestDataTable.sqlite3"
+			self.saveini()
+
 
 		if 'Resources' not in self.config:
 			self.config['Resources'] = {}
@@ -1812,7 +1816,7 @@ class TDT_Core:
 			createschema = False
 			if not os.path.exists(self.config['Server']['DataDir']):
 				os.mkdir(self.config['Server']['DataDir'])
-			dbfile = os.path.join(self.config['Server']['DataDir'], "TestDataTable.sqlite3")
+			dbfile = os.path.join(self.config['Server']['DataDir'], self.config['Server']['DBFile'])
 			if not os.path.exists(dbfile):
 				createschema = True
 			# chaning this setting did help to speed up bulk inserts a little, but it
