@@ -1243,7 +1243,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									var tabactive = $( "#tables" ).tabs( "option", "active" );
 									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
 									console.log("tblname: "+tblname);
-									refresh_table_data(tblname);
+									refresh_table(tblname);
 								};"""
 
 				message += """	function file_import_delimiter_tab() {
