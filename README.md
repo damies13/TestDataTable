@@ -1,3 +1,7 @@
+<style>
+	a img {border: 5px solid red;}
+</style>
+
 # TestDataTable
 A shared data table store for use by testing applications
 
