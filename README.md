@@ -7,8 +7,8 @@ Please refer to the [documentation](Doc/Index.md) for more information.
 
 Some Screen Shots:
 
-|---|---|
 |![Main Page In Use](Doc/Images/v0.2.0-MainPageInUseBig.png)|![Create Table](Doc/Images/v0.2.0-CreateTable.png)|
+|---|---|
 |![Import File](Doc/Images/v0.2.0-ImportSelectFile.png)|![Add Column](Doc/Images/v0.2.0-AddColumn.png)|
 
 
