@@ -1,11 +1,19 @@
 # TestDataTable GUI
 
-## Initial Use
+## Main Page
 When you start TestDataTable for the first time there is no data, so the GUI will look like this:
 
 |![Main Page Initial](Images/v0.2.0-MainPageInitial.png)|
 |---|
 |Initial Main Page|
+
+After you have used TestDataTable for a while the main page will have data to display:
+
+|![Main Page In Use](Images/v0.2.0-MainPageInUse.png)|![Main Page In Use](Images/v0.2.0-MainPageInUseBig.png)|
+|---|---|
+|Main Page In Use|Main Page showing table with over 270,000 records|
+
+
 
 ## Adding a table
 From the main screen click the create table button ![create table button](Images/v0.2.0-ButtonCreateTable.png) to bring up the create table dialogue, enter the table name and click create.
@@ -44,9 +52,9 @@ In the top right hand corner of a table tab is a x button, clicking this will br
 
 > IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the data export feature first to make a backup of the table.
 
-|![Delete Column](Images/v0.2.0-DeleteColumn.png)|
+|![Delete Table](Images/v0.2.0-DeleteTable.png)|
 |---|
-|Delete column dialogue|
+|Delete table dialogue|
 
 
 ## Import Data
@@ -56,7 +64,7 @@ The data cell edit mode is great for adding or changing a few values, but often 
 - test data provided to you
 - data you created/generated
 
-TestDataTable provides an import option for delimited text files to help you with this. To import a text file click the File Import button ![file import button](Images/v0.2.0-ButtonImportFile.png) and adjust the settings in the dialogue until you are happy with the preview, then click Import.
+TestDataTable provides an import option for delimited text files to help you with this. To import a text file click the File Import button ![file import button](Images/v0.2.0-ButtonImportFile.png) and adjust the settings in the dialogue above the preview, you can also change the column name in the preview if you want different column name from the ones in the file or if your file didn't have column names. when you are happy with the preview, then click Import.
 
 |![File Import](Images/v0.2.0-ImportDefault.png)|
 |---|
@@ -70,6 +78,47 @@ TestDataTable provides an import option for delimited text files to help you wit
 |---|
 |File Import dialogue unchecking the header row option|
 
+|![Tab Delim](Images/v0.2.0-ImportTabDelim.png)|
+|---|
+|File Import dialogue tab delimiter option|
 
+|![Change Col Header](Images/v0.2.0-ImportEditColHdr.png)|
+|---|
+|File Import dialogue custom column name|
+
+Once you click import the File Import dialogue will close and the File Import Progress dialogue will open, this dialogue will remain open until the import is complete, when complete the table will be refreshed in the main screen.
+
+|![Loading](Images/v0.2.0-ImportProgressLoading.png)|
+|---|
+|File Import Progress dialogue - Loading|
+
+|![percent](Images/v0.2.0-ImportProgress%.png)|
+|---|
+|File Import Progress dialogue - in progress|
+
+|![100%](Images/v0.2.0-ImportProgress100%.png)|
+|---|
+|File Import Progress dialogue - Complete|
+
+|![Import Finished](Images/v0.2.0-ImportFinished.png)|
+|---|
+|File Import Finished|
 
 ## Export Data
+Like the Import Feature the Export Feature is available to help you manage your test data. To use this Feature click the  File Export button ![file export button](Images/v0.2.0-ButtonExportFile.png), then adjust the options in the dialogue until you are happy with the result in the preview, then click Save, this will close the File Export dialogue and then download the table as a text file with the name you provided. Depending on your browser determines what will happen next, as each browser handles file download differently.
+
+|![File Export](Images/v0.2.0-ExportDefault.png)|
+|---|
+|File Export dialogue|
+
+|![No Header row](Images/v0.2.0-ExportNoHdr.png)|
+|---|
+|File Export dialogue unchecking the header row option|
+
+|![Tab Delim](Images/v0.2.0-ExportTabDelim.png)|
+|---|
+|File Export dialogue Tab Delimiter option|
+
+|![Pipe Delim](Images/v0.2.0-ExportPipeDelim.png)|
+|---|
+|File Export dialogue Pipe (\|) Delimiter option|
