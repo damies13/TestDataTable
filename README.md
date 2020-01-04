@@ -12,5 +12,13 @@ Some Screen Shots:
 |![Import File](Doc/Images/v0.2.0-ImportSelectFile.png)|![Add Column](Doc/Images/v0.2.0-AddColumn.png)|
 
 
+## Testing
 
-The Regression_Tests folder contains the current Regression Test Suite, I would love to hear the results of running this suite against Test Data Table on your machine, especially a Window Machine (as I don't have one)
+The [Regression_Tests](Regression_Tests) folder contains the current Regression Test Suite, I would love to hear the results of running this suite against Test Data Table on your machine, especially a Window Machine (as I don't have one)
+
+
+## Donations
+
+If you would like to thank me for this project please use this [PayPal.me](https://paypal.me/damies13/5) link, the $5 is a suggestion, feel free to change to any amount you would like.
+
+If you do make a donation and would like me to prioritise a feature / issue send me a [quick message](mailto:damies13+TestDataTable@gmail.com) and let me know.
