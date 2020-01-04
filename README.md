@@ -6,9 +6,11 @@ TestDataTable is a web-based application that offers an alternative to static da
 Please refer to the [documentation](Doc/Index.md) for more information.
 
 Some Screen Shots:
-![Main Page In Use](Doc/Images/v0.2.0-MainPageInUseBig.png)
-![Create Table](Doc/Images/v0.2.0-CreateTable.png)
-![Add Column](Doc/Images/v0.2.0-AddColumn.png)
-![Import File](Doc/Images/v0.2.0-ImportSelectFile.png)
+
+|---|---|
+|![Main Page In Use](Doc/Images/v0.2.0-MainPageInUseBig.png)|![Create Table](Doc/Images/v0.2.0-CreateTable.png)|
+|![Import File](Doc/Images/v0.2.0-ImportSelectFile.png)|![Add Column](Doc/Images/v0.2.0-AddColumn.png)|
+
+
 
 The Regression_Tests folder contains the current Regression Test Suite, I would love to hear the results of running this suite against Test Data Table on your machine, especially a Window Machine (as I don't have one)
