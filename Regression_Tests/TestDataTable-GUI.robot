@@ -82,6 +82,7 @@ Add value to column
 	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
 	Sleep    0.3
 	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Capture Page Screenshot
 	Wait Until Element Is Visible	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input
 	Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input	Column A Row 0
 	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-3"]
@@ -124,6 +125,7 @@ Edit Value
 	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
 	Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Capture Page Screenshot
 	# Press Keys	None	ARROW_RIGHT
 	Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
@@ -194,6 +196,95 @@ Remove Column
 	Click Button    xpath: //div[@id='dialog-delete-column']/..//button[text()='Delete']
 	Wait Until Element Is Not Visible	xpath: //th[@name="GUI Column B"]
 
+
+Import Data From File
+	[Tags]	Create	Column	Values	Import
+	${handle} =	Select Window 	MAIN
+	# Click Button	Import File
+	Click Button	id:import-file
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Import')]
+	Capture Page Screenshot
+	# Click Element    id:dialog-file-import-file
+	Choose File 	id:dialog-file-import-file 	${CURDIR}/GC_5k.csv
+	Capture Page Screenshot
+	${hdrrow0}= 	Get Value	id:preview-c0
+	Should Be Equal As Strings	${hdrrow0}	Rand
+	${hdrrow1}= 	Get Value	id:preview-c1
+	Should Be Equal As Strings	${hdrrow1}	street_no_1
+	${hdrrow2}= 	Get Value	id:preview-c2
+	Should Be Equal As Strings	${hdrrow2}	road_name
+	Click Element    id:dialog-file-import-header-row
+	${nohdrow1}= 	Get Value	id:preview-c1
+	Should Be Equal As Strings	${nohdrow1}	1
+	${datacell1}= 	Get Text	id:preview-tablecell-1-1
+	Should Be Equal As Strings	${hdrrow1}	${datacell1}
+	Capture Page Screenshot
+	Click Element    id:dialog-file-import-header-row
+	Click Link    	tab
+	${delim}= 	Get Value	id:dialog-file-import-delimiter
+	Should Be Equal As Strings		${delim}	\t
+	# Wait Until Keyword Succeeds    10s    200ms    Textfield Should Contain    id:dialog-file-import-delimiter    \t
+	${hdrrow0_delim}= 	Get Value	id:preview-c0
+	Should Be Equal As Strings	${hdrrow0_delim}	${hdrrow0},${hdrrow1},${hdrrow2}
+	Capture Page Screenshot
+	${datacell0}= 	Get Text	id:preview-tablecell-1-0
+	${newhdr}=		Set Variable    Street Data
+	Input Text		id:preview-c0	${newhdr}
+	${chknewhdr}= 	Get Value	id:preview-c0
+	Should Be Equal As Strings	${newhdr}	${newhdr}
+	Capture Page Screenshot
+	Click Button    Import
+	Wait Until Element Is Visible	id:dialog-progress-bar
+	Wait Until Element Contains	id:dialog-progress-msg	Loading
+	Capture Page Screenshot
+	Wait Until Element Contains	id:dialog-progress-msg	%
+	Capture Page Screenshot
+	Wait Until Element Contains	id:dialog-progress-msg	100%
+	Capture Page Screenshot
+	Wait Until Element Is Not Visible	id:dialog-progress-bar
+	Wait Until Element Is Visible	name:Street Data
+	Capture Page Screenshot
+	${colid}=	Get Element Attribute	name:Street Data	id
+	${chk1strow}= 	Get Text	id:${colid}-0
+	Should Be Equal As Strings	${datacell0}	${chk1strow}
+
+
+Export Data To File
+	[Tags]	Table	Column	Values	Export
+	${handle} =	Select Window 	MAIN
+	Wait Until Element Is Visible	name:Street Data
+	${colid}=	Get Element Attribute	name:Street Data	id
+	${chk1strow}= 	Get Text	id:${colid}-0
+	Click Button	id:export-file
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Export')]
+	Capture Page Screenshot
+	${filename}= 	Get Value	id:dialog-file-export-filename
+	Should Contain 	${filename} 	.csv
+	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
+	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		"${chk1strow}"
+	Click Element    id:dialog-file-export-header-row
+	${txtarea}= 	Get Value	xpath://div[@id='dialog-file-export-preview']/textarea
+	Should Not Contain		${txtarea}		Street Data
+	Capture Page Screenshot
+	Click Element    id:dialog-file-export-header-row
+	Wait Until Keyword Succeeds    10s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
+	Click Link    	id:dialog-file-export-insert-tab
+	${delim}= 	Get Value	id:dialog-file-export-delimiter
+	Should Be Equal As Strings		${delim}	\t
+	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		${chk1strow}
+	${txtarea}= 	Get Value	xpath://div[@id='dialog-file-export-preview']/textarea
+	Should Not Contain		${txtarea}		"${chk1strow}"
+	${filename}= 	Get Value	id:dialog-file-export-filename
+	Should Contain 	${filename} 	.tsv
+	Capture Page Screenshot
+	Input Text		id:dialog-file-export-delimiter	|
+	Click Element    id:dialog-file-export-filename
+	${filename}= 	Get Value	id:dialog-file-export-filename
+	Should Contain 	${filename} 	.txt
+	# $x('//div[@id="dialog-file-export"]/..//button[text()="Cancel"]')
+	# Click Button    Cancel
+	Capture Page Screenshot
+	Click Button    xpath://div[@id="dialog-file-export"]/..//button[text()="Cancel"]
 
 Remove Table
 	[Tags]	Delete	Table	Dialogues
