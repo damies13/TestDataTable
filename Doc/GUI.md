@@ -52,7 +52,7 @@ By using the two single click method it ensures no accidental editing of data an
 ## Deleting a column
 In the top right hand corner of a table column (next to the column count) is a x button, clicking this will bring up the delete column dialogue. Clicking the Delete button in this dialogue will remove the column from the table along with any values in the column.
 
-> IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the <a href="#Export Data" >data export feature</a> first to make a backup of the table.
+> IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the <a href="#Export-Data" >data export feature</a> first to make a backup of the table.
 
 |![Delete Column](Images/v0.2.0-DeleteColumn.png)|
 |---|
@@ -61,7 +61,7 @@ In the top right hand corner of a table column (next to the column count) is a x
 ## Deleting a table
 In the top right hand corner of a table tab is a x button, clicking this will bring up the delete table dialogue. Clicking the Delete button in this dialogue will remove the table along with all columns and values in the table.
 
-> IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the <a href="#Export Data" >data export feature</a> first to make a backup of the table.
+> IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the <a href="#Export-Data" >data export feature</a> first to make a backup of the table.
 
 |![Delete Table](Images/v0.2.0-DeleteTable.png)|
 |---|
