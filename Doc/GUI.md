@@ -61,7 +61,7 @@ In the top right hand corner of a table column (next to the column count) is a x
 ## Deleting a table
 In the top right hand corner of a table tab is a x button, clicking this will bring up the delete table dialogue. Clicking the Delete button in this dialogue will remove the table along with all columns and values in the table.
 
-*IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the* [data export feature](#Export Data) *first to make a backup of the table.*
+> IMPORTANT NOTE: Use caution with this feature, as it can result in data loss. If unsure, use the <a href="#Export Data" >data export feature</a> first to make a backup of the table.
 
 |![Delete Table](Images/v0.2.0-DeleteTable.png)|
 |---|
@@ -76,7 +76,7 @@ The Manual Refresh button ![refresh button](Images/v0.2.0-ButtonRefresh.png), si
 The Auto Refresh menu below allows you to select various auto refresh intervals, or turn the auto refresh off (default)
 ![auto refresh menu](Images/v0.2.0-AotoRefreshOptions.png)
 
-*NOTE: Especially when dealing with large tables (over 100,000 rows) the auto refresh had the potential to lock up the browser when refreshing every 5 seconds and the refresh takes longer than 5 seconds to complete. So there is a protection mechanism built into the TestDataTable GUI so a refresh only runs if a previous refresh has completed. like wise pressing the Manual Refresh button multiple times will not run the refresh again unless the previous refresh has completed. If you switch tables while the refresh is running on the current table, the refresh will be stopped and then started again on the new table.*
+> NOTE: Especially when dealing with large tables (over 100,000 rows) the auto refresh had the potential to lock up the browser when refreshing every 5 seconds and the refresh takes longer than 5 seconds to complete. So there is a protection mechanism built into the TestDataTable GUI so a refresh only runs if a previous refresh has completed. like wise pressing the Manual Refresh button multiple times will not run the refresh again unless the previous refresh has completed. If you switch tables while the refresh is running on the current table, the refresh will be stopped and then started again on the new table.
 
 
 ## Import Data
