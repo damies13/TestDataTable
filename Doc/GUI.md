@@ -92,11 +92,11 @@ Once you click import the File Import dialogue will close and the File Import Pr
 |---|
 |File Import Progress dialogue - Loading|
 
-|![percent](Images/v0.2.0-ImportProgress%.png)|
+|![percent](Images/v0.2.0-ImportProgress%25.png)|
 |---|
 |File Import Progress dialogue - in progress|
 
-|![100%](Images/v0.2.0-ImportProgress100%.png)|
+|![100%](Images/v0.2.0-ImportProgress100%25.png)|
 |---|
 |File Import Progress dialogue - Complete|
 
