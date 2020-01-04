@@ -14,6 +14,7 @@ After you have used TestDataTable for a while the main page will have data to di
 |Main Page In Use|Main Page showing table with over 270,000 records|
 
 You can also use themes to change the appearance of TestDataTable to you needs or tastes e.g.:
+
 |![Egplant](Images/v0.2.0-MainPageThemeEggplant.png)|![Egplant](Images/v0.2.0-MainPageThemeSunny.png)|
 |---|---|
 |JQueryUI Eggplant Theme|JQueryUI Sunny Theme|
