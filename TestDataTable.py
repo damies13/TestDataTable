@@ -1774,15 +1774,15 @@ class TDT_Core:
 			self.saveini()
 
 		if 'js_jquery' not in self.config['Resources']:
-			self.config['Resources']['js_jquery'] = 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'
+			self.config['Resources']['js_jquery'] = 'https://unpkg.com/jquery@latest/dist/jquery.min.js'
 			self.saveini()
 
 		if 'js_jqueryui' not in self.config['Resources']:
-			self.config['Resources']['js_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
+			self.config['Resources']['js_jqueryui'] = 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'
 			self.saveini()
 
 		if 'css_jqueryui' not in self.config['Resources']:
-			self.config['Resources']['css_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css'
+			self.config['Resources']['css_jqueryui'] = 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'
 			self.saveini()
 
 		if 'js_papaparse' not in self.config['Resources']:
