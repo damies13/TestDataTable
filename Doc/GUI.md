@@ -74,7 +74,7 @@ There are two options with refreshing the Main Page, Manual Refresh and Auto Ref
 The Manual Refresh button ![refresh button](Images/v0.2.0-ButtonRefresh.png), simply refreshes the page once when pressed.
 
 The Auto Refresh menu below allows you to select various auto refresh intervals, or turn the auto refresh off (default)
-![auto refresh menu](Images/v0.2.0-AotoRefreshOptions.png)
+![auto refresh menu](Images/v0.2.0-AutoRefreshOptions.png)
 
 > NOTE: Especially when dealing with large tables (over 100,000 rows) the auto refresh had the potential to lock up the browser when refreshing every 5 seconds and the refresh takes longer than 5 seconds to complete. So there is a protection mechanism built into the TestDataTable GUI so a refresh only runs if a previous refresh has completed. like wise pressing the Manual Refresh button multiple times will not run the refresh again unless the previous refresh has completed. If you switch tables while the refresh is running on the current table, the refresh will be stopped and then started again on the new table.
 
