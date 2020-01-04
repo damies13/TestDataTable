@@ -1,7 +1,7 @@
 # patterns of files to ignore / prevent uploading
 *.ini
 *.sqlite
-*.sqlite3
+*.sqlite3*
 *.db
 *Tests/*.html
 *Tests/*.xml

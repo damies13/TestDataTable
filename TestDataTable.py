@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.1.0-alpha
+#    Version v0.2.0-alpha
 #
 
 
@@ -25,7 +25,7 @@ import json
 # https://pypi.org/project/sqlite3worker/
 # pip3 install sqlite3worker
 from sqlite3worker import Sqlite3Worker
-
+import uuid
 
 
 
@@ -107,9 +107,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			core.debugmsg(6, "do_DELETE:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
 		return
 
 
@@ -222,9 +227,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			core.debugmsg(6, "do_PUT:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
+
 		return
 	def do_POST(self):
 		core.debugmsg(7, " ")
@@ -268,18 +280,38 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 						httpcode = 201
 						message = '{"message": "values added to table: '+tablename+'"}'
 
-
 					else:
 						httpcode = 404
 						message = '{"message": "table '+tablename+' not found"}'
+
+
+				if columnname == "papaparse":
+					actionfound = True
+					data = json.loads(post_body)
+					core.debugmsg(9, "data:", data)
+					for row in data:
+						core.debugmsg(9, "row:", row)
+						for val in row:
+							core.debugmsg(9, "val:", val)
+							core.value_create(tablename, val, row[val])
+
+					httpcode = 201
+					message = '{"message": "values added to table: '+tablename+'"}'
+
 
 		except Exception as e:
 			core.debugmsg(6, "Exception:", e)
 			httpcode = 500
 			message = str(e)
-		self.send_response(httpcode)
-		self.end_headers()
-		self.wfile.write(bytes(message,"utf-8"))
+
+		try:
+			self.send_response(httpcode)
+			self.end_headers()
+			self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
 		return
 	def do_GET(self):
 		core.debugmsg(7, " ")
@@ -304,12 +336,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "<link rel=\"stylesheet\" href=\""+core.config['Resources']['css_jqueryui']+"\">"
 				message += "<script src=\""+core.config['Resources']['js_jqueryui']+"\"></script>"
 
+				message += "<script src=\""+core.config['Resources']['js_papaparse']+"\"></script>"
+
 				message += """	<style>
 								.ui-tabs .ui-tabs-panel {
 									padding: 0em 0em;
 								}
 
-								.tableFixHead          { overflow-y: auto; height: 80%; }
+								.tableFixHead          { overflow-y: auto; height: 88%; }
 								.tableFixHead thead    { position: sticky; top: 0; width: 100%;}
 								.tableFixHead thead th { position: sticky; top: 0; }
 								/* .tableFixHead thead th span { float: left; } */
@@ -318,15 +352,26 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 								th, td { padding: 5px 10px; }
 
+								.data-cell { min-width: 3em; }
 								.has-value { background: #fff !important; }
 
 								.ui-col-count { position: absolute; top: -5px; font-size: 0.7em; right: 20px; font-weight: normal; }
+
+								#dialog-progress .ui-dialog-titlebar { display:none; }
+								.progress-label { position: absolute; left: 40%; top: 28px; font-weight: bold; text-shadow: 1px 1px 0 #fff; }
+								.ui-progressbar .ui-progressbar-value { height: 20px; }
+
+								.ui-dialog { max-width: 90%; }
 
 								</style> """
 
 
 				message += "<script>"
 				message += "var refreshinterval = 0;"
+				message += "var refreshrunning = false;"
+				# message += "var chunksize = 1048576;" # 1Mb
+				message += "var chunksize = 1024*10;" # 1Mb
+				message += "var chunkprocessed = 0;" # 1Mb
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
@@ -351,6 +396,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "					dataType: 'json',"
 				message += "					success: function(data) {"
 				message += "						refresh();"
+				message += "						setTimeout(function(){"
+				message += "							$(\"li a:last\").trigger(\"click\");"
+				message += "						}, 500);"
 				message += "					}"
 				message += "				});"
 				message += "				$( this ).dialog( \"close\" );"
@@ -360,6 +408,28 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "			}"
 				message += "		}"
 				message += "	});"
+
+				message += """ $('#table-name').keypress(function(e) {
+									if (e.keyCode == $.ui.keyCode.ENTER) {
+										var tblname = $('#table-name').val();
+										console.log(\"#table-name: \" + $('#table-name'));
+										console.log(\"tblname: \" + tblname);
+										$.ajax({
+											url: '/'+tblname,
+											type: 'PUT',
+											dataType: 'json',
+											success: function(data) {
+												refresh();
+												setTimeout(function(){
+													$("li a:last").trigger("click");
+												}, 500);
+
+											}
+										});
+										$( \"#dialog-new-table\" ).dialog( \"close\" );
+									}
+								}); """
+
 
 				message += "	dlgDelTable = $( \"#dialog-delete-table\" ).dialog({"
 				message += "		autoOpen: false,"
@@ -414,6 +484,24 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		}"
 				message += "	});"
 
+				message += """ $('#column-name').keypress(function(e) {
+									if (e.keyCode == $.ui.keyCode.ENTER) {
+										console.log(\"#column-name: \" + $('#column-name'));
+										var colname = $('#column-name').val();
+										console.log(\"colname: \" + colname);
+										var tblname = $('#column-table-name').text();
+										console.log(\"tblname: \" + tblname);
+										$.ajax({
+											url: '/'+tblname+'/'+colname,
+											type: 'PUT',
+											dataType: 'json',
+											success: function(data) {
+												refresh();
+											}
+										});
+										$( \"#dialog-add-column\" ).dialog( \"close\" );
+									}
+								}); """
 
 				# dialog-delete-column
 				message += "	dlgDelColumn = $( \"#dialog-delete-column\" ).dialog({"
@@ -450,6 +538,59 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	});"
 
 
+				message += "	dlgProgress = $( \"#dialog-progress\" ).dialog({"
+				message += "		autoOpen: false,"
+				# message += "		classes: {\"no-close\": },"
+				message += "		height: \"auto\","
+				message += "		width: \"auto\","
+				message += "		modal: false,"
+				message += "	});"
+
+				message += """	var progressbar = $("#dialog-progress").progressbar({
+									value: false
+								}); """
+
+
+				message += """	dlgFileImport = $( \"#dialog-file-import\" ).dialog({
+									autoOpen: false,
+									height: \"auto\",
+									width: \"auto\",
+									modal: true,
+									buttons: {
+										Import: function() {
+											$( this ).dialog( \"close\" );
+											file_import_action();
+										},
+										Cancel: function() {
+											$( this ).dialog( \"close\" );
+										}
+									}
+								});"""
+
+				# dialog-file-export
+				message += """	dlgFileExport = $( \"#dialog-file-export\" ).dialog({
+									autoOpen: false,
+									height: \"auto\",
+									width: \"auto\",
+									modal: true,
+									buttons: {
+										Save: function() {
+											/* $("#dialog-file-export output").css("display", "");
+											$("#dialog-file-export output a").trigger("click"); */
+											var a = document.getElementById("dialog-file-export").querySelector("output").querySelector("a");
+											console.log("a:",a);
+											a.click();
+											$( this ).dialog( \"close\" );
+											/* file_import_action(); */
+										},
+										Cancel: function() {
+											$( this ).dialog( \"close\" );
+										}
+									}
+								});"""
+
+
+
 				message += "	tabs.on( \"click\", \"li span.ui-icon-close\", function() {"
 				message += "		console.log( $( this ) );"
 				message += "		console.log( $( this ).attr(\"table\") );"
@@ -474,6 +615,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		console.log( $( this ) );"
 				message += "		var tablename = $( this ).find('a').text();"
 				message += "		console.log('tablename: '+tablename);"
+				message += "		refreshrunning = false;"
 				message += "		refresh_table(tablename);"
 				message += "	});"
 
@@ -493,6 +635,24 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		dlgAddColumn.dialog( \"open\" );"
 				message += "	});"
 
+				message += "	$( \"#import-file\" ).button().on( \"click\", function() {"
+				message += "		$( \"#dialog-file-import-file\" ).val("");"
+				message += "		dlgFileImport.dialog( \"open\" );"
+				message += "	});"
+
+				message += """	$( \"#export-file\" ).button().on( \"click\", function() {
+									$('#export-file-table-name').val('');
+									var active = $( "#tables" ).tabs( "option", "active" );
+									console.log("active: " + active);
+									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").text();
+									$('#export-file-table-name').val(activetbl);
+									$("#dialog-file-export output").css("display", "None");
+									dlgFileExport.dialog( \"open\" );
+									file_export_preview();
+								});"""
+
+
+
 				message += "	$( \"#refresh\" ).button().on( \"click\", function() {"
 				message += "		refresh();"
 				message += "	});"
@@ -508,6 +668,49 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	});"
 
 
+
+				# dialog-file-import-file
+				message += "	$( \"#dialog-file-import-file\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-file:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-delimiter
+				message += "	$( \"#dialog-file-import-delimiter\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-delimiter:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-header-row
+				message += "	$( \"#dialog-file-import-header-row\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-header-row:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-encoding
+				message += "	$( \"#dialog-file-import-encoding\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-encoding:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+				# dialog-file-import-comments
+				message += "	$( \"#dialog-file-import-comments\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-import-comments:	this:\"+this);"
+				message += "		file_import_preview();"
+				message += "	});"
+
+
+				# dialog-file-export-file
+				message += "	$( \"#dialog-file-export-file\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-file:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
+				# dialog-file-export-delimiter
+				message += "	$( \"#dialog-file-export-delimiter\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-delimiter:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
+				# dialog-file-export-header-row
+				message += "	$( \"#dialog-file-export-header-row\" ).on( \"change\", function() {"
+				message += "		console.log(\"#dialog-file-export-header-row:	this:\"+this);"
+				message += "		file_export_preview();"
+				message += "	});"
 
 
 				message += "});"
@@ -569,112 +772,160 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									var active = $( "#tables" ).tabs( "option", "active" );
 									console.log("active: " + active);
 									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").text();
-									console.log("activetbl: "+activetbl);
-									refresh_table(activetbl);
+									if (activetbl.length <1){
+										active = 0;
+										console.log("active: " + active);
+										var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").trigger("click");
+									} else {
+										console.log("activetbl: "+activetbl);
+										refresh_table(activetbl);
+									}
 
 								};"""
 
 				message += """	function refresh_table(tablename) {
-									console.log("refresh_table: tablename:"+tablename);
-									$.getJSON(tablename, function(tabledata) {
-										refresh_table_data(tabledata);
-									});
+									if (!refreshrunning){
+										refreshrunning = true;
+										console.log("refresh_table: tablename:"+tablename);
+										$.getJSON(tablename, function(tabledata) {
+											refresh_table_data(tabledata);
+										});
+									}
 								};"""
 
 				message += """	function refresh_table_data(tabledata) {
-									console.log("refresh_table_data: tabledata:");
-									console.log(tabledata);
+									console.log("refresh_table_data_new: tabledata:", tabledata);
 									var tbl_name = Object.keys(tabledata)[0];
 									console.log("tbl_name: "+tbl_name);
+									/* ensure columns */
 									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
 									console.log("tblid: "+tblid);
 									console.log($('div[name="'+tbl_name+'"] table').length);
 									if (!$('div[name="'+tbl_name+'"] table').length){
 										// console.log($('div[name="'+tbl_name+'"]'));
-										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr></tr></thead><tbody></tbody></table>');
+										$('div[name="'+tbl_name+'"]').append('<table id=\"table-'+tblid+'\"><thead><tr><th class="ui-widget-header">Row</th></tr></thead><tbody></tbody></table>');
 									}
+									var safecols = [];
 									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_name = tabledata[tbl_name][i]["column"];
-										var col_id = tabledata[tbl_name][i]["col_id"];
 										console.log("col_name: "+col_name);
-										if (!$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"]').length){
-											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+tblid+'-'+col_id+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
-										}
-
-
-										// for each value in column
-										var count = 0;
-										console.log("count: "+count);
-										count = tabledata[tbl_name][i]["values"].length;
-										console.log("count: "+count);
-										$('table[id="table-'+tblid+'"] thead tr th[name="'+col_name+'"] span[class="ui-col-count"]').text("("+count+")");
-										for (var j=0; j < count; j++){
-											var value = tabledata[tbl_name][i]["values"][j]["value"];
-											var val_id = tabledata[tbl_name][i]["values"][j]["val_id"];
-											console.log("val_id: "+val_id+'  value: '+value);
-											// make sure table row exists
-											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
-												console.log('Insert row: '+j);
-												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
-											}
-											// insert blank cells if not exist
-											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												var kcol_id = tabledata[tbl_name][k]['col_id'];
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
-													console.log('Insert cell: '+kcol_id+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
-														table_cell_clicked($( this ));
-													});
-												}
-											}
-											// update cell data
-											console.log('update cell: '+col_id+'-'+j);
-											editcell = $('div[name="'+tbl_name+'"]').find('#'+col_id+'-'+j);
-											if (!editcell.is("[currval]")){
-												editcell.empty();
-												editcell.text(value);
-												editcell.attr("val_id", val_id);
-												if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
-											}
-
-										}
-									}
-									for (var i = 0; i < tabledata[tbl_name].length; i++) {
 										var col_id = tabledata[tbl_name][i]["col_id"];
-										var r = tabledata[tbl_name][i]["values"].length;
-										var count = r + 5;
-										console.log(tbl_name+"	column i:"+i+"	count: "+count);
-										for (var j=r; j < count; j++){
-											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').length){
-												console.log('Insert row: '+j);
-												$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+j+'"></tr>');
+										var colno = tblid+'-'+col_id;
+										console.log("colno: "+colno);
+										safecols.push(colno);
+										if (!$('table[id="table-'+tblid+'"] thead tr th[colno="'+colno+'"]').length){
+											$('table[id="table-'+tblid+'"] thead tr').append('<th class="ui-widget-header" id="'+col_id+'" name="'+col_name+'" colno="'+colno+'"><span column="'+col_name+'" class="ui-icon ui-icon-close" role="presentation">Remove Column</span><span>'+col_name+'</span><span class="ui-col-count">(0)</span></div></th>');
+										}
+									}
+									console.log("safecols: ",safecols);
+									/* remove columns that no longer exist on the server */
+									var dispcols = $('table[id="table-'+tblid+'"] thead tr th');
+									console.log("dispcols: ",dispcols);
+									for (var i = 0; i < dispcols.length; i++) {
+										console.log("dispcols["+i+"]: ",dispcols[i]);
+										var thiscolno = $(dispcols[i]).attr('colno');
+										console.log("thiscolno: ",thiscolno);
+										if (thiscolno && safecols.indexOf(thiscolno) < 0){
+											/* remove column */
+											console.log("remove thiscolno: ",thiscolno);
+											$('th[colno=\"'+thiscolno+'\"]').remove();
+											$('td[colno=\"'+thiscolno+'\"]').remove();
+										}
+									}
+
+									/* start populating rows */
+									refresh_table_data_row(0, tabledata);
+								};"""
+
+				message += """	function refresh_table_data_row(rt_row, tabledata) {
+									console.log("refresh_table_data_row: rt_row: "+rt_row);
+									/* console.log("refresh_table_data_row: rt_row: "+rt_row+"	tabledata:", tabledata); */
+									var tbl_name = Object.keys(tabledata)[0];
+									/* console.log("tbl_name: "+tbl_name); */
+									var tblid = $('div[name="'+tbl_name+'"]').attr('id');
+									/* console.log("tblid: "+tblid); */
+
+
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									/* console.log('tabactive:'+tabactive); */
+									var tabactivename = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									/* console.log("tabactive: "+tabactive); */
+
+									if (tbl_name == tabactivename){
+
+										/* ensure row exists */
+										if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"]').length){
+											console.log('Insert rt_row: '+rt_row);
+											$('div[name="'+tbl_name+'"] table tbody').append('<tr id="'+rt_row+'"><td class="ui-widget-header">'+(rt_row+1)+'</td></tr>');
+										}
+
+										var maxcount = 0;
+										for (var k = 0; k < tabledata[tbl_name].length; k++) {
+											/* ensure cells exists */
+											var kcol_id = tabledata[tbl_name][k]['col_id'];
+											if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"] td[id="'+kcol_id+'-'+rt_row+'"]').length){
+												/* console.log('Insert cell: '+kcol_id+'-'+rt_row); */
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"]').append('<td id="'+kcol_id+'-'+rt_row+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
+												$('div[name="'+tbl_name+'"] table tbody tr[id="'+rt_row+'"] td[id="'+kcol_id+'-'+rt_row+'"]').on( "click", function() {
+													table_cell_clicked($( this ));
+												});
 											}
-											for (var k = 0; k < tabledata[tbl_name].length; k++) {
-												var kcol_id = tabledata[tbl_name][k]['col_id'];
-												if (!$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').length){
-													console.log('Insert cell: '+kcol_id+'-'+j);
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"]').append('<td id="'+kcol_id+'-'+j+'" val_id="" class="data-cell ui-state-default" colno="'+tblid+'-'+kcol_id+'">&nbsp;</td>');
-													$('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+kcol_id+'-'+j+'"]').on( "click", function() {
-														table_cell_clicked($( this ));
-													});
+
+											/* update column count */
+											count = tabledata[tbl_name][k]["values"].length;
+											/* console.log("count: "+count); */
+											$('th[id="'+kcol_id+'"] span[class="ui-col-count"]').text("("+count+")");
+											if (count>maxcount){
+												maxcount = count
+											}
+
+											/* populate cell data */
+											if (rt_row < count){
+
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+rt_row);
+												if (!editcell.is("[currval]")){
+
+													var value = tabledata[tbl_name][k]["values"][rt_row]["value"];
+													var val_id = tabledata[tbl_name][k]["values"][rt_row]["val_id"];
+													/* console.log("val_id: "+val_id+'  value: '+value); */
+
+													editcell.empty();
+													editcell.text(value);
+													editcell.attr("val_id", val_id);
+													if (!editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
 												}
-											}
-											// only do this for the current column
-											console.log('tidyupcell: '+col_id+'-'+j+'	i:'+i);
-											var tidyupcell = $('div[name="'+tbl_name+'"] table tbody tr[id="'+j+'"] td[id="'+col_id+'-'+j+'"]');
-											tidyupcell.html("&nbsp;");
-											if (tidyupcell.hasClass("has-value")){
-												tidyupcell.toggleClass("has-value");
-												tidyupcell.attr("val_id", "");
+											} else {
+												/* depopulate cell data (ensure empty) */
+												editcell = $('div[name="'+tbl_name+'"]').find('#'+kcol_id+'-'+rt_row);
+												if (!editcell.is("[currval]")){
+													editcell.empty();
+													editcell.html("&nbsp;");
+													editcell.attr("val_id", "");
+													if (editcell.hasClass("has-value")){ editcell.toggleClass("has-value"); }
+												}
+
 											}
 
 										}
-									}
-									console.log('refresh_table_data: '+Date().toString());
 
+										/* keep going? */
+										if (rt_row < maxcount + 4) {
+											var delay = 1;
+											setTimeout(function(){
+												refresh_table_data_row(rt_row+1, tabledata);
+											}, delay);
+										} else {
+											refreshrunning = false;
+											$("tr").filter(function() {
+												return parseInt($(this).attr("id")) > (maxcount+4);
+											}).remove();
+										}
+
+									}
 
 								};"""
+
+
 
 				# /* click to edit data values */
 				message += """	function table_cell_clicked(cell) {
@@ -772,6 +1023,312 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 								};"""
 
+				message += """	function file_import_preview() {
+									console.log("file_import_preview:");
+									var file = $("#dialog-file-import-file").val();
+									console.log("file_import_preview: file: "+file);
+									var delim = $("#dialog-file-import-delimiter").val();
+									console.log("file_import_preview: delim: '"+delim+"'");
+									var hrow = $("#dialog-file-import-header-row").prop("checked");
+									console.log("file_import_preview: hrow: "+hrow);
+									var encd = $("#dialog-file-import-encoding").val();
+									console.log("file_import_preview: encd: "+encd);
+									var scmt = $("#dialog-file-import-comments").val();
+									console.log("file_import_preview: scmt: "+scmt);
+
+									if (scmt.length<1){
+										scmt = false;
+										console.log("file_import_preview: scmt: "+scmt);
+									}
+
+									console.log("file_import_preview: file obj: ");
+									console.log($("#dialog-file-import-file")[0]['files'][0]);
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										encoding: encd,
+										comments: scmt,
+										preview: 5,
+										skipEmptyLines: true,
+										complete: function(results) {
+											console.log("Finished:", results.data);
+											var keys = Object.keys(results.data[0])
+											console.log(keys);
+											console.log("file_import_preview: hrow: "+hrow);
+											r = 0;
+											$("#dialog-file-import-preview table").html("<tr id='preview-tablerow-"+r+"'></tr>");
+											/* do columns */
+											i = 0;
+
+											var rowtemplate = `<tr id='preview-tablerow-zzrowzz'>`;
+											for (var key in keys) {
+												$("#preview-tablerow-"+r+"").append("<th class=\\"ui-widget-header\\"><input id=\\"preview-c"+i+"\\" type=\\"text\\" size=\\"10\\"></th>");
+												console.log("#preview-c"+i+":", keys[key]);
+												$("#preview-c"+i).val(keys[key]);
+												rowtemplate += `<td id='preview-tablecell-zzrowzz-${i}' class=\\"data-cell ui-state-default\\">&nbsp;</td>`;
+
+												i++;
+											}
+											rowtemplate += `</tr>`;
+											console.log("rowtemplate:", rowtemplate);
+
+											for (var row in results.data) {
+												var rowdata = results.data[row];
+												r++;
+												/* $("#dialog-file-import-preview table").append("<tr id='preview-tablerow-"+r+"'></tr>"); */
+												$("#dialog-file-import-preview table").append(rowtemplate.replace(/zzrowzz/g, r));
+												console.log("rowtemplate:", rowtemplate.replace(/zzrowzz/g, r));
+
+												i = 0;
+												for (var key in rowdata) {
+													/* $("#preview-tablerow-"+r+"").append("<td class=\\"ui-widget-header\\"><input id=\\"preview-c"+i+"\\" type=\\"text\\" size=\\"10\\"></th>"); */
+													$("#preview-tablecell-"+r+"-"+i).text(rowdata[key].trim());
+													i++;
+												}
+											}
+										}
+									}
+
+
+
+									Papa.parse($("#dialog-file-import-file")[0]['files'][0], config);
+
+								};"""
+
+				# <tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+
+
+				# dialog-file-import-file
+				# dialog-file-import-delimiter
+				# dialog-file-import-header-row
+				# dialog-file-import-encoding
+				# dialog-file-import-comments
+				message += """	function file_import_action() {
+									console.log("file_import_action:");
+									var file = $("#dialog-file-import-file").val();
+									console.log("file_import_preview: file: "+file);
+									var delim = $("#dialog-file-import-delimiter").val();
+									console.log("file_import_preview: delim: '"+delim+"'");
+									var hrow = $("#dialog-file-import-header-row").prop("checked");
+									console.log("file_import_preview: hrow: "+hrow);
+									var encd = $("#dialog-file-import-encoding").val();
+									console.log("file_import_preview: encd: "+encd);
+									var scmt = $("#dialog-file-import-comments").val();
+									console.log("file_import_preview: scmt: "+scmt);
+
+									if (scmt.length<1){
+										scmt = false;
+										console.log("file_import_preview: scmt: "+scmt);
+									}
+
+									console.log("file_import_preview: file obj: ");
+									console.log($("#dialog-file-import-file")[0]['files'][0]);
+
+									var size = $("#dialog-file-import-file")[0]['files'][0]['size'];
+									console.log("file_import_preview: size: "+size);
+
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									console.log('tabactive:'+tabactive);
+									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									console.log("tblname: "+tblname);
+
+									/* 	# dialog-progress
+										#  <div id="dialog-progress-bar"><div id="dialog-progress-msg"></div></div> */
+									$("#dialog-progress-subject").text("Importing file: '"+$("#dialog-file-import-file")[0]['files'][0]['name']+"' into table: '"+tblname+"'");
+									dlgProgress.dialog( \"open\" );
+									$("#dialog-progress").css("min-height", "50px");
+									$("#dialog-progress").prev().css("display","none");
+									$("div[aria-describedby='dialog-progress']").css("top", "1%");
+									$("div[aria-describedby='dialog-progress']").css("left", "1%");
+									dlgProgressMsg = $("#dialog-progress-msg")
+									dlgProgressMsg.text("Loading....");
+
+									var colheads = $("#preview-tablerow-0 th input");
+									console.log("file_import_preview: colheads: ",colheads);
+									var columns = [];
+									var col_name = "";
+									for (var colno=0; colno<colheads.length; colno++){
+										console.log("file_import_preview: colno: "+colno+"	colheads[colno]:", colheads[colno]);
+										col_name = colheads[colno]['value'].trim();
+										columns.push(col_name);
+										/* PUT /<table name>/<column name> */
+
+										var puturl = "/"+tblname+"/"+col_name;
+										console.log("puturl:", puturl);
+										$.ajax({
+											url: puturl,
+											dataType: 'text',
+											type: 'put',
+											success: function( data, textStatus, jQxhr ){
+												console.log("Created col_name:", col_name);
+											}
+										});
+
+									}
+									console.log("columns: ", columns);
+									var progresssize = 0;
+									chunkprocessed = 0;
+
+									var chunkInCount = 0;
+									var chunkOutCount = 0;
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										encoding: encd,
+										comments: scmt,
+										skipEmptyLines: true,
+										worker: false,
+										beforeFirstChunk: function(chunk) {
+											var index = chunk.match( /\\r\\n|\\r|\\n/ ).index;
+											var headings = chunk.substr(0, index).split( delim );
+											for (var colno=0; colno<columns.length; colno++){
+												headings[colno] = columns[colno];
+											}
+											return headings.join() + chunk.substr(index);
+										},
+										chunkSize: chunksize,
+										chunk: function(results) {
+											console.log("chunk:", results);
+											console.log("chunk: data:", results.data);
+
+											var posturl = "/"+tblname+"/papaparse";
+											console.log("posturl:", posturl);
+
+											var stbldata = JSON.stringify(results.data);
+											console.log("stbldata:", stbldata);
+
+											chunkInCount++;
+											console.log("chunkInCount:", chunkInCount);
+
+											$.ajax({
+												url: posturl,
+												dataType: 'text',
+												type: 'post',
+												data: stbldata,
+												success: function( data, textStatus, jQxhr ){
+
+													progresssize += chunksize;
+													var pcnt = Math.round(progresssize/size * 100);
+													if (pcnt>100){
+														pcnt = 100;
+														lastrow = true;
+													}
+
+													dlgProgressMsg.text(pcnt+"%");
+													$("#dialog-progress").progressbar( "value", pcnt );
+													chunkOutCount++;
+													console.log("chunkOutCount:", chunkOutCount);
+													if (chunkInCount==chunkOutCount){
+														close_file_import_progress();
+													}
+												}
+											});
+
+										}
+									}
+
+									Papa.parse($("#dialog-file-import-file")[0]['files'][0], config);
+
+								};"""
+
+				message += """	function close_file_import_progress() {
+									dlgProgressMsg.text(100+"%");
+									$("#dialog-progress").progressbar( "value", 100 );
+									setTimeout(function(){
+										dlgProgress.dialog( \"close\" );
+									}, 500);
+
+									var tabactive = $( "#tables" ).tabs( "option", "active" );
+									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
+									console.log("tblname: "+tblname);
+									refresh_table(tblname);
+								};"""
+
+				message += """	function file_import_delimiter_tab() {
+									console.log("file_import_delimiter_tab: '	'");
+									$("#dialog-file-import-delimiter").val("	");
+									file_import_preview();
+								};"""
+
+				message += """	function file_export_delimiter_tab() {
+									console.log("file_export_delimiter_tab: '	'");
+									$("#dialog-file-export-delimiter").val("	");
+									file_export_preview();
+								};"""
+
+				message += """	function file_export_preview() {
+									console.log("file_export_preview:");
+									var table = $("#export-file-table-name").val();
+									var delim = $("#dialog-file-export-delimiter").val();
+									if (delim.length<1){
+										delim = ",";
+									}
+
+									fileext = "";
+									switch(delim) {
+										case ",":
+  											fileext = ".csv";
+											break;
+										case "	":
+  											fileext = ".tsv";
+											break;
+										default:
+  											fileext = ".txt";
+									}
+									var d = new Date();
+									var datestring = "_" + d.getFullYear() + ("0"+(d.getMonth()+1)).slice(-2) + ("0" + d.getDate()).slice(-2) + "_" + ("0" + d.getHours()).slice(-2) + ("0" + d.getMinutes()).slice(-2) + ("0" + d.getSeconds()).slice(-2);
+									$("#dialog-file-export-filename").val(table + datestring + fileext);
+									$("#dialog-file-export-preview textarea").val("loading table: "+table+" .......");
+
+									var hrow = $("#dialog-file-export-header-row").prop("checked");
+
+									var config = {
+										delimiter: delim,
+										header: hrow,
+										skipEmptyLines: true
+									}
+
+									var geturl = "/"+table+"/papaparse";
+									console.log("geturl:", geturl);
+									$.ajax({
+										url: geturl,
+										success: function( data, textStatus, jQxhr ){
+
+											window.URL = window.webkitURL || window.URL;
+
+											console.log("data: ", data);
+											$("#dialog-file-export-preview textarea").val("parseing table data: "+table+" .......");
+											var text = Papa.unparse(data, config);
+											$("#dialog-file-export-preview textarea").val(text);
+
+											var output = $("#dialog-file-export output");
+											var prevLink = $("#dialog-file-export output a");
+											if (prevLink) {
+												window.URL.revokeObjectURL(prevLink.href);
+												$("#dialog-file-export output a").remove();
+											}
+
+											const MIME_TYPE = 'text/plain';
+  											var bb = new Blob([text], {type: MIME_TYPE});
+
+											var a = document.createElement('a');
+											a.download = $("#dialog-file-export-filename").val();
+											a.href = window.URL.createObjectURL(bb);
+											a.textContent = 'Download ready';
+
+											a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+											output.append(a);
+
+
+										}
+									});
+
+								};"""
+
+
+
 				message += "</script>"
 
 				message += "<style>"
@@ -814,6 +1371,83 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</div>"
 
 
+				message += """	<div id="dialog-progress" title="Progress">
+									<div id="dialog-progress-subject">Progress</div>
+									<!-- <br /> -->
+									<div id="dialog-progress-bar"><div id="dialog-progress-msg" class="progress-label"></div></div>
+								</div>"""
+
+				message += """	<div id="dialog-file-import" title="Text File Import">
+									<table>
+									<tr><td colspan="5">
+										<label for='dialog-file-import-file'>Select File:</label>
+										<input id='dialog-file-import-file' type='file'>
+									</td></tr>
+									<tr><td>
+										<label for='dialog-file-import-delimiter'>File Delimiter:</label>
+										<input id='dialog-file-import-delimiter' type='text' size='5' maxlength='1' placeholder='auto'>
+										<a href="javascript:file_import_delimiter_tab();" id='dialog-file-import-insert-tab'>tab</a>
+									</td><td>
+										<label for='dialog-file-import-header-row'>Header Row:</label>
+										<input id='dialog-file-import-header-row' type='checkbox' checked='true'>
+									</td><td>
+										<label for='dialog-file-import-encoding'>Encoding:</label>
+										<input type="text" id="dialog-file-import-encoding" placeholder="default" size="7">
+									</td><td>
+										<label for='dialog-file-import-comments'>Comment char:</label>
+										<input type="text" size="7" maxlength="10" placeholder="default" id="dialog-file-import-comments">
+									</td></tr>
+									</table>
+									<br>
+									<div>Preview:</div>
+									<div id='dialog-file-import-preview' style="overflow-x: auto;">
+										<table>
+											<thead>
+												<tr>
+													<th class="ui-widget-header"><input id="preview-c1" type="text" value="Column 1" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c2" type="text" value="Column 2" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c3" type="text" value="Column 3" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c4" type="text" value="Column 4" size="10"></th>
+													<th class="ui-widget-header"><input id="preview-c5" type="text" value="Column 5" size="10"></th>
+												<tr>
+											</thead>
+										<tbody>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+											<tr><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><td class="data-cell ui-state-default">&nbsp;</td><tr>
+										</tbody>
+										</table>
+									</div>
+								</div>"""
+
+				message += """	<div id="dialog-file-export" title="Text File Export">
+									<table>
+									<tr><td>
+										<label for='dialog-file-export-delimiter'>File Delimiter:</label>
+										<input id='dialog-file-export-delimiter' type='text' size='5' maxlength='1' placeholder='auto'>
+										<a href="javascript:file_export_delimiter_tab();" id='dialog-file-export-insert-tab'>tab</a>
+									</td><td>
+										<label for='dialog-file-export-header-row'>Header Row:</label>
+										<input id='dialog-file-export-header-row' type='checkbox' checked='true'>
+									</td></tr>
+									<tr><td colspan="5">
+										<label for='dialog-file-export-filename'>Output File:</label>
+										<input id='dialog-file-export-filename' type='text' size='60'>
+									</td></tr>
+									</table>
+									<input id='export-file-table-name' type='hidden'>
+									<br>
+									<div>Preview:</div>
+									<div id='dialog-file-export-preview' style="overflow-x: auto;">
+									<textarea class='data-cell ui-state-default' disabled='' rows='6' cols='80' style='resize:none;'></textarea>
+									</div>
+									<output style="display: None;"></output>
+								</div>"""
+
+
+
 				#
 				# Main page
 				#
@@ -823,7 +1457,16 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
 				message += "	<button id='new-column' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Column\"><span class=\"ui-icon ui-icon-grip-solid-vertical\"></span>Add Column</button>"
 				message += "	<button>&nbsp;</button>" # spacer
-				# message += "	<button></button>" # spacer
+
+				message += """	<button id='import-file' class='ui-button ui-widget ui-corner-all ui-button-icon-only' title="Import File">
+									<span class='ui-icon ui-icon-folder-open'></span>
+									Import File</button> """
+
+				message += """	<button id='export-file' class='ui-button ui-widget ui-corner-all ui-button-icon-only' title="Export File">
+									<span class='ui-icon ui-icon-disk'></span>
+									Export File</button> """
+
+				message += "	<button>&nbsp;</button>" # spacer
 				message += "	<select id='auto-refresh'>"
 				message += "		<option value='0' >Auto Refresh Off</option>"
 				message += "		<option value='5' >Auto Refresh 5 seconds</option>"
@@ -834,16 +1477,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
 				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Help\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
 				message += "</div>"
-				message += "<div>"
-				message += "<p>&nbsp;<br></p>"
-				message += "&nbsp;<br>"
+
+				message += "<div style=\"height: 5%;\">"
 				message += "</div>"
 
 				message += "<div id='tables'>"
 				message += "<ul>"
 				message += "</ul>"
 				message += "</div>"
-
 
 				message += "</body>"
 				message += "</html>"
@@ -902,6 +1543,37 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				core.debugmsg(9, "tablename:", tablename)
 				columnname = urllib.parse.unquote_plus(patharr[2])
 				core.debugmsg(9, "tablename:", tablename)
+
+				if columnname == "papaparse":
+					tableid = core.table_exists(tablename)
+					core.debugmsg(9, "tableid:", tableid)
+					if tableid:
+						pathok = True
+						httpcode = 200
+
+						jsonresp = []
+
+						columnnames = core.table_columns(tablename)
+						i = 0
+						for col in columnnames:
+							core.debugmsg(9, "col:", col)
+							columndata = core.column_values(tablename, col["column"])
+							core.debugmsg(9, "columndata:", columndata)
+							j = 0
+							for val in columndata:
+								core.debugmsg(9, "val:", val)
+								core.debugmsg(9, "j:", j, "	len(jsonresp):",len(jsonresp))
+								if len(jsonresp)-1 < j:
+									newrow = {}
+									core.debugmsg(9, "newrow:", newrow)
+									jsonresp.append(newrow)
+								jsonresp[j][col["column"]] = val['value']
+								j += 1
+
+							# core.debugmsg(9, "jsonresp:", jsonresp)
+							i += 1
+
+						message = json.dumps(jsonresp)
 
 				if columnname == "columns":
 					tableid = core.table_exists(tablename)
@@ -993,12 +1665,18 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			httpcode = 500
 			message = str(e)
 
-		core.debugmsg(9, "httpcode:", httpcode)
-		self.send_response(httpcode)
-		self.end_headers()
-		core.debugmsg(9, "message:", message)
-		if message is not None:
-			self.wfile.write(bytes(message,"utf-8"))
+		try:
+			core.debugmsg(9, "httpcode:", httpcode)
+			self.send_response(httpcode)
+			self.end_headers()
+			core.debugmsg(9, "message:", message)
+			if message is not None:
+				self.wfile.write(bytes(message,"utf-8"))
+		except BrokenPipeError as e:
+			core.debugmsg(8, "Browser lost connection, probably closed by user")
+		except Exception as e:
+			core.debugmsg(6, "do_PUT:", e)
+
 		return
 	def handle_http(self):
 		core.debugmsg(7, " ")
@@ -1014,7 +1692,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		pass
 
 class TDT_Core:
-	version = "v0.1.0-alpha"
+	version = "v0.2.0-alpha"
 	debuglvl = 0
 
 	tdt_ini = None
@@ -1086,22 +1764,31 @@ class TDT_Core:
 			self.config['Server']['DataDir'] = scrdir
 			self.saveini()
 
+		if 'DBFile' not in self.config['Server']:
+			self.config['Server']['DBFile'] = "TestDataTable.sqlite3"
+			self.saveini()
+
 
 		if 'Resources' not in self.config:
 			self.config['Resources'] = {}
 			self.saveini()
 
 		if 'js_jquery' not in self.config['Resources']:
-			self.config['Resources']['js_jquery'] = 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'
+			self.config['Resources']['js_jquery'] = 'https://unpkg.com/jquery@latest/dist/jquery.min.js'
 			self.saveini()
 
 		if 'js_jqueryui' not in self.config['Resources']:
-			self.config['Resources']['js_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
+			self.config['Resources']['js_jqueryui'] = 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'
 			self.saveini()
 
 		if 'css_jqueryui' not in self.config['Resources']:
-			self.config['Resources']['css_jqueryui'] = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css'
+			self.config['Resources']['css_jqueryui'] = 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'
 			self.saveini()
+
+		if 'js_papaparse' not in self.config['Resources']:
+			self.config['Resources']['js_papaparse'] = 'https://unpkg.com/papaparse@latest/papaparse.min.js'
+			self.saveini()
+
 
 		if self.args.dir:
 			self.save_ini = False
@@ -1129,21 +1816,53 @@ class TDT_Core:
 			createschema = False
 			if not os.path.exists(self.config['Server']['DataDir']):
 				os.mkdir(self.config['Server']['DataDir'])
-			dbfile = os.path.join(self.config['Server']['DataDir'], "TestDataTable.sqlite3")
+			dbfile = os.path.join(self.config['Server']['DataDir'], self.config['Server']['DBFile'])
 			if not os.path.exists(dbfile):
 				createschema = True
-			self.db = Sqlite3Worker(dbfile)
+			# chaning this setting did help to speed up bulk inserts a little, but it
+			# 	also slowed individual inserts, selects, deletes etc a lot!
+			# I'll leave this here as we may want to try tuning this later, maybe a value of 200 or 500
+			# 	might be optimal, 1000 is definatly too big, I think 500 might be too big as well.
+			# 	But 200 might not be enought to make an appreciable speed up in bulk inserts. will need some testing
+			queue_size = 100 # use default value
+			# queue_size = 1000 # default is 100
+			self.db = Sqlite3Worker(dbfile, queue_size)
 			if createschema:
-				result = self.db.execute("CREATE TABLE tdt_tables (table_name TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_tables (ID INTEGER, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_tables (ID TEXT, table_name TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_tables", result)
 
-				result = self.db.execute("CREATE TABLE tdt_columns (table_id NUMBER, column_name TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_columns (ID INTEGER, table_id NUMBER, column_name TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_columns (ID TEXT, table_id NUMBER, column_name TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_columns", result)
 
-				result = self.db.execute("CREATE TABLE tdt_data (column_id NUMBER, value TEXT, deleted DATETIME)")
+				# result = self.db.execute("CREATE TABLE tdt_data (ID INTEGER, column_id NUMBER, value TEXT, deleted DATETIME, PRIMARY KEY(ID AUTOINCREMENT))")
+				result = self.db.execute("CREATE TABLE tdt_data (ID TEXT, column_id NUMBER, value TEXT, deleted DATETIME, PRIMARY KEY(ID))")
 				self.debugmsg(6, "CREATE TABLE tdt_data", result)
 
+				#  create indexes
+
+				result = self.db.execute("CREATE INDEX \"tables_name\" ON \"tdt_tables\" (\"table_name\");")
+				result = self.db.execute("CREATE INDEX \"tables_del\" ON \"tdt_tables\" (\"deleted\");")
+
+				result = self.db.execute("CREATE INDEX \"columns_name\" ON \"tdt_columns\" (\"column_name\");")
+				result = self.db.execute("CREATE INDEX \"columns_tbl_id\" ON \"tdt_columns\" (\"table_id\");")
+				result = self.db.execute("CREATE INDEX \"columns_del\" ON \"tdt_columns\" (\"deleted\");")
+
+				result = self.db.execute("CREATE INDEX \"data_value\" ON \"tdt_data\" (\"value\");")
+				result = self.db.execute("CREATE INDEX \"data_col_id\" ON \"tdt_data\" (\"column_id\");")
+				result = self.db.execute("CREATE INDEX \"data_del\" ON \"tdt_data\" (\"deleted\");")
+
 				createschema = False
+			# Never do this it changes the row id's and breaks the data
+			else:
+				# VACUUM frees up space and defragments the file, especially after large deletes
+				results = self.db.execute("VACUUM")
+				self.debugmsg(9, "VACUUM: results:", results)
+				self.db.close()
+				self.db = None
+				self.db = Sqlite3Worker(dbfile)
+
 
 
 		self.debugmsg(5, "run_web_server")
@@ -1218,7 +1937,7 @@ class TDT_Core:
 		#   aka cleanup deleted records
 
 		# -- identify records for cleanup
-		# -- SELECT ROWID, * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
+		# -- SELECT * FROM tdt_tables WHERE deleted < (strftime('%s', 'now') - 600)
 		# -- DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 36000);
 		results = self.db.execute("DELETE FROM tdt_data WHERE deleted < (strftime('%s', 'now') - 600);")
 		core.debugmsg(9, "tdt_data: results:", results)
@@ -1302,7 +2021,7 @@ class TDT_Core:
 	def tables_getall(self):
 		self.debugmsg(7, " ")
 		tables = []
-		results = core.db.execute("SELECT rowid, table_name from tdt_tables where deleted is NULL")
+		results = core.db.execute("SELECT ID, table_name from tdt_tables where deleted is NULL")
 		core.debugmsg(9, "results:", results)
 		for row in results:
 			# core.debugmsg(9, "row:", row)
@@ -1318,7 +2037,7 @@ class TDT_Core:
 		# returns the table id if exists, else returns False
 		id = False
 		try:
-			results = self.db.execute("SELECT rowid, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
+			results = self.db.execute("SELECT ID, table_name FROM tdt_tables WHERE table_name = ? and deleted is NULL", [tablename])
 			self.debugmsg(9, "results:", results)
 			if len(results)>0:
 				id = results[0][0]
@@ -1334,7 +2053,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if not tableid:
-				results = self.db.execute("INSERT INTO tdt_tables (table_name) VALUES (?)", [tablename])
+				results = self.db.execute("INSERT INTO tdt_tables (ID, table_name) VALUES (?,?)", [uuid.uuid4().hex, tablename])
 				self.debugmsg(9, "results:", results)
 				if results is None:
 					return self.table_exists(tablename)
@@ -1349,7 +2068,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if tableid:
-				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+				results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
@@ -1375,7 +2094,7 @@ class TDT_Core:
 					delcol = self.column_delete(tablename, col["column"])
 					if not delcol:
 						return False
-				res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ROWID=?", [tableid])
+				res_table = core.db.execute("UPDATE tdt_tables SET deleted = strftime('%s', 'now') WHERE ID=?", [tableid])
 				core.debugmsg(9, "res_table:", res_table)
 				if res_table is None:
 					return True
@@ -1393,7 +2112,7 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if tableid:
-				results = self.db.execute("SELECT rowid, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
+				results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and column_name = ? and deleted is NULL", [tableid, columnname])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					id = results[0][0]
@@ -1415,10 +2134,12 @@ class TDT_Core:
 					tableid = self.table_create(tablename)
 					self.debugmsg(9, "tableid:", tableid)
 				if tableid:
-					results = self.db.execute("INSERT INTO tdt_columns (table_id, column_name) VALUES (?,?)", [tableid, columnname])
+					results = self.db.execute("INSERT INTO tdt_columns (ID, table_id, column_name) VALUES (?,?,?)", [uuid.uuid4().hex, tableid, columnname])
 					self.debugmsg(9, "results:", results)
 					if results is None:
 						return self.column_exists(tablename, columnname)
+			else:
+				return columnid
 		except Exception as e:
 			self.debugmsg(6, "Exception:", e)
 		return False
@@ -1430,7 +2151,7 @@ class TDT_Core:
 			columnid = self.column_exists(tablename, columnname)
 			self.debugmsg(9, "columnid:", columnid)
 			if columnid:
-				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
+				results = self.db.execute("SELECT ID, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
@@ -1457,7 +2178,7 @@ class TDT_Core:
 					return False
 
 				# remove column
-				res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE rowid = ?", [columnid])
+				res_columns = core.db.execute("UPDATE tdt_columns SET deleted = strftime('%s', 'now') WHERE ID = ?", [columnid])
 				core.debugmsg(9, "res_columns:", res_columns)
 				if res_columns is None:
 					return True
@@ -1476,7 +2197,7 @@ class TDT_Core:
 		try:
 			columnid = self.column_exists(tablename, columnname)
 			if columnid:
-				results = self.db.execute("SELECT rowid, column_id, value FROM tdt_data WHERE column_id = ? and (value = ? or ROWID = ?) and deleted is NULL", [columnid, value, value])
+				results = self.db.execute("SELECT ID, column_id, value FROM tdt_data WHERE column_id = ? and (value = ? or ID = ?) and deleted is NULL", [columnid, value, value])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					id = results[0][0]
@@ -1495,7 +2216,7 @@ class TDT_Core:
 				columnid = self.column_create(tablename, columnname)
 				self.debugmsg(9, "columnid:", columnid)
 			if columnid:
-				results = self.db.execute("INSERT INTO tdt_data (column_id, value) VALUES (?,?)", [columnid, value])
+				results = self.db.execute("INSERT INTO tdt_data (ID, column_id, value) VALUES (?,?,?)", [uuid.uuid4().hex, columnid, value])
 				self.debugmsg(9, "results:", results)
 				if results is None:
 					return self.value_exists(tablename, columnname, value)
@@ -1509,7 +2230,7 @@ class TDT_Core:
 			valueid = self.value_exists(tablename, columnname, value)
 			core.debugmsg(9, "valueid:", valueid)
 			if valueid:
-				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?", [valueid])
+				res_data = core.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?", [valueid])
 				core.debugmsg(9, "res_data:", res_data)
 				if res_data is None:
 					return True
@@ -1531,7 +2252,7 @@ class TDT_Core:
 					# txn = ""
 					# txn += "BEGIN TRANSACTION; \n\n"
 					# txn += "CREATE TEMP TABLE _ConsumeValue AS \n"
-					# txn += "SELECT ROWID, * FROM tdt_data \n"
+					# txn += "SELECT * FROM tdt_data \n"
 					# txn += "WHERE deleted is NULL \n"
 					# txn += "	AND column_id = 29 \n"
 					# txn += "LIMIT 1; \n\n"
@@ -1543,11 +2264,11 @@ class TDT_Core:
 					# results = self.db.execute(txn)
 
 				retval = {}
-				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE deleted is NULL AND column_id = ? LIMIT 1;", [columnid])
+				results = self.db.execute("SELECT * FROM tdt_data WHERE deleted is NULL AND column_id = ? LIMIT 1;", [columnid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					retval["val_id"] = results[0][0]
-					resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [retval["val_id"]])
+					resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?;", [retval["val_id"]])
 					self.debugmsg(9, "resultu:", resultu)
 					retval["value"] = results[0][2]
 					return retval
@@ -1565,10 +2286,10 @@ class TDT_Core:
 			self.debugmsg(9, "val_id:", val_id)
 			if val_id:
 				retval = {}
-				resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE rowid = ?;", [val_id])
+				resultu = self.db.execute("UPDATE tdt_data SET deleted = strftime('%s', 'now') WHERE ID = ?;", [val_id])
 				self.debugmsg(9, "resultu:", resultu)
 
-				results = self.db.execute("SELECT ROWID, * FROM tdt_data WHERE ROWID = ?;", [val_id])
+				results = self.db.execute("SELECT * FROM tdt_data WHERE ID = ?;", [val_id])
 				self.debugmsg(9, "results:", results)
 				retval["val_id"] = results[0][0]
 				retval["value"] = results[0][2]
@@ -1586,7 +2307,7 @@ class TDT_Core:
 			val_id = self.value_exists(tablename, columnname, id)
 			self.debugmsg(9, "val_id:", val_id)
 			if val_id:
-				resultu = self.db.execute("UPDATE tdt_data SET value = ? WHERE rowid = ?;", [value, val_id])
+				resultu = self.db.execute("UPDATE tdt_data SET value = ? WHERE ID = ?;", [value, val_id])
 				self.debugmsg(9, "resultu:", resultu)
 				if resultu is None:
 					return True
@@ -1598,6 +2319,7 @@ class TDT_Core:
 			self.debugmsg(6, "Exception:", e)
 
 		return False
+
 
 
 	# def value_create_unique(self, tablename, columnname, value):
