@@ -1,0 +1,75 @@
+[Scenario]
+scriptcount = 9
+
+[1]
+users = 200
+delay = 0
+rampup = 600
+run = 3000
+test = Data cycle test
+script = TestDataTable-API_requests_perf.robot
+
+[2]
+users = 20
+delay = 750
+rampup = 150
+run = 2700
+test = Get Hold Return Value GC
+script = TestDataTable-API_requests_perf.robot
+
+[3]
+users = 20
+delay = 1050
+rampup = 150
+run = 2400
+test = Get Hold Return Value BNE
+script = TestDataTable-API_requests_perf.robot
+
+[4]
+users = 10
+delay = 1350
+rampup = 150
+run = 2100
+test = Get Hold Return Value GC
+script = TestDataTable-API_requests_perf.robot
+
+[5]
+users = 10
+delay = 1650
+rampup = 150
+run = 1800
+test = Get Hold Return Value BNE
+script = TestDataTable-API_requests_perf.robot
+
+[6]
+users = 10
+delay = 1950
+rampup = 150
+run = 1500
+test = Data cycle test
+script = TestDataTable-API_requests_perf.robot
+
+[7]
+users = 10
+delay = 2250
+rampup = 150
+run = 1200
+test = Get Hold Return Value GC
+script = TestDataTable-API_requests_perf.robot
+
+[8]
+users = 10
+delay = 2550
+rampup = 150
+run = 900
+test = Get Hold Return Value BNE
+script = TestDataTable-API_requests_perf.robot
+
+[9]
+users = 10
+delay = 2850
+rampup = 150
+run = 600
+test = Data cycle test
+script = TestDataTable-API_requests_perf.robot
+

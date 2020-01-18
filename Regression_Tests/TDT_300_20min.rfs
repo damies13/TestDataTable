@@ -1,0 +1,27 @@
+[Scenario]
+scriptcount = 3
+
+[1]
+users = 100
+delay = 0
+rampup = 300
+run = 1200
+test = Get Hold Return Value BNE
+script = TestDataTable-API_requests_perf.robot
+
+[2]
+users = 100
+delay = 0
+rampup = 300
+run = 1200
+test = Get Hold Return Value GC
+script = TestDataTable-API_requests_perf.robot
+
+[3]
+users = 100
+delay = 0
+rampup = 300
+run = 1200
+test = Data cycle test
+script = TestDataTable-API_requests_perf.robot
+

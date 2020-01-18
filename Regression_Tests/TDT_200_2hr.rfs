@@ -1,0 +1,11 @@
+[Scenario]
+scriptcount = 1
+
+[1]
+users = 200
+delay = 0
+rampup = 1800
+run = 7200
+test = Data cycle test
+script = TestDataTable-API_requests_perf.robot
+
