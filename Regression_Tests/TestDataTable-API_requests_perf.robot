@@ -61,12 +61,35 @@ Data cycle test
 	Delete Perf Column	${column}
 	Standard Think Time
 
+Short Data cycle test
+	Create Perf_P1 Value
+	${column}=	Set Variable	P1
+	Standard Think Time
+	${p1val}=	Get Perf Column 	${column}
+	Standard Think Time
+	${column}=	Set Variable	P2
+	Set Perf Column 	${column}	${p1val}
+	Standard Think Time
+	${p2val}=	Get Perf Column 	${column}
+	Standard Think Time
+
+	${column}=	Set Variable	${p2val}
+	Set Perf Column 	${column}	${p2val}
+	Standard Think Time
+	Delete Perf Column	${column}
+
+	${column}=	Set Variable	P3
+	Set Perf Column 	${column}	${p2val}
+	Standard Think Time
+	${column}=	Set Variable	P3
+	Delete Perf Column	${column}
+	Standard Think Time
 
 *** Keywords ***
 Connect to TDT
-	[Documentation] 	Connect to TDT: http://localhost
-	Create Session	TDT	http://localhost
-	Log 	Connect to TDT:http://localhost
+	[Documentation] 	Connect to TDT: http://DavesMBPSG
+	Create Session	TDT	http://DavesMBPSG
+	Log 	Connect to TDT:http://DavesMBPSG
 
 Get TDT Value
 	[Arguments] 	${table}	${column}
