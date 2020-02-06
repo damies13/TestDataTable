@@ -96,7 +96,7 @@ Create Column Col_A again
 	Should Be Equal As Strings	${resp.status_code}	200
 	Should Be Equal	"${resp.json()['message']}"	"column Col_A exists"
 
-Gat value from empty column
+Get value from empty column
 	[Tags]	Column	Negative Case
 	${resp}=	Get Request	TDT	/regression 1/Col_A
 	Log	${resp}
@@ -123,6 +123,12 @@ Post row of data
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
 	${resp}=	Post Request	TDT	/regression+1/row	{"Col_A":"Value X", "Col_B":"Value Y", "Col_C":"Value Z"}
+	Should Be Equal As Strings	${resp.status_code}	201
+	${resp}=	Post Request	TDT	/regression+1/row	{"Col_A":"Value D", "Col_B":"Value E", "Col_C":"Value F"}
+	Should Be Equal As Strings	${resp.status_code}	201
+	${resp}=	Post Request	TDT	/regression+1/row	{"Col_A":"Value G", "Col_B":"Value H", "Col_C":"Value I"}
+	Should Be Equal As Strings	${resp.status_code}	201
+	${resp}=	Post Request	TDT	/regression+1/row	{"Col_A":"Value J", "Col_B":"Value K", "Col_C":"Value L"}
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Get all values for Column Col_A
@@ -152,6 +158,18 @@ Get Table regression 1 row
 	${resp}=	Post Request	TDT	/regression+1/row	${json_string}
 	Should Be Equal As Strings	${resp.status_code}	201
 
+Get Table regression 1 row 2
+	[Documentation]	Get the third row of data (0,1,2)
+	[Tags]	Values
+	${resp}=	Get Request	TDT	/regression+1/2
+	Log	${resp}
+	log	${resp.json()}
+	Should Be Equal As Strings	${resp.status_code}	200
+	Should Be Equal As Strings	${resp.json()['regression 1']['Col_C']}	Value I
+	# return data row to table
+	${json_string}=    evaluate    json.dumps(${resp.json()['regression 1']})    json
+	${resp}=	Post Request	TDT	/regression+1/row	${json_string}
+	Should Be Equal As Strings	${resp.status_code}	201
 
 # DELETE /<table name>/<column name>
 Delete Column Col_C
