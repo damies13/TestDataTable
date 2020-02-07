@@ -1542,7 +1542,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				tablename = urllib.parse.unquote_plus(patharr[1])
 				core.debugmsg(9, "tablename:", tablename)
 				columnname = urllib.parse.unquote_plus(patharr[2])
-				core.debugmsg(9, "tablename:", tablename)
+				core.debugmsg(6, "tablename:", tablename)
 
 				if columnname == "papaparse":
 					tableid = core.table_exists(tablename)
@@ -1614,7 +1614,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 
 				columnid = core.column_exists(tablename, columnname)
-				core.debugmsg(9, "columnid:", columnid)
+				core.debugmsg(6, "columnid:", columnid)
 				if columnid:
 					pathok = True
 					httpcode = 200
@@ -1625,6 +1625,50 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 						jsonresp = {columnname : val_data["value"]}
 					core.debugmsg(9, "jsonresp:", jsonresp)
 					message = json.dumps(jsonresp)
+
+
+				if columnname.isdigit():
+					rownum = int(columnname)
+					tableid = core.table_exists(tablename)
+					core.debugmsg(8, "tableid:", tableid)
+					if tableid:
+						# pathok = True
+						# httpcode = 200
+
+						jsonresp = {}
+						jsonresp[tablename] = {}
+
+						columns = core.table_columns(tablename)
+						core.debugmsg(8, "columns:", columns)
+						for col in columns:
+							core.debugmsg(8, "col:", col)
+							column_name = col["column"]
+							core.debugmsg(8, "column_name:", column_name)
+							colvalues = core.column_values(tablename, column_name)
+							core.debugmsg(8, "colvalues:", colvalues)
+							core.debugmsg(8, "len(colvalues):", len(colvalues), "	rownum:", rownum)
+							if len(colvalues) > rownum:
+								pathok = True
+								httpcode = 200
+								valueid = colvalues[rownum]['val_id']
+								core.debugmsg(8, "valueid:", valueid)
+
+								data = core.value_consume_byid(tablename, column_name, valueid)
+								if data is not None:
+									jsonresp[tablename][column_name] = data["value"]
+
+
+							else:
+								jsonresp[tablename][column_name] = None
+
+							# val_data = core.value_consume(tablename, column_name)
+							# core.debugmsg(9, "val_data:", val_data)
+							# if val_data is None:
+							# 	jsonresp[tablename][column_name] = None
+							# else:
+							# 	jsonresp[tablename][column_name] = val_data["value"]
+
+						message = json.dumps(jsonresp)
 
 
 			if not pathok and len(patharr) == 4:
@@ -2149,13 +2193,13 @@ class TDT_Core:
 		values = []
 		try:
 			columnid = self.column_exists(tablename, columnname)
-			self.debugmsg(9, "columnid:", columnid)
+			self.debugmsg(8, "columnid:", columnid)
 			if columnid:
 				results = self.db.execute("SELECT ID, column_id, value FROM tdt_data WHERE column_id = ? and deleted is NULL", [columnid])
-				self.debugmsg(9, "results:", results)
+				self.debugmsg(8, "results:", results)
 				if len(results)>0:
 					for res in results:
-						self.debugmsg(9, "res:", res)
+						self.debugmsg(8, "res:", res)
 						retcol = {}
 						retcol["value"] = res[2]
 						retcol["val_id"] = res[0]

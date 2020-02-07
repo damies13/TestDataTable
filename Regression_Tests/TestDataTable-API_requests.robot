@@ -171,6 +171,14 @@ Get Table regression 1 row 2
 	${resp}=	Post Request	TDT	/regression+1/row	${json_string}
 	Should Be Equal As Strings	${resp.status_code}	201
 
+Get Table regression 1 row 100
+	[Documentation]	Get the 100th row of data
+	...		as there are less than 10 rows, this should return 404 not found
+	[Tags]	Values
+	${resp}=	Get Request	TDT	/regression+1/99
+	Log	${resp}
+	Should Be Equal As Strings	${resp.status_code}	404
+
 # DELETE /<table name>/<column name>
 Delete Column Col_C
 	[Tags]	Delete	Column
