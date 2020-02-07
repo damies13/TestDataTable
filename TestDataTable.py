@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.2.0-alpha
+#    Version v0.2.1
 #
 
 
@@ -1737,7 +1737,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		pass
 
 class TDT_Core:
-	version = "v0.2.0-alpha"
+	version = "v0.2.1"
 	debuglvl = 0
 
 	tdt_ini = None
