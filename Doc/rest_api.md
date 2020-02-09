@@ -24,11 +24,11 @@ Returns a list of columns in the table if the table exists
 
 ### GET /&lt;table name&gt;/row
 
-Returns the column name / value pairs for the first record in every column in the table and removes these records from the table
+Returns the column name / value pairs for the first record in every column in the table (row 0) and removes these records from the table
 
 ### GET /&lt;table name&gt;/&lt;id&gt;
 
-Returns the column name / value pairs for every column in the table for the nominated row id and removes these records from the table
+Returns the column name / value pairs for every column in the table for the nominated row id (starting from 0) and removes these records from the table
 
 ### POST /&lt;table name&gt;/row
 
@@ -49,7 +49,7 @@ if you need to keep the column data together for a row, then it's advised that y
 
 ## Column operations
 
-### GET /&lt;table name&gt;
+### GET /&lt;table name&gt;/columns
 
 Returns a list of columns in the table if the table exists
 
