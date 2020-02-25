@@ -2113,7 +2113,14 @@ class TDT_Core:
 			tableid = self.table_exists(tablename)
 			self.debugmsg(9, "tableid:", tableid)
 			if tableid:
-				results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+				# results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
+				results = self.db.execute(
+					"SELECT c.ID, c.table_id, c.column_name, count(d.id) "
+					"FROM tdt_columns c"
+					"LEFT JOIN tdt_data d on c.id = d.column_id"
+					"WHERE c.table_id = ? and c.deleted is NULL"
+					"GROUP BY d.column_id"
+					, [tableid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
