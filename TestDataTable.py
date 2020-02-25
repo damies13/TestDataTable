@@ -2115,19 +2115,20 @@ class TDT_Core:
 			if tableid:
 				# results = self.db.execute("SELECT ID, table_id, column_name FROM tdt_columns WHERE table_id = ? and deleted is NULL", [tableid])
 				results = self.db.execute(
-					"SELECT c.ID, c.table_id, c.column_name, count(d.id) "
-					"FROM tdt_columns c"
-					"LEFT JOIN tdt_data d on c.id = d.column_id"
-					"WHERE c.table_id = ? and c.deleted is NULL"
-					"GROUP BY d.column_id"
+					"SELECT c.ID, c.table_id, c.column_name, count(d.id) 'count' "
+					"FROM tdt_columns c "
+					"LEFT JOIN tdt_data d on c.id = d.column_id "
+					"WHERE c.table_id = ? and c.deleted is NULL "
+					"GROUP BY d.column_id "
 					, [tableid])
 				self.debugmsg(9, "results:", results)
 				if len(results)>0:
 					for res in results:
-						self.debugmsg(9, "res:", res)
+						self.debugmsg(8, "res:", res)
 						retcol = {}
 						retcol["column"] = res[2]
 						retcol["col_id"] = res[0]
+						retcol["count"] = res[3]
 						columns.append(retcol)
 		except Exception as e:
 			self.debugmsg(6, "Exception:", e)
