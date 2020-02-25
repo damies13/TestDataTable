@@ -145,6 +145,7 @@ Get Table regression 1 columns
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
+	Should Be Equal As Strings	${resp.json()['regression 1'][0]['count']}	5
 
 Get Table regression 1 row
 	[Tags]	Values

@@ -20,7 +20,7 @@ Returns the complete table as a json object if the table exists
 
 ### GET /&lt;table name&gt;/columns
 
-Returns a list of columns in the table if the table exists
+Returns a list of columns, with column counts in the table if the table exists
 
 ### GET /&lt;table name&gt;/row
 
@@ -51,7 +51,7 @@ if you need to keep the column data together for a row, then it's advised that y
 
 ### GET /&lt;table name&gt;/columns
 
-Returns a list of columns in the table if the table exists
+Returns a list of columns, with column counts in the table if the table exists
 
 ### PUT /&lt;table name&gt;/&lt;column name&gt;
 
