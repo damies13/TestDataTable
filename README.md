@@ -29,7 +29,7 @@ The [Regression_Tests](Regression_Tests) folder contains the current Regression 
 
 - [TestDataTable Documentation](Doc/Index.md)
 - [Discord](https://discord.gg/5wYA6K)
-- [Reporting Issues / Known Issues](/damies13/TestDataTable/issues)
+- [Reporting Issues / Known Issues](https://github.com/damies13/TestDataTable/issues)
 
 <img align="right" src="Doc/Images/Icon_Donate.png">
 
