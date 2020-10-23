@@ -64,7 +64,7 @@ If you want TestDataTable to use a different file name for you TestDataTable dat
 
 ### Resources
 
-These settings configure the javascript libraries used by the TestDataTable GUI. The default configuration uses internet locations for these libraries, however if you need to use TestDataTable on an internal network without internet access then you can install these libraries locally on the TestDataTable server in a directory with the TestDataTable.py file and then change the ini file to reference the local paths for these libraries. Here is an example of what that could like:
+These settings configure the javascript libraries used by the TestDataTable GUI. The default configuration uses internet locations for these libraries, however if you need to use TestDataTable on an internal network without internet access then you can install these libraries locally on the TestDataTable server in a directory with the TestDataTable.py file and then change the ini file to reference the local paths for these libraries. Here is an example of what that could look like:
 
 ```
 [Resources]
