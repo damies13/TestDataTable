@@ -15,9 +15,9 @@ setuptools.setup(
 	packages=setuptools.find_packages(),
 	classifiers=[
 		"Development Status :: 5 - Production/Stable",
-		"Intended Audience :: Test Automators",
+		"Topic :: Software Development :: Testing",
 		"Programming Language :: Python :: 3.7",
-		"License :: OSI Approved :: GNU GPL 3",
+		"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 		"Operating System :: OS Independent",
 	],
 	python_requires='>=3.7',
