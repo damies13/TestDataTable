@@ -9,4 +9,5 @@
 *Tests/*driver.log
 Resources/*
 dist/*
+build/*
 testdatatable.egg-info/*
