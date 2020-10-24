@@ -8,3 +8,5 @@
 *Tests/*.png
 *Tests/*driver.log
 Resources/*
+dist/*
+testdatatable.egg-info/*
