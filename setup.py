@@ -1,14 +1,14 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README_PyPi.md", "r") as fh:
 	long_description = fh.read()
 
 setuptools.setup(
 	name="testdatatable",
-	version="0.2.2",
+	version="0.2.2.2",
 	author="damies13",
 	author_email="damies13+TestDataTable@gmail.com",
-	description="Test Data Table",
+	description="TestDataTable",
 	long_description=long_description,
 	long_description_content_type="text/markdown",
 	url="https://github.com/damies13/TestDataTable",
