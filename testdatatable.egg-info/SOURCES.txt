@@ -1,8 +1,0 @@
-README.md
-setup.py
-testdatatable.egg-info/PKG-INFO
-testdatatable.egg-info/SOURCES.txt
-testdatatable.egg-info/dependency_links.txt
-testdatatable.egg-info/top_level.txt
-testdatatable_pkg/TestDataTable.py
-testdatatable_pkg/__init__.py
