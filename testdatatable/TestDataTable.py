@@ -1457,7 +1457,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				#version font-size: 30%;
 				# <fieldset>
 				# message += "<div id=\"title\" class=\"ui-widget\">Test Data Table</div>"
-				message += "<div id=\"version\" class=\"ui-state-disabled ui-widget\">Version " + core.version + "</div>"
+				# message += "<div id=\"version\" class=\"ui-state-disabled ui-widget\">Version " + core.version + "</div>"
 				message += "<div id=\"buttonbar\">"
 				# message += "	<button>Test Data Table</button>" # spacer
 				# message += "	<button disabled><span style=\"font-size: 30%;\">Version "+core.version+"</span>&nbsp;</button>"
@@ -1482,7 +1482,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		<option value='60' >Auto Refresh 1 minute</option>"
 				message += "	</select>"
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
-				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Help\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
+				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\" Help\nv" + core.version + "\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
 				message += "</div>"
 
 				message += "<div style=\"height: 5%;\">"
