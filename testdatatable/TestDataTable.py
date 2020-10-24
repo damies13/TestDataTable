@@ -1334,6 +1334,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message += "<style>"
 				message += "#buttonbar { float: right; }"
+				message += "#version   { float: left; font-size: 30%; }"
+				message += "#title     { float: left; }"
 				message += "</style>"
 
 				message += "<title>Test Data Table</title>"
@@ -1452,9 +1454,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				#
 				# Main page
 				#
-
+				#version font-size: 30%;
 				# <fieldset>
+				# message += "<div id=\"title\" class=\"ui-widget\">Test Data Table</div>"
+				message += "<div id=\"version\" class=\"ui-state-disabled ui-widget\">Version " + core.version + "</div>"
 				message += "<div id=\"buttonbar\">"
+				# message += "	<button>Test Data Table</button>" # spacer
+				# message += "	<button disabled><span style=\"font-size: 30%;\">Version "+core.version+"</span>&nbsp;</button>"
 				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
 				message += "	<button id='new-column' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Column\"><span class=\"ui-icon ui-icon-grip-solid-vertical\"></span>Add Column</button>"
 				message += "	<button>&nbsp;</button>" # spacer
