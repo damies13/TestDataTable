@@ -5,7 +5,7 @@ with open("README_PyPi.md", "r") as fh:
 
 setuptools.setup(
 	name="testdatatable",
-	version="0.2.2.2",
+	version="0.2.2.4",
 	author="damies13",
 	author_email="damies13+TestDataTable@gmail.com",
 	description="TestDataTable",
@@ -13,6 +13,9 @@ setuptools.setup(
 	long_description_content_type="text/markdown",
 	url="https://github.com/damies13/TestDataTable",
 	packages=setuptools.find_packages(),
+	# packages=setuptools.find_packages(include=['configparser', 'setuptools', 'HTTPServer', 'sqlite3worker']),
+	# packages=setuptools.find_packages(include=['configparser', 'HTTPServer', 'sqlite3worker']),
+	install_requires=['configparser', 'HTTPServer', 'sqlite3worker'],
 	classifiers=[
 		"Development Status :: 5 - Production/Stable",
 		"Topic :: Software Development :: Testing",
