@@ -25,8 +25,8 @@ setuptools.setup(
 	],
 	python_requires='>=3.7',
 	project_urls={
-	    'Getting Help': 'https://github.com/damies13/TestDataTable#getting-help',
-	    'Say Thanks!': 'https://github.com/damies13/TestDataTable#donations',
-	    'Source': 'https://github.com/damies13/TestDataTable',
+		'Getting Help': 'https://github.com/damies13/TestDataTable#getting-help',
+		'Say Thanks!': 'https://github.com/damies13/TestDataTable#donations',
+		'Source': 'https://github.com/damies13/TestDataTable',
 	},
 )
