@@ -1,4 +1,6 @@
 *** Settings ***
+Resource    environment.robot
+
 Library	Collections
 Library	JsonValidator
 Library	RequestsLibrary
@@ -9,6 +11,7 @@ Suite Setup	Connect to TDT
 Default Tags	API 	RequestsLibrary
 
 *** Variables ***
+
 # ${Table}		TT3
 ${Table}		TT20
 ${Col 1}		GC_20k
@@ -87,9 +90,9 @@ Short Data cycle test
 
 *** Keywords ***
 Connect to TDT
-	[Documentation] 	Connect to TDT: http://DavesMBPSG
-	Create Session	TDT	http://DavesMBPSG
-	Log 	Connect to TDT:http://DavesMBPSG
+	[Documentation] 	Connect to TDT: http://${TDT_Host}
+	Create Session	TDT	http://${TDT_Host}
+	Log 	Connect to TDT:http://${TDT_Host}
 
 Get TDT Value
 	[Arguments] 	${table}	${column}
