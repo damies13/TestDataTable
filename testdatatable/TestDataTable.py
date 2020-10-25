@@ -110,6 +110,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			message = str(e)
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -231,6 +232,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -307,6 +309,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -1509,6 +1512,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 					core.debugmsg(9, "httpcode:", httpcode)
 					self.send_response(httpcode)
+					self.send_header("Server", "Test Data Table v"+core.version)
 					self.end_headers()
 					with open(localfile,"rb") as f:
 						core.debugmsg(8, "file open for read")
@@ -1719,6 +1723,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		try:
 			core.debugmsg(9, "httpcode:", httpcode)
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			core.debugmsg(9, "message:", message)
 			if message is not None:
