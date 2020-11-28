@@ -1,5 +1,7 @@
 *** Settings ***
-Library       REST    localhost
+Resource    environment.robot
+
+Library       REST    ${TDT_Host}
 
 *** Test cases ***
 Create Table regression 1

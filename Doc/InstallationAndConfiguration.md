@@ -1,25 +1,33 @@
 # TestDataTable Installation and Configuration
 
-## Installation
+- [PIP Installation](#pip-installation)
+- [Configuration](#configuration)
+- [Command Line Interface](#command-line-interface)
+- [Manual Installation](#manual-installation)
 
-- The TestDataTable machine needs to use a minimum of Python 3.7
-> ThreadingHTTPServer feature of HTTPServer requires was added in Python 3.7
 
-Additionally the following pip command might be needed if these are not already installed on your system:
+## PIP Installation
+
+If you already have Python with pip installed, you can simply run:
+
 ```
-pip* install configparser setuptools HTTPServer sqlite3worker
+pip install testdatatable
 ```
-> setuptools (is required by HTTPServer)
 
-\*some systems might need you to use pip3 and or sudo
+This should install all the dependancies for you. Once installed you will need to identify the location of your dist-packages folder so you can find the 'TestDataTable.py' script to run it.
 
-After these components are installed you can simply run:
+This is where it was installed on a Ubuntu 20.04 machine:
 ```
-python* TestDataTable.py
+/usr/local/lib/python3.8/dist-packages/testdatatable/TestDataTable.py
 ```
-\*some systems might need you to use python3 or use the full path to the python executable.
 
-To stop TestDataTable simply type Control-c in the command window where TestDataTable is running and it will shutdown cleanly.
+Then you can start Test Data Table with the command:
+```
+python3 /<path to file>/TestDataTable.py
+```
+
+
+Otherwise refer to the [manual installation instructions](#manual-installation).
 
 ## Configuration
 
@@ -126,3 +134,24 @@ optional arguments:
                         IP Address to bind the server to
   -p PORT, --port PORT  Port number to bind the server to
 ```
+
+## Manual Installation
+
+- The TestDataTable machine needs to use a minimum of Python 3.7
+> ThreadingHTTPServer feature of HTTPServer requires was added in Python 3.7
+
+Additionally the following pip command might be needed if these are not already installed on your system:
+```
+pip* install configparser setuptools HTTPServer sqlite3worker
+```
+> setuptools (is required by HTTPServer)
+
+\*some systems might need you to use pip3 and or sudo
+
+After these components are installed you can simply run:
+```
+python* TestDataTable.py
+```
+\*some systems might need you to use python3 or use the full path to the python executable.
+
+To stop TestDataTable simply type Control-c in the command window where TestDataTable is running and it will shutdown cleanly.
