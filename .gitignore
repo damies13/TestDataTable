@@ -7,6 +7,7 @@
 *Tests/*.xml
 *Tests/*.png
 *Tests/*driver.log
+*Tests/*log.txt
 Resources/*
 dist/*
 build/*
