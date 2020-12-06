@@ -3,11 +3,11 @@
 *.sqlite
 *.sqlite3*
 *.db
-*Tests/*.html
-*Tests/*.xml
+*.html
+*.xml
 *Tests/*.png
-*Tests/*driver.log
-*Tests/*log.txt
+*driver.log
+*log.txt
 Resources/*
 dist/*
 build/*
