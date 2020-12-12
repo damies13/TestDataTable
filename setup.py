@@ -29,4 +29,5 @@ setuptools.setup(
 		'Say Thanks!': 'https://github.com/damies13/TestDataTable#donations',
 		'Source': 'https://github.com/damies13/TestDataTable',
 	},
+	entry_points = {'console_scripts': ['testdatatable = TestDataTable:TDT_Core']},
 )
