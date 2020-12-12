@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.2.3
+#    Version v0.2.4
 #
 
 
@@ -1747,8 +1747,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		core.debugmsg(7, " ")
 		pass
 
-class TDT_Core:
-	version="0.2.3"
+class TestDataTable:
+# class TDT_Core:
+	version="0.2.4"
 	debuglvl = 0
 
 	tdt_ini = None
@@ -2391,7 +2392,8 @@ class TDT_Core:
 	# 	return False
 
 # web = TDT_WebServer()
-core = TDT_Core()
+core = TestDataTable()
+# core = TDT_Core()
 
 try:
 	core.mainloop()

@@ -14,17 +14,11 @@ If you already have Python with pip installed, you can simply run:
 pip install testdatatable
 ```
 
-This should install all the dependancies for you. Once installed you will need to identify the location of your dist-packages folder so you can find the 'TestDataTable.py' script to run it.
-
-This is where it was installed on a Ubuntu 20.04 machine:
+This should install all the dependancies for you, then you can start Test Data Table with the command:
 ```
-/usr/local/lib/python3.8/dist-packages/testdatatable/TestDataTable.py
+testdatatable
 ```
-
-Then you can start Test Data Table with the command:
-```
-python3 /<path to file>/TestDataTable.py
-```
+Depending on your system this may require sudo.
 
 
 Otherwise refer to the [manual installation instructions](#manual-installation).
