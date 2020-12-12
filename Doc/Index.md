@@ -5,5 +5,5 @@
 1. [Rest API](./rest_api.md)
 1. [FAQ](./FAQ.md)
 1. Using TestDataTable with various Test Tools
-1.1.	[Robot Framework](../TestTools/RobotFramework/Readme.md)
-1.1.	[Other Test Tools](./OtherTestTools.md)
+1.1	[Robot Framework](../TestTools/RobotFramework/Readme.md)
+1.1	[Other Test Tools](./OtherTestTools.md)
