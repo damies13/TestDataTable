@@ -73,3 +73,6 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 			- You can leave all other values default
 
 				![HTTP Request PUT](HTTPRequest_PUT.png)
+
+
+Also you can download [this example .jmx file](TDTExample.jmx) if you want to see some working examples.
