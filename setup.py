@@ -5,7 +5,7 @@ with open("README_PyPi.md", "r") as fh:
 
 setuptools.setup(
 	name="testdatatable",
-	version="0.2.3",
+	version="0.2.3.2",
 	author="damies13",
 	author_email="damies13+TestDataTable@gmail.com",
 	description="TestDataTable",
@@ -29,5 +29,5 @@ setuptools.setup(
 		'Say Thanks!': 'https://github.com/damies13/TestDataTable#donations',
 		'Source': 'https://github.com/damies13/TestDataTable',
 	},
-	entry_points = {'console_scripts': ['testdatatable = TestDataTable:TDT_Core']},
+	entry_points = {'console_scripts': ['testdatatable = testdatatable.TestDataTable:TestDataTable']},
 )
