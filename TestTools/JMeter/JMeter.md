@@ -8,18 +8,18 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 	![User Defined Variables](AddUserDefinedVariables.png)
 
-	1. Then set up some variables for Host, Port, Table and Columns
+	2. Then set up some variables for Host, Port, Table and Columns
 
 	![Variables](UserDefinedVariables.png)
 
-1. For this example we will read the value from one column and return it to another column in the same table, whether you read and return to the same column, different column or only send to a column for you thread group will depend on the requirements of your application.
+2. For this example we will read the value from one column and return it to another column in the same table, whether you read and return to the same column, different column or only send to a column for you thread group will depend on the requirements of your application.
 
 	1. Getting a value from a TDT column:
 		1. Right click your Thread Group and select Add, Sampler, HTTP Request
 
 		![Add HTTP Request](AddHTTPRequest.png)
 
-		1. Then configure the following settings:
+		2. Then configure the following settings:
 			- Name: Set this to something meaningful to you e.g. 'TDT Get Value' or 'Get value from column'
 			- In the basic tab, under the Web Server heading
 				- Server Name or IP Address: Set this to the host variable you set in the User Defined Variables, e.g. ${TDT_Host}
@@ -31,25 +31,25 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 		![HTTP Request GET](HTTPRequest_GET.png)
 
-		1. Next right click the HTTP Request Sampler and select Add, Post Processors, JSON Extractor
+		3. Next right click the HTTP Request Sampler and select Add, Post Processors, JSON Extractor
 
 		![Add JSON Extractor](Add_JSON_Extractor.png)
 
-		1. Then configure the following settings:
+		4. Then configure the following settings:
 			- Names of created variables: Set this to a meaning variable name that you want to use in your thread group, e.g. Retrieved (I don't recommend using variables here unless you understand JMeter's variable evaluation)
 			- JSON Path expressions: Set this to JSON path that gets the value you want, e.g. $.<Column> or use your User Defined Variable $.${TDT_Column} (JSON paths start with a '$.')
 
 			![JSON Extractor](JSON_Extractor.png)
 
-		1. Now you can use this variable created by the JSON Extractor in you Thread Group, e.g. ${Retrieved}
+		5. Now you can use this variable created by the JSON Extractor in you Thread Group, e.g. ${Retrieved}
 
 
-	1. Getting a value from a TDT column:
+	2. Getting a value from a TDT column:
 		1. Right click your Thread Group and select Add, Sampler, HTTP Request
 
 		![Add HTTP Request](AddHTTPRequest.png)
 
-		1. Then configure the following settings:
+		2. Then configure the following settings:
 			- Name: Set this to something meaningful to you e.g. 'TDT Get Value' or 'Get value from column'
 			- In the basic tab, under the Web Server heading
 				- Server Name or IP Address: Set this to the host variable you set in the User Defined Variables, e.g. ${TDT_Host}
