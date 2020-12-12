@@ -1,4 +1,6 @@
 *** Settings ***
+Resource    environment.robot
+
 Library           SeleniumLibrary
 
 Suite Setup		Open TDT GUI
@@ -267,7 +269,7 @@ Export Data To File
 	Should Not Contain		${txtarea}		Street Data
 	Capture Page Screenshot
 	Click Element    id:dialog-file-export-header-row
-	Wait Until Keyword Succeeds    10s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Click Link    	id:dialog-file-export-insert-tab
 	${delim}= 	Get Value	id:dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
@@ -303,7 +305,7 @@ Remove Table
 Open TDT GUI
 	${orig timeout} = 	Set Selenium Timeout 	30 seconds
 	Open Browser	about:blank	${BROWSER}
-	Go To	http://localhost/
+	Go To	http://${TDT_Host}/
 
 TDT GUI End Test
 	# give some time for background jobs to finish

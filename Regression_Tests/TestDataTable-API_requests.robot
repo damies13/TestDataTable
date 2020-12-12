@@ -1,4 +1,6 @@
 *** Settings ***
+Resource    environment.robot
+
 Library	Collections
 Library	JsonValidator
 Library	RequestsLibrary
@@ -362,4 +364,4 @@ Create Demo Data
 
 *** Keywords ***
 Connect to TDT
-	Create Session	TDT	http://localhost
+	Create Session	TDT	http://${TDT_Host}

@@ -7,7 +7,7 @@ TestDataTable is a web-based application that offers an alternative to static da
 
 ## Testing
 
-The [Regression_Tests](Regression_Tests) folder contains the current Regression Test Suite, I would love to hear the results of running this suite against Test Data Table on your machine, especially a Window Machine (as I don't have one)
+The [Regression_Tests](https://github.com/damies13/TestDataTable/blob/master/Regression_Tests) folder contains the current Regression Test Suite, I would love to hear the results of running this suite against Test Data Table on your machine, especially a Window Machine (as I don't have one)
 
 ## Getting Help
 

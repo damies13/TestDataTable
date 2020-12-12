@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 #	Test Data Table
 #
-#    Version v0.2.2
+#    Version v0.2.3
 #
 
 
@@ -110,6 +110,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 			message = str(e)
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -231,6 +232,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -307,6 +309,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 		try:
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			self.wfile.write(bytes(message,"utf-8"))
 		except BrokenPipeError as e:
@@ -1334,6 +1337,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message += "<style>"
 				message += "#buttonbar { float: right; }"
+				message += "#version   { float: left; font-size: 30%; }"
+				message += "#title     { float: left; }"
 				message += "</style>"
 
 				message += "<title>Test Data Table</title>"
@@ -1452,9 +1457,13 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				#
 				# Main page
 				#
-
+				#version font-size: 30%;
 				# <fieldset>
+				# message += "<div id=\"title\" class=\"ui-widget\">Test Data Table</div>"
+				# message += "<div id=\"version\" class=\"ui-state-disabled ui-widget\">Version " + core.version + "</div>"
 				message += "<div id=\"buttonbar\">"
+				# message += "	<button>Test Data Table</button>" # spacer
+				# message += "	<button disabled><span style=\"font-size: 30%;\">Version "+core.version+"</span>&nbsp;</button>"
 				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
 				message += "	<button id='new-column' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Column\"><span class=\"ui-icon ui-icon-grip-solid-vertical\"></span>Add Column</button>"
 				message += "	<button>&nbsp;</button>" # spacer
@@ -1476,7 +1485,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		<option value='60' >Auto Refresh 1 minute</option>"
 				message += "	</select>"
 				message += "	<button id='refresh' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Refresh\"><span class=\"ui-icon ui-icon-refresh\"></span>Refresh</button>"
-				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Help\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
+				message += "	<button id='help' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\" Help\nv" + core.version + "\"><span class=\"ui-icon ui-icon-help\"></span>Help</button>"
 				message += "</div>"
 
 				message += "<div style=\"height: 5%;\">"
@@ -1503,6 +1512,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 					core.debugmsg(9, "httpcode:", httpcode)
 					self.send_response(httpcode)
+					self.send_header("Server", "Test Data Table v"+core.version)
 					self.end_headers()
 					with open(localfile,"rb") as f:
 						core.debugmsg(8, "file open for read")
@@ -1713,6 +1723,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		try:
 			core.debugmsg(9, "httpcode:", httpcode)
 			self.send_response(httpcode)
+			self.send_header("Server", "Test Data Table v"+core.version)
 			self.end_headers()
 			core.debugmsg(9, "message:", message)
 			if message is not None:
@@ -1737,7 +1748,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 		pass
 
 class TDT_Core:
-	version = "v0.2.2"
+	version="0.2.3"
 	debuglvl = 0
 
 	tdt_ini = None
