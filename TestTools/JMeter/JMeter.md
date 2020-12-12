@@ -18,7 +18,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 		- Right click your Thread Group and select Add, Sampler, HTTP Request
 
-		![Add HTTP Request](AddHTTPRequest.png)
+			![Add HTTP Request](AddHTTPRequest.png)
 
 		- Then configure the following settings
 
@@ -35,18 +35,18 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 			- You can leave all other values default
 
-		![HTTP Request GET](HTTPRequest_GET.png)
+				![HTTP Request GET](HTTPRequest_GET.png)
 
 		- Next right click the HTTP Request Sampler and select Add, Post Processors, JSON Extractor
 
-		![Add JSON Extractor](Add_JSON_Extractor.png)
+			![Add JSON Extractor](Add_JSON_Extractor.png)
 
 		- Then configure the following settings
 
 			- Names of created variables: Set this to a meaning variable name that you want to use in your thread group, e.g. Retrieved (I don't recommend using variables here unless you understand JMeter's variable evaluation)
 			- JSON Path expressions: Set this to JSON path that gets the value you want, e.g. $.\<Column\> or use your User Defined Variable $.$\{TDT_Column\} \(JSON paths start with a '$.'\)
 
-			![JSON Extractor](JSON_Extractor.png)
+				![JSON Extractor](JSON_Extractor.png)
 
 		- Now you can use this variable created by the JSON Extractor in you Thread Group, e.g. $\{Retrieved\}
 
@@ -55,7 +55,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 		- Right click your Thread Group and select Add, Sampler, HTTP Request
 
-		![Add HTTP Request](AddHTTPRequest.png)
+			![Add HTTP Request](AddHTTPRequest.png)
 
 		- Then configure the following settings
 
@@ -72,4 +72,4 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 			- You can leave all other values default
 
-		![HTTP Request PUT](HTTPRequest_PUT.png)
+				![HTTP Request PUT](HTTPRequest_PUT.png)
