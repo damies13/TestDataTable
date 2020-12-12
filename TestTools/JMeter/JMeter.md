@@ -75,4 +75,4 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 				![HTTP Request PUT](HTTPRequest_PUT.png)
 
 
-Also you can download [this example .jmx file](TDTExample.jmx) if you want to see some working examples.
+Also you can download <a href="https://raw.githubusercontent.com/damies13/TestDataTable/Test-Tool-Support/TestTools/JMeter/TDTExample.jmx" download="TDTExample.jmx">this example .jmx file</a> if you want to see some working examples.
