@@ -1,6 +1,7 @@
 *** Settings ***
-Library    TDT
-# Library    TDT     http://localhost
+Library    TDT.py
+# Library    TDT.py     http://localhost
+# Library    TDT.py     http://DavesMBPSG
 
 Suite Setup		TDT Client Init
 Suite Teardown	TDT Client End
@@ -47,12 +48,19 @@ Get Row
 
 Delete Column
 	TDT Send Value		${table}	Column Del	Another value
+	TDT Send Value		${table}	Column Del	Another value 2
+	${value1}=	TDT Get Value		${table}	Column Del
+	Should Be Equal 	Another value	${value1}
 	${resp}=	TDT Delete Column	${table}	Column Del
 	Should Be Equal As Strings  	200 	${resp}
+	${ret}= 	Run Keyword And Return Status	TDT Get Value		${table}	Column Del
+	Should Be Equal As Strings		${ret}		False
 
 Delete Table
 	${resp}=	TDT Delete Table	${table}
 	Should Be Equal As Strings  	200 	${resp}
+	${ret}= 	Run Keyword And Return Status	TDT Get Row		${table}
+	Should Be Equal As Strings		${ret}		False
 
 *** Keywords ***
 TDT Client Init

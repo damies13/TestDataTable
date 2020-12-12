@@ -18,11 +18,15 @@ class TDT:
 	def tdt_send_value_unique(self, table, column, value):
 		print(tdt_server + "/" + table + "/" + column )
 		response = requests.get(tdt_server + "/" + table + "/" + column + "/all")
-		json=response.json()
-		print(json)
-		values = [row['value'] for row in json[column]]
-		print(values)
-		if value not in values:
+		if (response.status_code == 200):
+			json=response.json()
+			print(json)
+			values = [row['value'] for row in json[column]]
+			print(values)
+			if value not in values:
+				response = requests.put(tdt_server + "/" + table + "/" + column + "/" + value)
+				print(response)
+		else:
 			response = requests.put(tdt_server + "/" + table + "/" + column + "/" + value)
 			print(response)
 		return response.status_code
@@ -30,11 +34,16 @@ class TDT:
 	def tdt_get_value(self, table, column):
 		print(tdt_server + "/" + table + "/" + column )
 		response = requests.get(tdt_server + "/" + table + "/" + column)
-		json=response.json()
-		if (json[column] == None):
-			return ""
+		if (response.status_code == 200):
+			json=response.json()
+			if (json[column] == None):
+				return ""
+			else:
+				return json[column]
+		elif (response.status_code == 404):
+			raise Exception("Column or Table does not exist")
 		else:
-			return json[column]
+			raise Exception(response)
 
 
 	def tdt_send_row(self, table, data):
@@ -48,11 +57,16 @@ class TDT:
 	def tdt_get_row(self, table):
 		print(tdt_server + "/" + table + "/row" )
 		response = requests.get(tdt_server + "/" + table + "/row" )
-		json=response.json()
-		if (table in json):
-			return json[table]
+		if (response.status_code == 200):
+			json=response.json()
+			if (table in json):
+				return json[table]
+			else:
+				return None
+		elif (response.status_code == 404):
+			raise Exception("Table does not exist")
 		else:
-			return None
+			raise Exception(response)
 
 	def tdt_delete_column(self, table, column):
 		print(tdt_server + "/" + table + "/" + column )

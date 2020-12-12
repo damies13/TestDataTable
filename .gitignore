@@ -12,3 +12,4 @@ Resources/*
 dist/*
 build/*
 testdatatable.egg-info/*
+__pycache__
