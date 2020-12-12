@@ -5,7 +5,7 @@ with open("README_PyPi.md", "r") as fh:
 
 setuptools.setup(
 	name="testdatatable",
-	version="0.2.3.2",
+	version="0.2.4",
 	author="damies13",
 	author_email="damies13+TestDataTable@gmail.com",
 	description="TestDataTable",
