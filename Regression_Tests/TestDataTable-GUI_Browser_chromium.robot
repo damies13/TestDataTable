@@ -13,6 +13,7 @@ Default Tags	GUI
 # ${BROWSER}		ff
 # chromium | firefox | webkit
 ${BROWSER}		chromium
+${TABLENAME}		Regression_GUI_Browser_Chromium
 
 
 *** Test Cases ***    Expression    Expected
@@ -45,48 +46,48 @@ Create New Table
 	Click	//button[@title="Add Table"]
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Create table')]	enabled
 	Take Screenshot
-	Fill Text	input#table-name	Regression GUI
+	Fill Text	input#table-name	${TABLENAME}
 	Click 	"Create"
-	Wait For Elements State 	//a[text()='Regression GUI']	visible
+	Wait For Elements State 	//a[text()='${TABLENAME}']	visible
 
 Select Table
 	[Tags]	Tabs	Table
 	${handle_main}=	Get Page Ids	CURRENT
-	Wait For Elements State 	//li/a[text()='Regression GUI'] 	visible
-	Click	//li/a[text()='Regression GUI']
-	Wait For Elements State 	//li[@aria-selected='true']/a[text()='Regression GUI']	visible
+	Wait For Elements State 	//li/a[text()='${TABLENAME}'] 	visible
+	Click	//li/a[text()='${TABLENAME}']
+	Wait For Elements State 	//li[@aria-selected='true']/a[text()='${TABLENAME}']	visible
 
 Create New Column
 	[Tags]	Button	Create	Column	Dialogues
 	${handle_main}=	Get Page Ids	CURRENT
-	Wait For Elements State 	//li/a[text()='Regression GUI'] 	visible
-	Click	//li/a[text()='Regression GUI']
-	Wait For Elements State 	//li[@aria-selected='true']/a[text()='Regression GUI']	visible
+	Wait For Elements State 	//li/a[text()='${TABLENAME}'] 	visible
+	Click	//li/a[text()='${TABLENAME}']
+	Wait For Elements State 	//li[@aria-selected='true']/a[text()='${TABLENAME}']	visible
 	# Click Button	Add Column
 	Click	//button[@title="Add Column"]
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]	enabled
 	Take Screenshot
 	Fill Text	input#column-name	GUI Column A
 	Click 	"Add"
-	Wait For Elements State 	//div[@name='Regression GUI']//th/span[text()='GUI Column A']	visible
-	${col_a_id}=	Get Attribute	//div[@name='Regression GUI']//th/span[text()='GUI Column A']/..	id
+	Wait For Elements State 	//div[@name='${TABLENAME}']//th/span[text()='GUI Column A']	visible
+	${col_a_id}=	Get Attribute	//div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
 	Set Global Variable 	${col_a_id} 	${col_a_id}
 
 Add value to column
 	[Tags]	Create	Column	Values
-	Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]	visible
-	Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]	detached
-	Wait For Elements State 	//div[@name="Regression GUI"]//td/input 	detached
-	Click	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]	visible
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]	detached
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td/input 	detached
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Sleep    0.3
-	Click	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Take Screenshot
-	Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input	visible
-	Fill Text	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input	Column A Row 0
-	Click	//div[@name="Regression GUI"]//td[@id="${col_a_id}-3"]
-	Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input	hidden
-	Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]	visible
-	${result}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input	visible
+	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input	Column A Row 0
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-3"]
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input	hidden
+	Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]	visible
+	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Should Be Equal As Strings	${result}	Column A Row 0
 
 Add some test data
@@ -94,26 +95,26 @@ Add some test data
 	FOR    ${index}    IN RANGE    10
 		${incell}=	Evaluate    ${index}+1
 		${outcell}=	Evaluate    ${index}+3
-		Value Edit Mode 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}"]
-		Fill Text	//div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}"]/input	Column A Row ${incell}
-		Click	//div[@name="Regression GUI"]//td[@id="${col_a_id}-${outcell}"]
-		# Wait until page contains element  //div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]
-		Wait For Elements State 	//div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]	visible
+		Value Edit Mode 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}"]
+		Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}"]/input	Column A Row ${incell}
+		Click	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${outcell}"]
+		# Wait until page contains element  //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]
+		Wait For Elements State 	//div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]	visible
 	END
 	# Click Button	Add Column
 	Click	//button[@title="Add Column"]
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]	enabled
 	Fill Text	input#column-name	GUI Column B
 	Click 	"Add"
-	Wait For Elements State 	//div[@name='Regression GUI']//th/span[text()='GUI Column B']	visible
-	${col_b_id}=	Get Attribute	//div[@name='Regression GUI']//th/span[text()='GUI Column B']/..	id
+	Wait For Elements State 	//div[@name='${TABLENAME}']//th/span[text()='GUI Column B']	visible
+	${col_b_id}=	Get Attribute	//div[@name='${TABLENAME}']//th/span[text()='GUI Column B']/..	id
 	Set Global Variable 	${col_b_id} 	${col_b_id}
 	FOR    ${index}    IN RANGE    11
 		${incell}=	Evaluate    ${index}+0
 		${outcell}=	Evaluate    ${index}+3
-		Value Edit Mode 	//div[@name="Regression GUI"]//td[@id="${col_b_id}-${incell}"]
-		Fill Text	//div[@name="Regression GUI"]//td[@id="${col_b_id}-${incell}"]/input	Column B Row ${incell}
-		Click	//div[@name="Regression GUI"]//td[@id="${col_b_id}-${outcell}"]
+		Value Edit Mode 	//div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${incell}"]
+		Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${incell}"]/input	Column B Row ${incell}
+		Click	//div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${outcell}"]
 	END
 	Take Screenshot
 
@@ -121,47 +122,47 @@ Edit Value
 	[Tags]	Update	Values
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    3
-	${result}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
-	Value Edit Mode	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Take Screenshot
 	# Press Keys	None	ARROW_RIGHT
-	Fill Text	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input	${result} abc
+	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
-	Click	//div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row} abc
 
 Replace Value
 	[Tags]	Update	Values
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
-	${result}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
-	Value Edit Mode	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Text	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
-	Fill Text	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input	my new value
+	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
 	${outcell}=	Evaluate    ${row}+3
-	Click	//div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	my new value
 
 Remove Last Value
 	[Tags]	Delete	Values
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    10
-	${startval}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${startval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${startval}	Column B Row ${row}
-	Value Edit Mode	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Text	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
+	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	${outcell}=	Evaluate    ${row}+3
-	Click	//div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${endval}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${endval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Take Screenshot
 	Should Not Be Equal As Strings	${endval}	${startval}
 	# Should Be Equal As Strings	"${endval}"	" "
 	# " " != " "
-	Wait until page does not contain element  //div[@name="Regression GUI"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
+	Wait until page does not contain element  //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 
 
 Remove 3rd Value
@@ -170,16 +171,16 @@ Remove 3rd Value
 	${row}=	Set Variable    3
 	${lastrow}=	Set Variable    9
 	${nextrow}=	Evaluate	${row}+1
-	${startvalue}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${startvalue}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${startvalue}	Column B Row ${row}
-	Value Edit Mode	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Text	//div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
+	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	${outcell}=	Evaluate    ${row}+3
-	Click	//div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	Wait until page does not contain element  //div[@name="Regression GUI"]//td[@id="${col}-${lastrow}" and contains(@class, "has-value")]
-	Wait until page contains element  //div[@name="Regression GUI"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
-	Wait until page contains element  //div[@name="Regression GUI"]//td[@id="${col}-${nextrow}" and contains(@class, "has-value")]
-	${endval}=	Get Text    //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Wait until page does not contain element  //div[@name="${TABLENAME}"]//td[@id="${col}-${lastrow}" and contains(@class, "has-value")]
+	Wait until page contains element  //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
+	Wait until page contains element  //div[@name="${TABLENAME}"]//td[@id="${col}-${nextrow}" and contains(@class, "has-value")]
+	${endval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Not Be Equal As Strings	${endval}	${startvalue}
 	Should Be Equal As Strings	${endval}	Column B Row ${nextrow}
 
@@ -243,6 +244,7 @@ Import Data From File
 	Take Screenshot
 	# Wait Until Element Contains	id=dialog-progress-msg	100%
 	Wait Until Element Is Visible	//*[@id="dialog-progress-msg" and contains(text(), "100%")]
+	Sleep    1
 	Take Screenshot
 	# Wait Until Element Is Not Visible	id=dialog-progress-bar
 	Wait Until Element Is Not Visible	id=dialog-progress-subject
@@ -261,6 +263,8 @@ Export Data To File
 	Click	id=export-file
 	Wait Until Element Is Enabled	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Export')]
 	Take Screenshot
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
+	Take Screenshot
 	${filename}= 	Get Textfield Value	id=dialog-file-export-filename
 	Should Contain 	${filename} 	.csv
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
@@ -274,6 +278,7 @@ Export Data To File
 	Click    	id=dialog-file-export-insert-tab
 	${delim}= 	Get Textfield Value	id=dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${chk1strow}
 	${txtarea}= 	Get Textfield Value	//div[@id='dialog-file-export-preview']/textarea
 	Should Not Contain		${txtarea}		"${chk1strow}"
@@ -292,12 +297,12 @@ Export Data To File
 Remove Table
 	[Tags]	Delete	Table	Dialogues
 	${handle_main}=	Get Page Ids	CURRENT
-	Wait For Elements State 	//li/a[text()='Regression GUI'] 	visible
-	Click	//a[text()='Regression GUI']/../span
+	Wait For Elements State 	//li/a[text()='${TABLENAME}'] 	visible
+	Click	//a[text()='${TABLENAME}']/../span
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Delete table')]	enabled
 	Take Screenshot
 	Click	"Delete"
-	Wait For Elements State 	//span[contains(@class, 'ui-tabs-anchor') and contains(text(), 'Regression GUI')]	detached
+	Wait For Elements State 	//span[contains(@class, 'ui-tabs-anchor') and contains(text(), '${TABLENAME}')]	detached
 
 
 *** Keywords ***
@@ -306,6 +311,7 @@ Open TDT GUI
 	# Open Browser	about:blank	${BROWSER}
 	New Browser 	${BROWSER}	False
 	New Page
+	Set Browser Timeout 	30
 	Go To	http://${TDT_Host}/
 	# Go To	http://localhost/
 

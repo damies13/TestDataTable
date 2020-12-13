@@ -11,6 +11,7 @@ Default Tags	GUI
 *** Variables ***
 # ${BROWSER}		ff
 ${BROWSER}		chrome
+${TABLENAME}		Regression_GUI_Selenium_Chrome
 
 
 *** Test Cases ***    Expression    Expected
@@ -48,49 +49,49 @@ Create New Table
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Create table')]
 	Capture Page Screenshot
 
-	Input Text	id:table-name	Regression GUI
+	Input Text	id:table-name	${TABLENAME}
 	Click Button    Create
-	Wait Until Element Is Visible	xpath: //a[text()='Regression GUI']
+	Wait Until Element Is Visible	xpath: //a[text()='${TABLENAME}']
 
 Select Table
 	[Tags]	Tabs	Table
 	${handle} =	Select Window 	MAIN
-	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
-	Click Element    xpath: //li/a[text()='Regression GUI']
-	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='Regression GUI']
+	Wait Until Element Is Visible	xpath: //li/a[text()='${TABLENAME}']
+	Click Element    xpath: //li/a[text()='${TABLENAME}']
+	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='${TABLENAME}']
 
 Create New Column
 	[Tags]	Button	Create	Column	Dialogues
 	${handle} =	Select Window 	MAIN
-	Wait Until Element Is Visible	xpath: //li/a[text()='Regression GUI']
-	Click Element    xpath: //li/a[text()='Regression GUI']
-	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='Regression GUI']
+	Wait Until Element Is Visible	xpath: //li/a[text()='${TABLENAME}']
+	Click Element    xpath: //li/a[text()='${TABLENAME}']
+	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='${TABLENAME}']
 	Click Button	Add Column
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
 	Capture Page Screenshot
 	Input Text	id:column-name	GUI Column A
 	Click Button    Add
-	Wait Until Element Is Visible	xpath: //div[@name='Regression GUI']//th/span[text()='GUI Column A']
-	${col_a_id}=	Get Element Attribute	xpath: //div[@name='Regression GUI']//th/span[text()='GUI Column A']/..	id
+	Wait Until Element Is Visible	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']
+	${col_a_id}=	Get Element Attribute	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
 	Set Global Variable 	${col_a_id} 	${col_a_id}
 
 Add value to column
 	[Tags]	Create	Column	Values
 	${handle}=	Select Window 	MAIN
 	# //div[@name="Demo 2"]//td[@id="${col_a_id}-0"]/text()
-	Wait Until Element Is Visible	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
-	Wait until page does not contain element  xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
-	Page Should Not Contain Element	xpath: //div[@name="Regression GUI"]//td/input
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
+	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
+	Page Should Not Contain Element	xpath: //div[@name="${TABLENAME}"]//td/input
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Sleep    0.3
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Capture Page Screenshot
-	Wait Until Element Is Visible	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input
-	Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input	Column A Row 0
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-3"]
-	Wait Until Element Is Not Visible	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]/input
-	Wait until page contains element  xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
-	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-0"]
+	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input
+	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input	Column A Row 0
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-3"]
+	Wait Until Element Is Not Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input
+	Wait until page contains element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Should Be Equal As Strings	${result}	Column A Row 0
 
 Add some test data
@@ -99,24 +100,24 @@ Add some test data
 	FOR    ${index}    IN RANGE    10
 		${incell}=	Evaluate    ${index}+1
 		${outcell}=	Evaluate    ${index}+3
-		Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}"]
-		Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}"]/input	Column A Row ${incell}
-		Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-${outcell}"]
-		Wait until page contains element  xpath: //div[@name="Regression GUI"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]
+		Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}"]
+		Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}"]/input	Column A Row ${incell}
+		Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${outcell}"]
+		Wait until page contains element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-${incell}" and contains(@class, "has-value")]
 	END
 	Click Button	Add Column
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
 	Input Text	id:column-name	GUI Column B
 	Click Button    Add
-	Wait Until Element Is Visible	xpath: //div[@name='Regression GUI']//th/span[text()='GUI Column B']
-	${col_b_id}=	Get Element Attribute	xpath: //div[@name='Regression GUI']//th/span[text()='GUI Column B']/..	id
+	Wait Until Element Is Visible	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column B']
+	${col_b_id}=	Get Element Attribute	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column B']/..	id
 	Set Global Variable 	${col_b_id} 	${col_b_id}
 	FOR    ${index}    IN RANGE    11
 		${incell}=	Evaluate    ${index}+0
 		${outcell}=	Evaluate    ${index}+3
-		Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col_b_id}-${incell}"]
-		Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col_b_id}-${incell}"]/input	Column B Row ${incell}
-		Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col_b_id}-${outcell}"]
+		Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${incell}"]
+		Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${incell}"]/input	Column B Row ${incell}
+		Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_b_id}-${outcell}"]
 	END
 	Capture Page Screenshot
 
@@ -124,45 +125,45 @@ Edit Value
 	[Tags]	Update	Values
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    3
-	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
-	Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Capture Page Screenshot
 	# Press Keys	None	ARROW_RIGHT
-	Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input	${result} abc
+	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row} abc
 
 Replace Value
 	[Tags]	Update	Values
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
-	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
-	Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Element Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
-	Input Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input	my new value
+	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
 	${outcell}=	Evaluate    ${row}+3
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	my new value
 
 Remove Last Value
 	[Tags]	Delete	Values
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    10
-	${startval}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${startval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${startval}	Column B Row ${row}
-	Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Element Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
+	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	${outcell}=	Evaluate    ${row}+3
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	${endval}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	${endval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Not Be Equal As Strings	${endval}	${startval}
 	Should Be Equal As Strings	"${endval}"	" "
-	Wait until page does not contain element  xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
+	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 
 
 Remove 3rd Value
@@ -171,16 +172,16 @@ Remove 3rd Value
 	${row}=	Set Variable    3
 	${lastrow}=	Set Variable    9
 	${nextrow}=	Evaluate	${row}+1
-	${startvalue}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	${startvalue}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${startvalue}	Column B Row ${row}
-	Value Edit Mode	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
-	Clear Element Text	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]/input
+	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	${outcell}=	Evaluate    ${row}+3
-	Click Element	xpath: //div[@name="Regression GUI"]//td[@id="${col}-${outcell}"]
-	Wait until page does not contain element  xpath: //div[@name="Regression GUI"]//td[@id="${col}-${lastrow}" and contains(@class, "has-value")]
-	Wait until page contains element  xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
-	Wait until page contains element  xpath: //div[@name="Regression GUI"]//td[@id="${col}-${nextrow}" and contains(@class, "has-value")]
-	${endval}=	Get Text    xpath: //div[@name="Regression GUI"]//td[@id="${col}-${row}"]
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${lastrow}" and contains(@class, "has-value")]
+	Wait until page contains element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
+	Wait until page contains element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${nextrow}" and contains(@class, "has-value")]
+	${endval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Not Be Equal As Strings	${endval}	${startvalue}
 	Should Be Equal As Strings	${endval}	Column B Row ${nextrow}
 
@@ -273,6 +274,7 @@ Export Data To File
 	Click Link    	id:dialog-file-export-insert-tab
 	${delim}= 	Get Value	id:dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		${chk1strow}
 	${txtarea}= 	Get Value	xpath://div[@id='dialog-file-export-preview']/textarea
 	Should Not Contain		${txtarea}		"${chk1strow}"
@@ -291,14 +293,14 @@ Export Data To File
 Remove Table
 	[Tags]	Delete	Table	Dialogues
 	${handle} =	Select Window 	MAIN
-	# Wait Until Element Is Enabled	xpath: //a[text()='Regression GUI']/../span
-	Wait Until Element Is Visible	xpath: //a[text()='Regression GUI']/../span
-	Click Element    xpath: //a[text()='Regression GUI']/../span
-	# 					  //span[@table="Regression GUI"]
+	# Wait Until Element Is Enabled	xpath: //a[text()='${TABLENAME}']/../span
+	Wait Until Element Is Visible	xpath: //a[text()='${TABLENAME}']/../span
+	Click Element    xpath: //a[text()='${TABLENAME}']/../span
+	# 					  //span[@table="${TABLENAME}"]
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Delete table')]
 	Capture Page Screenshot
 	Click Button    Delete
-	Wait Until Element Is Not Visible	xpath: //span[contains(@class, 'ui-tabs-anchor') and contains(text(), 'Regression GUI')]
+	Wait Until Element Is Not Visible	xpath: //span[contains(@class, 'ui-tabs-anchor') and contains(text(), '${TABLENAME}')]
 
 
 *** Keywords ***
