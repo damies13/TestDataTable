@@ -743,7 +743,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log(tables.tables[i]);
 										var tableid = tables.tables[i].tbl_id;
 										var tablenme = tables.tables[i].table;
-										var tabid = tableid.toString() +'_'+ tablenme.replace(' ', '_');
+										var tabid = tableid.toString() +'_'+ tablenme.replace(/ /g, '_');
 										keeptables.push(tabid);
 										console.log("tabid: " + tabid);
 										console.log($("[href='#"+tabid+"']").length);
