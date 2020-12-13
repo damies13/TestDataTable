@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.2.4
+#    Version v0.2.5
 #
 
 
@@ -743,7 +743,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log(tables.tables[i]);
 										var tableid = tables.tables[i].tbl_id;
 										var tablenme = tables.tables[i].table;
-										var tabid = tableid.toString() +'_'+ tablenme.replace(' ', '_');
+										var tabid = tableid.toString() +'_'+ tablenme.replace(/ /g, '_');
 										keeptables.push(tabid);
 										console.log("tabid: " + tabid);
 										console.log($("[href='#"+tabid+"']").length);
@@ -1749,7 +1749,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 class TestDataTable:
 # class TDT_Core:
-	version="0.2.4"
+	version="0.2.5"
 	debuglvl = 0
 
 	tdt_ini = None

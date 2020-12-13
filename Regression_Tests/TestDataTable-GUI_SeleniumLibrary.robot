@@ -303,6 +303,58 @@ Remove Table
 	Wait Until Element Is Not Visible	xpath: //span[contains(@class, 'ui-tabs-anchor') and contains(text(), '${TABLENAME}')]
 
 
+Table with some spaces
+	[Tags]	Button	Create	Table	Column	Values	Dialogues
+	${handle} =	Select Window 	MAIN
+
+	# Create Table
+	Click Button	Add Table
+	# Click Button	id:new-table
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Create table')]
+	Capture Page Screenshot
+	${TABLENAME}= 	Set Variable	Table with some Spaces
+	Input Text	id:table-name	${TABLENAME}
+	Click Button    Create
+	Wait Until Element Is Visible	xpath: //a[text()='${TABLENAME}']
+
+	# Add Column
+	Wait Until Element Is Visible	xpath: //li/a[text()='${TABLENAME}']
+	Click Element    xpath: //li/a[text()='${TABLENAME}']
+	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='${TABLENAME}']
+	Click Button	Add Column
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
+	Capture Page Screenshot
+	Input Text	id:column-name	Col with spaces
+	Click Button    Add
+	Wait Until Element Is Visible	xpath: //div[@name='${TABLENAME}']//th/span[text()='Col with spaces']
+	${col_a_id}=	Get Element Attribute	xpath: //div[@name='${TABLENAME}']//th/span[text()='Col with spaces']/..	id
+
+	# Add Value
+	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
+	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
+	Page Should Not Contain Element	xpath: //div[@name="${TABLENAME}"]//td/input
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
+	Sleep    0.3
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
+	Capture Page Screenshot
+	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input
+	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input	abc123
+	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-3"]
+	Wait Until Element Is Not Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]/input
+	Wait until page contains element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
+	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
+	Should Be Equal As Strings	${result}	abc123
+
+Remove Table with some spaces
+	[Tags]	Delete	Table	Dialogues
+	Remove Table	Table with some Spaces
+
+Remove Table undefined
+	[Tags]	Table
+	${passed} =	Run Keyword And Return Status	Remove Table	undefined
+	Run keyword if	${passed} 	Fail	Table undefined should not exist
+
+
 *** Keywords ***
 Open TDT GUI
 	${orig timeout} = 	Set Selenium Timeout 	30 seconds
@@ -320,3 +372,13 @@ Value Edit Mode
 	Click Element	${locator}
 	Sleep    0.3
 	Click Element	${locator}
+
+
+Remove Table
+	[Arguments]	${TABLENAME}
+	Wait Until Element Is Visible	xpath: //a[text()='${TABLENAME}']/../span
+	Click Element    xpath: //a[text()='${TABLENAME}']/../span
+	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Delete table')]
+	Capture Page Screenshot
+	Click Button    Delete
+	Wait Until Element Is Not Visible	xpath: //span[contains(@class, 'ui-tabs-anchor') and contains(text(), '${TABLENAME}')]
