@@ -1803,6 +1803,7 @@ class TestDataTable:
 			self.config.read(self.tdt_ini)
 		else:
 			self.saveini()
+		self.debugmsg(0, "Configuration File: ", self.tdt_ini)
 
 
 		if 'Server' not in self.config:
