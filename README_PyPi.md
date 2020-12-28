@@ -18,3 +18,5 @@ The [Regression_Tests](https://github.com/damies13/TestDataTable/blob/master/Reg
 ## Donations
 
 If you would like to thank me for this project please use this [PayPal.me](https://paypal.me/damies13/5) link, the $5 is a suggestion, feel free to change to any amount you would like.
+
+<iframe src="https://github.com/sponsors/damies13/card" title="Sponsor damies13" height="225" width="600" style="border: 0;"></iframe>
