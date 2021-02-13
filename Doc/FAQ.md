@@ -31,3 +31,14 @@ python TestDataTable.py -i <your ini file>
 ## I'm using Robot Framework do you have examples of how to use TestDataTable with Robot Framework?
 
 Your in luck, we used Robot Framework for our Regression testing of TestDataTable. There are example with 2 libraries that are both quite easy to use. Those are the [REST Library](../Regression_Tests/TestDataTable-API_REST.robot) and the [Requests Library](../Regression_Tests/TestDataTable-API_requests.robot)
+
+## I'm using JMeter do you have examples of how to use TestDataTable with JMeter?
+
+Your in luck, [there are some examples with screen shots here](../TestTools/JMeter/JMeter.md)
+
+
+## I'm using another test tool do you have examples of how to use TestDataTable with other tools?
+
+Sorry not yet, to start with see FAQ: [Can I use TestDataTable with XYZ test tool?](#can-i-use-testdatatable-with-xyz-test-tool)
+
+If you would like your favorite test tool added to the documentation for TestDataTable please create an [Issue](https://github.com/damies13/TestDataTable/issues) along the lines of "please document XYZ test tool for TestDataTable" and we will try to get to it for you.
