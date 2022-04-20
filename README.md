@@ -1,7 +1,7 @@
 
 # TestDataTable
 
-[![Latest PyPI version](https://img.shields.io/pypi/v/TestDataTable.svg)](https://pypi.python.org/pypi/TestDataTable/) [![Number of PyPI downloads](https://img.shields.io/pypi/dm/TestDataTable.svg)](https://pypi.python.org/pypi/TestDataTable/)
+[![Latest PyPI version](https://img.shields.io/pypi/v/TestDataTable.svg)](https://pypi.python.org/pypi/TestDataTable/) [![Number of PyPI downloads](https://img.shields.io/pypi/dm/TestDataTable.svg)](https://pypistats.org/packages/testdatatable)
 
 <img align="right" src="Doc/Images/Icon_Information.png">
 
