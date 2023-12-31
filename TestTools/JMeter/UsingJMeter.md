@@ -10,7 +10,14 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 	<img src='./AddUserDefinedVariables.png' alt='abc User Defined Variables'>
 
-	![orig User Defined Variables](./AddUserDefinedVariables.png)
+	<img src='https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png' alt='lmn User Defined Variables'>
+
+	![orig User Defined Variables](AddUserDefinedVariables.png)
+
+	![origb User Defined Variables](./AddUserDefinedVariables.png)
+
+	![origu User Defined Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png)
+
 
 	1. Then set up some variables for Host, Port, Table and Columns ![Variables](UserDefinedVariables.png)
 
