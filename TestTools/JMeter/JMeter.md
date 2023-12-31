@@ -6,20 +6,11 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 	1. Right Click your test plan, select Add, Config Element, User Defined Variables
 
-	<img src='AddUserDefinedVariables.png' alt='xyz User Defined Variables'>
+	![User Defined Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png)
 
-	<img src='./AddUserDefinedVariables.png' alt='abc User Defined Variables'>
+	1. Then set up some variables for Host, Port, Table and Columns
 
-	<img src='https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png' alt='lmn User Defined Variables'>
-
-	![orig User Defined Variables](AddUserDefinedVariables.png)
-
-	![origb User Defined Variables](./AddUserDefinedVariables.png)
-
-	![origu User Defined Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png)
-
-
-	1. Then set up some variables for Host, Port, Table and Columns ![Variables](UserDefinedVariables.png)
+		![Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/UserDefinedVariables.png)
 
 1. For this example we will read the value from one column and return it to another column in the same table, whether you read and return to the same column, different column or only send to a column for you thread group will depend on the requirements of your application.
 
@@ -27,7 +18,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 		1. Right click your Thread Group and select Add, Sampler, HTTP Request
 
-			![Add HTTP Request](AddHTTPRequest.png)
+			![Add HTTP Request](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddHTTPRequest.png)
 
 		1. Then configure the following settings
 
@@ -44,18 +35,18 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 			- You can leave all other values default
 
-				![HTTP Request GET](HTTPRequest_GET.png)
+				![HTTP Request GET](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/HTTPRequest_GET.png)
 
 		1. Next right click the HTTP Request Sampler and select Add, Post Processors, JSON Extractor
 
-			![Add JSON Extractor](Add_JSON_Extractor.png)
+			![Add JSON Extractor](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/Add_JSON_Extractor.png)
 
 		1. Then configure the following settings
 
 			- Names of created variables: Set this to a meaning variable name that you want to use in your thread group, e.g. Retrieved (I don't recommend using variables here unless you understand JMeter's variable evaluation)
 			- JSON Path expressions: Set this to JSON path that gets the value you want, e.g. $.\<Column\> or use your User Defined Variable $.$\{TDT_Column\} \(JSON paths start with a '$.'\)
 
-				![JSON Extractor](JSON_Extractor.png)
+				![JSON Extractor](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/JSON_Extractor.png)
 
 		1. Now you can use this variable created by the JSON Extractor in you Thread Group, e.g. $\{Retrieved\}
 
@@ -64,7 +55,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 		1. Right click your Thread Group and select Add, Sampler, HTTP Request
 
-			![Add HTTP Request](AddHTTPRequest.png)
+			![Add HTTP Request](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddHTTPRequest.png)
 
 		1. Then configure the following settings
 
@@ -81,7 +72,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 			- You can leave all other values default
 
-				![HTTP Request PUT](HTTPRequest_PUT.png)
+				![HTTP Request PUT](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/HTTPRequest_PUT.png)
 
 
 Also you can download [this example .jmx file](TDTExample.jmx) if you want to see some working examples.
