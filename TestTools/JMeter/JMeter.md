@@ -6,11 +6,11 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 	1. Right Click your test plan, select Add, Config Element, User Defined Variables
 
-		![User Defined Variables](AddUserDefinedVariables.png)
+		![User Defined Variables](./AddUserDefinedVariables.png)
 
 	1. Then set up some variables for Host, Port, Table and Columns
 
-		![Variables](UserDefinedVariables.png)
+		![Variables](./UserDefinedVariables.png)
 
 1. For this example we will read the value from one column and return it to another column in the same table, whether you read and return to the same column, different column or only send to a column for you thread group will depend on the requirements of your application.
 
