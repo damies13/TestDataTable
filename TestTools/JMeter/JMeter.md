@@ -6,7 +6,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 
 	1. Right Click your test plan, select Add, Config Element, User Defined Variables
 
-	![User Defined Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png)
+		![User Defined Variables](https://github.com/damies13/TestDataTable/blob/master/TestTools/JMeter/AddUserDefinedVariables.png)
 
 	1. Then set up some variables for Host, Port, Table and Columns
 
