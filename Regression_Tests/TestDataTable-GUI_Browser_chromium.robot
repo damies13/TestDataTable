@@ -357,9 +357,10 @@ Wait Until Element Contains
 Choose File
 	[Arguments]	${locator}	${file}
 	# Choose File 	id=dialog-file-import-file 	${CURDIR}/GC_5k.csv
-	Upload File    ${file}
-	Click          ${locator}
-
+	# Upload File    ${file}
+	# Click          ${locator}
+	# Seems the way it used to work was a mix between `Upload File By Selector` and `Promise To Upload File`
+	Upload File By Selector 		${locator} 		${file}
 
 Textarea Should Contain
 	[Arguments]	${locator}	${value}
