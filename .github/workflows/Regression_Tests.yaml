@@ -1,7 +1,7 @@
 ---
 name: Regression Tests
 
-on: workflow_call
+on: push
 
 jobs:
   Agent:
