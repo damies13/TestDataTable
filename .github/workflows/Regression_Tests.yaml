@@ -24,14 +24,8 @@ jobs:
       - name: Install Pip Requirements
         run: pip install -r Regression_Tests/pip_requirements.txt
 
-      # - name: Run TestDataTable
-      #   run: python3 testdatatable/TestDataTable.py  -p 1080
-
       - name: Robot Framework
-        run: >
-          robot --include ${{ matrix.platform }}
-          --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }}
-          Regression_Tests
+        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} Regression_Tests
 
       - name: Archive Agent Logs
         if: ${{ success() }}
