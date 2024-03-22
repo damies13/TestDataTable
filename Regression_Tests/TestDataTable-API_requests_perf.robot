@@ -97,7 +97,7 @@ Connect to TDT
 Get TDT Value
 	[Arguments] 	${table}	${column}
 	[Documentation] 	Get TDT Value /${table}/${column}
-	${resp}=	Get Request	TDT	/${table}/${column}
+	${resp}=	GET On Session	TDT	/${table}/${column}
 	Should Be Equal As Strings	${resp.status_code}	200
 	# ${TDT["${column}"]}=	Set Variable    ${resp.json()['${column}']}
 	${checkval}=	Set Variable    ${resp.json()['${column}']}
@@ -107,7 +107,7 @@ Get TDT Value
 Return TDT Value
 	[Arguments] 	${table}	${column}	${value}
 	[Documentation] 	Return TDT Value /${table}/${column}
-	${resp}=	Put Request	TDT	/${table}/${column}/${value}
+	${resp}=	PUT On Session	TDT	/${table}/${column}/${value}
 	Should Be Equal As Strings	${resp.status_code}	201
 
 
@@ -121,24 +121,24 @@ Create Perf_P1 Value
 	[Documentation] 	Create Value in Table Perf Col P1
 	${number}    Evaluate    random.randint(5, 30)    random
 	${RANDVAL}= 	Generate Random String	${number}
-	Put Request	TDT	/Perf/P1/${RANDVAL}
+	PUT On Session	TDT	/Perf/P1/${RANDVAL}
 	[Return]	${RANDVAL}
 
 Get Perf Column
 	[Arguments] 	${column}
 	[Documentation] 	Get Value from Perf ${column}
-	${resp}=	Get Request	TDT	/Perf/${column}
+	${resp}=	GET On Session	TDT	/Perf/${column}
 	Should Be Equal As Strings	${resp.status_code}	200
 	[return]	${resp.json()['${column}']}
 
 Set Perf Column
 	[Arguments] 	${column}	${value}
 	[Documentation] 	Set Value to Perf ${column}
-	${resp}=	Put Request	TDT	/Perf/${column}/${value}
+	${resp}=	PUT On Session	TDT	/Perf/${column}/${value}
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Delete Perf Column
 	[Arguments] 	${column}
 	[Documentation] 	Delete Value from Perf ${column}
-	${resp}=	Delete Request	TDT	/Perf/${column}
+	${resp}=	DELETE On Session	TDT	/Perf/${column}
 	Should Be Equal As Strings	${resp.status_code}	200
