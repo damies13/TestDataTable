@@ -208,7 +208,7 @@ Import Data From File
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Import')]
 	Capture Page Screenshot
 	# Click Element    id:dialog-file-import-file
-	Choose File 	id:dialog-file-import-file 	${CURDIR}/GC_5k.csv
+	Choose File 	id:dialog-file-import-file 	${CURDIR}${/}testdata${/}GC_5k.csv
 	Capture Page Screenshot
 	${hdrrow0}= 	Get Value	id:preview-c0
 	Should Be Equal As Strings	${hdrrow0}	Rand

@@ -205,7 +205,7 @@ Import Data From File
 	Wait Until Element Is Enabled	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Import')]
 	Take Screenshot
 	# Click    id=dialog-file-import-file
-	Choose File 	id=dialog-file-import-file 	${CURDIR}/GC_5k.csv
+	Choose File 	id=dialog-file-import-file 	${CURDIR}${/}testdata${/}GC_5k.csv
 	Take Screenshot
 	${hdrrow0}= 	Get Text 	id=preview-c0
 	Should Be Equal As Strings	${hdrrow0}	Rand
@@ -356,7 +356,7 @@ Wait Until Element Contains
 
 Choose File
 	[Arguments]	${locator}	${file}
-	# Choose File 	id=dialog-file-import-file 	${CURDIR}/GC_5k.csv
+	# Choose File 	id=dialog-file-import-file 	${CURDIR}${/}testdata${/}GC_5k.csv
 	# Upload File    ${file}
 	# Click          ${locator}
 	# Seems the way it used to work was a mix between `Upload File By Selector` and `Promise To Upload File`
