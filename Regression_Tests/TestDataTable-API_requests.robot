@@ -171,7 +171,7 @@ Get Table regression 1 row 100
 # DELETE /<table name>/<column name>
 Delete Column Col_C
 	[Tags]	Delete	Column
-	${resp}=	Delete Request	TDT	/regression+1/Col_C
+	${resp}=	DELETE On Session	TDT	/regression+1/Col_C
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
@@ -219,7 +219,7 @@ Add more values to Column Col_A
 
 Delete Value 4 from Column Col_A
 	[Tags]	Delete	Values
-	${resp}=	Delete Request	TDT	/regression 1/Col_A/Value 4
+	${resp}=	DELETE On Session	TDT	/regression 1/Col_A/Value 4
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
@@ -301,7 +301,7 @@ Value Id doesn't exist
 
 Delete Table regression 1
 	[Tags]	Table	Delete
-	${resp}=	Delete Request	TDT	/regression+1
+	${resp}=	DELETE On Session	TDT	/regression+1
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
@@ -324,7 +324,7 @@ Add value to create column and table
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
 	Log	"Cleanup table Regression Create"
-	${resp}=	Delete Request	TDT	/Regression+Create
+	${resp}=	DELETE On Session	TDT	/Regression+Create
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	200
