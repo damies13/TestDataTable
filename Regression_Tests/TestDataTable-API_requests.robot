@@ -12,7 +12,7 @@ Default Tags	API 	RequestsLibrary
 *** Test cases ***
 Create Blank Table
 	[Tags]	Create	Table	Negative Case
-	${resp}=	PUT On Session	TDT	/
+	${resp}=	PUT On Session	TDT	/ 	expected_status=406
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	406
@@ -20,7 +20,7 @@ Create Blank Table
 
 Create Table regression 1
 	[Tags]	Create	Table
-	${resp}=	PUT On Session	TDT	/regression+1
+	${resp}=	PUT On Session	TDT	/regression+1 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
@@ -60,7 +60,7 @@ Create Table regression 1 again
 
 Create Blank Column
 	[Tags]	Create	Column	Negative Case
-	${resp}=	PUT On Session	TDT	/regression+1/
+	${resp}=	PUT On Session	TDT	/regression+1/ 	expected_status=406
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	406
@@ -68,7 +68,7 @@ Create Blank Column
 
 Create Column Col_A
 	[Tags]	Create	Column
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	# Expect Response	{ "status": "200" }	merge=true
@@ -96,27 +96,27 @@ Get value from empty column
 
 Create Column Col_B and Col_C
 	[Tags]	Create	Column
-	${resp}=	PUT On Session	TDT	/regression+1/Col_B
+	${resp}=	PUT On Session	TDT	/regression+1/Col_B 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression+1/Col_C
+	${resp}=	PUT On Session	TDT	/regression+1/Col_C 	expected_status=201
 	Log	${resp}
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Post row of data
 	[Tags]	Create	Values
-	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value A","Col_B":"Value B","Col_C":"Value C"}
+	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value A","Col_B":"Value B","Col_C":"Value C"} 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value X", "Col_B":"Value Y", "Col_C":"Value Z"}
+	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value X", "Col_B":"Value Y", "Col_C":"Value Z"} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value D", "Col_B":"Value E", "Col_C":"Value F"}
+	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value D", "Col_B":"Value E", "Col_C":"Value F"} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value G", "Col_B":"Value H", "Col_C":"Value I"}
+	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value G", "Col_B":"Value H", "Col_C":"Value I"} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value J", "Col_B":"Value K", "Col_C":"Value L"}
+	${resp}=	POST On Session	TDT	/regression+1/row	{"Col_A":"Value J", "Col_B":"Value K", "Col_C":"Value L"} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Get all values for Column Col_A
@@ -157,14 +157,14 @@ Get Table regression 1 row 2
 	Should Be Equal As Strings	${resp.json()['regression 1']['Col_C']}	Value I
 	# return data row to table
 	${json_string}=    evaluate    json.dumps(${resp.json()['regression 1']})    json
-	${resp}=	POST On Session	TDT	/regression+1/row	${json_string}
+	${resp}=	POST On Session	TDT	/regression+1/row	${json_string} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Get Table regression 1 row 100
 	[Documentation]	Get the 100th row of data
 	...		as there are less than 10 rows, this should return 404 not found
 	[Tags]	Values
-	${resp}=	GET On Session	TDT	/regression+1/99
+	${resp}=	GET On Session	TDT	/regression+1/99 	expected_status=404
 	Log	${resp}
 	Should Be Equal As Strings	${resp.status_code}	404
 
@@ -191,30 +191,30 @@ Get Column Col_A
 	${checkval2}=	Set Variable    ${resp.json()['Col_A']}
 	Should Not Be Equal    ${checkval1}    ${checkval2}
 	# put the values back
-	${resp}=	PUT On Session	TDT	/regression 1/Col_A/${checkval2}
+	${resp}=	PUT On Session	TDT	/regression 1/Col_A/${checkval2} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression 1/Col_A/${checkval1}
+	${resp}=	PUT On Session	TDT	/regression 1/Col_A/${checkval1} 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
 
 # PUT /<table name>/<column name>/<value>
 Add value to Column Col_A
 	[Tags]	Create	Values
-	${resp}=	PUT On Session	TDT	/regression 1/Col_A/Value 1
+	${resp}=	PUT On Session	TDT	/regression 1/Col_A/Value 1 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Add more values to Column Col_A
 	[Tags]	Create	Values
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+2
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+2 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+3
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+3 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+4
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+4 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+5
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+5 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+6
+	${resp}=	PUT On Session	TDT	/regression+1/Col_A/Value+6 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
 
 Delete Value 4 from Column Col_A
@@ -271,21 +271,21 @@ Get value by id from Column Col_A
 
 Table doesn't exist
 	[Tags]	Table	Negative Case
-	${resp}=	GET On Session	TDT	/regression 1998
+	${resp}=	GET On Session	TDT	/regression 1998 	expected_status=404
 	Log	${resp}
 	# log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	404
 
 Table doesn't exist - columns
 	[Tags]	Table	Negative Case
-	${resp}=	GET On Session	TDT	/regression 1999/columns
+	${resp}=	GET On Session	TDT	/regression 1999/columns 	expected_status=404
 	Log	${resp}
 	# log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	404
 
 Column doesn't exist
 	[Tags]	Column	Negative Case
-	${resp}=	GET On Session	TDT	/regression 1/joe citizen 2019
+	${resp}=	GET On Session	TDT	/regression 1/joe citizen 2019 	expected_status=404
 	Log	${resp}
 	# log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	404
@@ -294,7 +294,7 @@ Value Id doesn't exist
 	[Tags]	Values	Negative Case
 	# ${badval}=	Evaluate    ${value_id} * 2
 	${badval}=	Set Variable	5c1d0000920000000000000000000000
-	${resp}=	GET On Session	TDT	/regression+1/Col_A/${badval}
+	${resp}=	GET On Session	TDT	/regression+1/Col_A/${badval} 	expected_status=404
 	Log	${resp}
 	# log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	404
@@ -319,7 +319,7 @@ Table regression 1 removed
 
 Add value to create column and table
 	[Tags]	Create	Table	Column	Values
-	${resp}=	PUT On Session	TDT	/Regression+Create/Col+Create/Value+Create
+	${resp}=	PUT On Session	TDT	/Regression+Create/Col+Create/Value+Create 	expected_status=201
 	Log	${resp}
 	log	${resp.json()}
 	Should Be Equal As Strings	${resp.status_code}	201
@@ -331,19 +331,19 @@ Add value to create column and table
 
 Create Demo Data
 	[Tags]	Create	Values
-	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+1
+	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+1 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+2
+	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+2 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+3
+	${resp}=	PUT On Session	TDT	/Demo/Demo+1/data+value+3 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+21
+	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+21 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+22
+	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+22 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+23
+	${resp}=	PUT On Session	TDT	/Demo/Demo+2/data+value+23 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
-	${resp}=	PUT On Session	TDT	/Demo 2/Demo 3/data value 1
+	${resp}=	PUT On Session	TDT	/Demo 2/Demo 3/data value 1 	expected_status=201
 	Should Be Equal As Strings	${resp.status_code}	201
 
 
