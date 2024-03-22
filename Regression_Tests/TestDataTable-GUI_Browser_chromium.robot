@@ -30,7 +30,7 @@ Open Help
 	# Get Text	"Rest Api"
 	Take Screenshot
 	${helptitle}=	Get Title
-	Should Contain	${helptitle}	TestDataTable/rest_api.md at master
+	Should Contain	${helptitle}	TestDataTable/Doc/rest_api.md at master
 	Close Page
 	${handle}=	Switch Page 	${handle_Main[0]}
 

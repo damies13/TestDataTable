@@ -31,7 +31,7 @@ Open Help
 	# ${handle} =	Select Window	TestDataTable/rest_api
 	${helptitle}=	Get Title
 	# TestDataTable/rest_api.md at master · damies13/TestDataTable
-	Should Contain	${helptitle}	TestDataTable/rest_api.md at master
+	Should Contain	${helptitle}	TestDataTable/Doc/rest_api.md at master
 	Close Window
 	# ${handle} =	Switch Window 	MAIN
 	${handle} =	Select Window	${maintitle}
