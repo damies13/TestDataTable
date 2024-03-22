@@ -21,6 +21,28 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: "Apt Update"
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          sudo apt update -y
+      - name: "Ubuntu Installs"
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          sudo apt install -y scrot fluxbox
+          sudo apt list --installed
+      - name: "Ubuntu Xvfb"
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          export DISPLAY=:13.0
+          Xvfb :13 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          # xauth with complain unless ~/.Xauthority exists
+          touch ~/.Xauthority
+          # To view a listing of the .Xauthority file, enter the following
+          xauth list
+          sleep 1
+          # fluxbox
+          fluxbox &
+
       - name: Install NodeJS for Browser Library
         uses: actions/setup-node@v4
 
@@ -32,6 +54,8 @@ jobs:
 
       - name: Robot Framework
         run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
+        env:
+          DISPLAY: :13.0
 
       - name: Archive Agent Logs
         if: ${{ success() }}
