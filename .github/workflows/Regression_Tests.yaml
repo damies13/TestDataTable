@@ -25,7 +25,7 @@ jobs:
         run: pip install -r Regression_Tests/pip_requirements.txt
 
       - name: Robot Framework
-        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} Regression_Tests
+        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
 
       - name: Archive Agent Logs
         if: ${{ success() }}
