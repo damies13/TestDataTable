@@ -207,30 +207,30 @@ Import Data From File
 	# Click    id=dialog-file-import-file
 	Choose File 	id=dialog-file-import-file 	${CURDIR}/GC_5k.csv
 	Take Screenshot
-	${hdrrow0}= 	Get Textfield Value	id=preview-c0
+	${hdrrow0}= 	Get Text 	id=preview-c0
 	Should Be Equal As Strings	${hdrrow0}	Rand
-	${hdrrow1}= 	Get Textfield Value	id=preview-c1
+	${hdrrow1}= 	Get Text 	id=preview-c1
 	Should Be Equal As Strings	${hdrrow1}	street_no_1
-	${hdrrow2}= 	Get Textfield Value	id=preview-c2
+	${hdrrow2}= 	Get Text 	id=preview-c2
 	Should Be Equal As Strings	${hdrrow2}	road_name
 	Click    id=dialog-file-import-header-row
-	${nohdrow1}= 	Get Textfield Value	id=preview-c1
+	${nohdrow1}= 	Get Text 	id=preview-c1
 	Should Be Equal As Strings	${nohdrow1}	1
 	${datacell1}= 	Get Text	id=preview-tablecell-1-1
 	Should Be Equal As Strings	${hdrrow1}	${datacell1}
 	Take Screenshot
 	Click    id=dialog-file-import-header-row
 	Click    	"tab"
-	${delim}= 	Get Textfield Value	id=dialog-file-import-delimiter
+	${delim}= 	Get Text 	id=dialog-file-import-delimiter
 	Should Be Equal As Strings		${delim}	\t
 	# Wait Until Keyword Succeeds    10s    200ms    Textfield Should Contain    id=dialog-file-import-delimiter    \t
-	${hdrrow0_delim}= 	Get Textfield Value	id=preview-c0
+	${hdrrow0_delim}= 	Get Text 	id=preview-c0
 	Should Be Equal As Strings	${hdrrow0_delim}	${hdrrow0},${hdrrow1},${hdrrow2}
 	Take Screenshot
 	${datacell0}= 	Get Text	id=preview-tablecell-1-0
 	${newhdr}=		Set Variable    Street Data
 	Fill Text		id=preview-c0	${newhdr}
-	${chknewhdr}= 	Get Textfield Value	id=preview-c0
+	${chknewhdr}= 	Get Text 	id=preview-c0
 	Should Be Equal As Strings	${newhdr}	${newhdr}
 	Take Screenshot
 	Click    "Import"
@@ -265,29 +265,29 @@ Export Data To File
 	Take Screenshot
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
 	Take Screenshot
-	${filename}= 	Get Textfield Value	id=dialog-file-export-filename
+	${filename}= 	Get Text 	id=dialog-file-export-filename
 	Should Contain 	${filename} 	.csv
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		"${chk1strow}"
 	Click    id=dialog-file-export-header-row
-	${txtarea}= 	Get Textfield Value	//div[@id='dialog-file-export-preview']/textarea
+	${txtarea}= 	Get Text 	//div[@id='dialog-file-export-preview']/textarea
 	Should Not Contain		${txtarea}		Street Data
 	Take Screenshot
 	Click    id=dialog-file-export-header-row
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
 	Click    	id=dialog-file-export-insert-tab
-	${delim}= 	Get Textfield Value	id=dialog-file-export-delimiter
+	${delim}= 	Get Text 	id=dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${chk1strow}
-	${txtarea}= 	Get Textfield Value	//div[@id='dialog-file-export-preview']/textarea
+	${txtarea}= 	Get Text 	//div[@id='dialog-file-export-preview']/textarea
 	Should Not Contain		${txtarea}		"${chk1strow}"
-	${filename}= 	Get Textfield Value	id=dialog-file-export-filename
+	${filename}= 	Get Text 	id=dialog-file-export-filename
 	Should Contain 	${filename} 	.tsv
 	Take Screenshot
 	Fill Text		id=dialog-file-export-delimiter	|
 	Click    id=dialog-file-export-filename
-	${filename}= 	Get Textfield Value	id=dialog-file-export-filename
+	${filename}= 	Get Text 	id=dialog-file-export-filename
 	Should Contain 	${filename} 	.txt
 	# $x('//div[@id="dialog-file-export"]/..//button[text()="Cancel"]')
 	# Click Button    Cancel
@@ -357,16 +357,18 @@ Wait Until Element Contains
 Choose File
 	[Arguments]	${locator}	${file}
 	# Choose File 	id=dialog-file-import-file 	${CURDIR}/GC_5k.csv
-	Upload File    ${file}
-	Click          ${locator}
+	# Upload File    ${file}
+	# Click          ${locator}
+	# Seems the way it used to work was a mix between `Upload File By Selector` and `Promise To Upload File`
+	Upload File By Selector 		${locator} 		${file}
 
 
 Textarea Should Contain
 	[Arguments]	${locator}	${value}
-	# ${filename}= 	Get Textfield Value	id=dialog-file-export-filename
+	# ${filename}= 	Get Text 	id=dialog-file-export-filename
 	# Should Contain 	${filename} 	.csv
 	# Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
-	${text}= 	Get Textfield Value	${locator}
+	${text}= 	Get Text 	${locator}
 	Should Contain	${text}	${value}
 
 

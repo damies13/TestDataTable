@@ -19,31 +19,31 @@ ${TABLENAME}		Regression_GUI_Selenium_Chrome
 
 Open Help
 	[Tags]	Button	Help
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Capture Page Screenshot
 	${maintitle}=	Get Title
 	Click Button	Help
 	# ${handle} =	Switch Window	NEW
-	${handle} =	Select Window	NEW	120
+	${handle} =	Switch Window	NEW	120
 	Wait Until Page Contains	Rest Api
 	# Wait Until Element Is Visible	Table operations	60
 	Capture Page Screenshot
-	# ${handle} =	Select Window	TestDataTable/rest_api
+	# ${handle} =	Switch Window	TestDataTable/rest_api
 	${helptitle}=	Get Title
 	# TestDataTable/rest_api.md at master · damies13/TestDataTable
 	Should Contain	${helptitle}	TestDataTable/Doc/rest_api.md at master
 	Close Window
 	# ${handle} =	Switch Window 	MAIN
-	${handle} =	Select Window	${maintitle}
+	${handle} =	Switch Window	${maintitle}
 
 Click Refresh Button
 	[Tags]	Button
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Click Button	Refresh
 
 Create New Table
 	[Tags]	Button	Create	Table	Dialogues
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Click Button	Add Table
 	# Click Button	id:new-table
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Create table')]
@@ -55,14 +55,14 @@ Create New Table
 
 Select Table
 	[Tags]	Tabs	Table
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Wait Until Element Is Visible	xpath: //li/a[text()='${TABLENAME}']
 	Click Element    xpath: //li/a[text()='${TABLENAME}']
 	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='${TABLENAME}']
 
 Create New Column
 	[Tags]	Button	Create	Column	Dialogues
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Wait Until Element Is Visible	xpath: //li/a[text()='${TABLENAME}']
 	Click Element    xpath: //li/a[text()='${TABLENAME}']
 	Wait Until Element Is Visible	xpath: //li[@aria-selected='true']/a[text()='${TABLENAME}']
@@ -77,7 +77,7 @@ Create New Column
 
 Add value to column
 	[Tags]	Create	Column	Values
-	${handle}=	Select Window 	MAIN
+	${handle}=	Switch Window 	MAIN
 	# //div[@name="Demo 2"]//td[@id="${col_a_id}-0"]/text()
 	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
 	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0" and contains(@class, "has-value")]
@@ -96,7 +96,7 @@ Add value to column
 
 Add some test data
 	[Tags]	Create	Column	Values
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	FOR    ${index}    IN RANGE    10
 		${incell}=	Evaluate    ${index}+1
 		${outcell}=	Evaluate    ${index}+3
@@ -188,7 +188,7 @@ Remove 3rd Value
 
 Remove Column
 	[Tags]	Delete	Column	Dialogues
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	# //th[@name="Ninja"]/span[contains(@class, "ui-icon-close")]
 	Wait Until Element Is Visible	xpath: //th[@name="GUI Column B"]/span[contains(@class, "ui-icon-close")]
 	Click Element    xpath: //th[@name="GUI Column B"]/span[contains(@class, "ui-icon-close")]
@@ -202,7 +202,7 @@ Remove Column
 
 Import Data From File
 	[Tags]	Create	Column	Values	Import
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	# Click Button	Import File
 	Click Button	id:import-file
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Import')]
@@ -254,7 +254,7 @@ Import Data From File
 
 Export Data To File
 	[Tags]	Table	Column	Values	Export
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	Wait Until Element Is Visible	name:Street Data
 	${colid}=	Get Element Attribute	name:Street Data	id
 	${chk1strow}= 	Get Text	id:${colid}-0
@@ -292,7 +292,7 @@ Export Data To File
 
 Remove Table
 	[Tags]	Delete	Table	Dialogues
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 	# Wait Until Element Is Enabled	xpath: //a[text()='${TABLENAME}']/../span
 	Wait Until Element Is Visible	xpath: //a[text()='${TABLENAME}']/../span
 	Click Element    xpath: //a[text()='${TABLENAME}']/../span
@@ -305,7 +305,7 @@ Remove Table
 
 Table with some spaces
 	[Tags]	Button	Create	Table	Column	Values	Dialogues
-	${handle} =	Select Window 	MAIN
+	${handle} =	Switch Window 	MAIN
 
 	# Create Table
 	Click Button	Add Table
