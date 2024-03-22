@@ -1,0 +1,7 @@
+configparser
+HTTPServer
+sqlite3worker
+
+robotframework
+robotframework-requests
+RESTinstance
