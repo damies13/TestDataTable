@@ -21,5 +21,6 @@ Run TestDataTable
 	Append To List 	${options} 	-p 	${TDT_portno}
 	Log to console 	${\n}\${options}: ${options}
 	# ${process}= 	Start Process 	python3 	${pyfile_agent}  @{options}  alias=Agent 	stdout=${OUTPUT DIR}${/}stdout_agent.txt 	stderr=${OUTPUT DIR}${/}stderr_agent.txt
-	${process}= 	Start Process 	${TDT_cmd}  @{options}  alias=TDT 	stdout=${OUTPUT DIR}${/}stdout_TDT.txt 	stderr=${OUTPUT DIR}${/}stderr_TDT.txt
+	# ${process}= 	Start Process 	${TDT_cmd}  @{options}  alias=TDT 	stdout=${OUTPUT DIR}${/}stdout_TDT.txt 	stderr=${OUTPUT DIR}${/}stderr_TDT.txt
+	${process}= 	Start Process 	python3 	${TDT_pyfile}  @{options}  alias=TDT 	stdout=${OUTPUT DIR}${/}stdout_TDT.txt 	stderr=${OUTPUT DIR}${/}stderr_TDT.txt
 	Set Test Variable 	$TDT_process 	${process}
