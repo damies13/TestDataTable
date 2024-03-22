@@ -3,5 +3,8 @@ HTTPServer
 sqlite3worker
 
 robotframework
+
 robotframework-requests
+robotframework-jsonvalidator
+
 RESTinstance
