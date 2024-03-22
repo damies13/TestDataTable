@@ -8,3 +8,7 @@ robotframework-requests
 robotframework-jsonvalidator
 
 RESTinstance
+
+robotframework-browser
+
+robotframework-seleniumlibrary

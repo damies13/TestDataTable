@@ -21,8 +21,14 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Install NodeJS for Browser Library
+        uses: actions/setup-node@v4
+
       - name: Install Pip Requirements
         run: pip install -r Regression_Tests/pip_requirements.txt
+
+      - name: Run rfbrowser init for Browser Library
+        run: rfbrowser init
 
       - name: Robot Framework
         run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
