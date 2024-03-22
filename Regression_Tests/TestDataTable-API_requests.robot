@@ -353,18 +353,18 @@ Prep for Perf Tests
 	${Table}=		Set Variable    TT20
 	${Col 1}=		Set Variable    GC_20k
 	${Col 2}=		Set Variable    BNE_20k
-	${filedata}= 		Get File 		${CURDIR}${/}testdata${/}GC_5k.csv
+	${filedata}= 		Get File 		${CURDIR}${/}testdata${/}${Col 1}.csv
 	@{filelines}= 	Split To Lines 		${filedata}
 	FOR 	${line} 	IN 	@{filelines}
 		# ${resp}=	POST On Session	TDT	/${Table}/row	{"${Col 1}":"${line}"} 	expected_status=201
 		${resp}=	PUT On Session	TDT	/${Table}/${Col 1}/${line} 	expected_status=201
 	END
-	# ${filedata}= 		Get File 		${CURDIR}${/}testdata${/}${Col 2}.csv
-	# @{filelines}= 	Split To Lines 		${filedata}
-	# FOR 	${line} 	IN 	@{filelines}
-	# 	# ${resp}=	POST On Session	TDT	/${Table}/row	{"${Col 1}":"${line}"} 	expected_status=201
-	# 	${resp}=	PUT On Session	TDT	/${Table}/${Col 2}/${line} 	expected_status=201
-	# END
+	${filedata}= 		Get File 		${CURDIR}${/}testdata${/}${Col 2}.csv
+	@{filelines}= 	Split To Lines 		${filedata}
+	FOR 	${line} 	IN 	@{filelines}
+		# ${resp}=	POST On Session	TDT	/${Table}/row	{"${Col 1}":"${line}"} 	expected_status=201
+		${resp}=	PUT On Session	TDT	/${Table}/${Col 2}/${line} 	expected_status=201
+	END
 
 *** Keywords ***
 Connect to TDT
