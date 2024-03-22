@@ -1,6 +1,7 @@
 *** Settings ***
 Library 	OperatingSystem
 Library 	Process
+Library 	Collections
 
 Suite Setup			Run TestDataTable
 
