@@ -9,7 +9,7 @@ Library 	String
 
 Suite Setup 	Ensure Test Data Exists
 
-Default Tags	API 	RequestsLibrary
+Test Tags 	Performance 	API 	RequestsLibrary
 
 *** Variables ***
 

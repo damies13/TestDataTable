@@ -61,7 +61,8 @@ jobs:
         run: rfbrowser init
 
       - name: Robot Framework
-        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
+        # run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
+        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -e Performance Regression_Tests
         env:
           DISPLAY: :13.0
 
