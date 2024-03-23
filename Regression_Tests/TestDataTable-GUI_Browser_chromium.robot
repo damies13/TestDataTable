@@ -220,6 +220,7 @@ Import Data From File
 	Should Be Equal As Strings	${hdrrow1}	${datacell1}
 	Take Screenshot
 	Click 	id=dialog-file-import-header-row
+	Wait Until Element Is Visible 	id=dialog-file-import-insert-tab
 	Click 	id=dialog-file-import-insert-tab
 	${delim}= 	Get Text 	id=dialog-file-import-delimiter
 	Should Be Equal As Strings		${delim}	\t
