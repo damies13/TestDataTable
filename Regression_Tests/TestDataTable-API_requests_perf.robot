@@ -1,12 +1,12 @@
 *** Settings ***
 Resource    environment.robot
 
-Library	Collections
-Library	JsonValidator
-Library	RequestsLibrary
-Library  String
+Library 	Collections
+Library 	JsonValidator
+Library 	RequestsLibrary
+Library   String
 
-Suite Setup	Connect to TDT
+Suite Setup 	Ensure Test Data Exists
 
 Default Tags	API 	RequestsLibrary
 
@@ -93,6 +93,36 @@ Connect to TDT
 	[Documentation] 	Connect to TDT: http://${TDT_Host}
 	Create Session	TDT	http://${TDT_Host}
 	Log 	Connect to TDT:http://${TDT_Host}
+
+Ensure Test Data Exists
+	Connect to TDT
+
+	${resp}=	GET On Session	TDT	/${Table}/${Col 1}/all
+	Log    ${resp.json()}
+	@{coldata}=	Set Variable    ${resp.json()['${Col 1}']}
+	${len}= 	Get Length 		${coldata}
+	IF 		${len} < 1000
+		${filedata}= 		Get File 		${CURDIR}${/}testdata${/}${Col 1}.csv
+		@{filelines}= 	Split To Lines 		${filedata}
+		FOR 	${line} 	IN 	@{filelines}
+			# ${resp}=	POST On Session	TDT	/${Table}/row	{"${Col 1}":"${line}"} 	expected_status=201
+			${resp}=	PUT On Session	TDT	/${Table}/${Col 1}/${line} 	expected_status=201
+		END
+	END
+
+	${resp}=	GET On Session	TDT	/${Table}/${Col 2}/all
+	@{coldata}=	Set Variable    ${resp.json()['${Col 2}']}
+	${len}= 	Get Length 		${coldata}
+	IF 		${len} < 1000
+		${filedata}= 		Get File 		${CURDIR}${/}testdata${/}${Col 2}.csv
+		@{filelines}= 	Split To Lines 		${filedata}
+		FOR 	${line} 	IN 	@{filelines}
+			# ${resp}=	POST On Session	TDT	/${Table}/row	{"${Col 1}":"${line}"} 	expected_status=201
+			${resp}=	PUT On Session	TDT	/${Table}/${Col 2}/${line} 	expected_status=201
+		END
+	END
+
+
 
 Get TDT Value
 	[Arguments] 	${table}	${column}
