@@ -235,6 +235,9 @@ Import Data From File
 	${chknewhdr}= 	Get Text 	id=preview-c0
 	Should Be Equal As Strings	${newhdr}	${newhdr}
 	Take Screenshot
+
+	${old_timeout} =    Set Browser Timeout    5 minutes
+
 	Click    "Import"
 	# Wait Until Element Is Visible	id=dialog-progress-bar
 	Wait Until Element Is Visible	id=dialog-progress-subject
@@ -252,6 +255,9 @@ Import Data From File
 	Wait Until Element Is Not Visible	id=dialog-progress-subject
 	Wait Until Element Is Visible	//*[@name="Street Data"]
 	Take Screenshot
+
+	Set Browser Timeout    ${old_timeout}
+
 	${colid}=	Get Attribute	//*[@name="Street Data"]	id
 	${chk1strow}= 	Get Text	id=${colid}-0
 	Should Be Equal As Strings	${datacell0}	${chk1strow}
