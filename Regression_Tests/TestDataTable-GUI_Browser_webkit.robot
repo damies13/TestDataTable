@@ -302,7 +302,7 @@ Remove Table
 	Click	//a[text()='${TABLENAME}']/../span
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Delete table')]	enabled
 	Take Screenshot
-	Click	"Delete"
+	Click 	//div[@aria-describedby='dialog-delete-table']//button[text()='Delete']
 	Wait For Elements State 	//span[contains(@class, 'ui-tabs-anchor') and contains(text(), '${TABLENAME}')]	detached
 
 
