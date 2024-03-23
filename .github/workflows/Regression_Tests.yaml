@@ -29,10 +29,13 @@ jobs:
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           sudo apt install -y scrot fluxbox
-          # files needed for Browser Library Webkit
-          # sudo apt install -y gstreamer1.0-libav libnss3-tools libatk-bridge2.0-0 libcups2-dev libxkbcommon-x11-0 libxcomposite-dev libxrandr2 libgbm-dev libgtk-3-0
-          sudo apt install libgtk-3-0 libnss3 libasound2 libgbm-dev
           sudo apt list --installed
+      - name: Installs prerequisits for Browser Library
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          # files needed for Browser Library Webkit
+          sudo apt install libgtk-3-0 libnss3 libasound2 libgbm-dev
+
       - name: "Ubuntu Xvfb"
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
