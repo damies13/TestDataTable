@@ -353,7 +353,7 @@ Wait Until Element Is Not Visible
 
 Wait Until Element Contains
 	[Arguments]	${locator}	${file}
-
+	No Operation
 
 Choose File
 	[Arguments]	${locator}	${file}
