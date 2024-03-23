@@ -25,6 +25,10 @@ jobs:
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           sudo apt update -y
+      - name: "Apt Upgrade"
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          sudo apt upgrade -y
       - name: "Ubuntu Installs"
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
