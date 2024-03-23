@@ -4,7 +4,8 @@ Resource    environment.robot
 Library 	Collections
 Library 	JsonValidator
 Library 	RequestsLibrary
-Library   String
+Library 	OperatingSystem
+Library 	String
 
 Suite Setup 	Ensure Test Data Exists
 

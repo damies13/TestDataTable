@@ -1,16 +1,16 @@
 *** Settings ***
 Resource    environment.robot
 
-Library	Collections
-Library	JsonValidator
-Library	RequestsLibrary
+Library 	Collections
+Library 	JsonValidator
+Library 	RequestsLibrary
 
-Library	OperatingSystem
-Library	String
+Library 	OperatingSystem
+Library 	String
 
-Suite Setup	Connect to TDT
+Suite Setup 	Connect to TDT
 
-Default Tags	API 	RequestsLibrary
+Default Tags 	API 	RequestsLibrary
 
 *** Test cases ***
 Create Blank Table
