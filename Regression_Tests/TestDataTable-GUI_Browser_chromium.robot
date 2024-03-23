@@ -1,11 +1,11 @@
-Click    	#dialog-file-import-insert-tab*** Settings ***
+*** Settings ***
 Resource    environment.robot
 
 # https://github.com/MarketSquare/robotframework-browser
 Library   Browser
 
 Suite Setup		Open TDT GUI
-Suite Teardown	TDT GUI End Test
+Suite Teardown 	TDT GUI End Test
 
 Default Tags	GUI
 

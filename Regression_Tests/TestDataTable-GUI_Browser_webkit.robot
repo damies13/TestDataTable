@@ -5,7 +5,7 @@ Resource    environment.robot
 Library   Browser
 
 Suite Setup		Open TDT GUI
-Suite Teardown	TDT GUI End Test
+Suite Teardown 	TDT GUI End Test
 
 Default Tags	GUI
 
