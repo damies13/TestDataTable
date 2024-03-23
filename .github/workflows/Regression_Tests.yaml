@@ -39,6 +39,7 @@ jobs:
         run: |
           # files needed for Browser Library Webkit
           sudo apt install libgtk-3-0 libnss3 libasound2 libgbm-dev
+          sudo apt install -y gstreamer1.0-libav libnss3-tools libatk-bridge2.0-0 libcups2-dev libxkbcommon-x11-0 libxcomposite-dev libxrandr2
 
       - name: "Ubuntu Xvfb"
         if: ${{ matrix.platform == 'ubuntu-latest' }}
