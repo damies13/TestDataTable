@@ -219,8 +219,8 @@ Import Data From File
 	${datacell1}= 	Get Text	id=preview-tablecell-1-1
 	Should Be Equal As Strings	${hdrrow1}	${datacell1}
 	Take Screenshot
-	Click    id=dialog-file-import-header-row
-	Click    	#dialog-file-import-insert-tab
+	Click 	id=dialog-file-import-header-row
+	Click 	id=dialog-file-import-insert-tab
 	${delim}= 	Get Text 	id=dialog-file-import-delimiter
 	Should Be Equal As Strings		${delim}	\t
 	# Wait Until Keyword Succeeds    10s    200ms    Textfield Should Contain    id=dialog-file-import-delimiter    \t
