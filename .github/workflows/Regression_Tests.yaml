@@ -40,6 +40,7 @@ jobs:
           # files needed for Browser Library Webkit
           sudo apt install libgtk-3-0 libnss3 libasound2 libgbm-dev
           sudo apt install -y gstreamer1.0-libav libnss3-tools libatk-bridge2.0-0 libcups2-dev libxkbcommon-x11-0 libxcomposite-dev libxrandr2
+          # sudo apt install -y libwoff1 libevent-2.1-7 libharfbuzz-icu0 libgstreamer-gl1.0-0
 
       - name: "Ubuntu Xvfb"
         if: ${{ matrix.platform == 'ubuntu-latest' }}
@@ -59,6 +60,9 @@ jobs:
 
       - name: Install Pip Requirements
         run: pip install -r Regression_Tests/pip_requirements.txt
+
+      - name: Install playwright Requirements
+        run: npx playwright install-deps
 
       - name: Run rfbrowser init for Browser Library
         run: rfbrowser init
