@@ -7,7 +7,7 @@ Library   Browser
 Suite Setup		Open TDT GUI
 Suite Teardown 	TDT GUI End Test
 
-Default Tags	GUI
+Default Tags 	GUI
 
 *** Variables ***
 # ${BROWSER}		ff
@@ -19,8 +19,8 @@ ${TABLENAME}		Regression_GUI_Browser_FireFox
 *** Test Cases ***    Expression    Expected
 
 Open Help
-	[Tags]	Button	Help
-	${handle_main}=	Get Page Ids	CURRENT
+	[Tags] 	Button 	Help
+	${handle_main}= 	Get Page Ids 	CURRENT
 	Take Screenshot
 	${maintitle}=	Get Title
 	# Click Button 	Help
@@ -67,10 +67,11 @@ Create New Column
 	Click	//button[@title="Add Column"]
 	Wait For Elements State 	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]	enabled
 	Take Screenshot
-	Fill Text	input#column-name	GUI Column A
+	Fill Text 	input#column-name 	GUI Column A
+	Take Screenshot
 	Click 	"Add"
 	Wait For Elements State 	//div[@name='${TABLENAME}']//th/span[text()='GUI Column A']	visible
-	${col_a_id}=	Get Attribute	//div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
+	${col_a_id}=	Get Attribute 	//div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
 	Set Global Variable 	${col_a_id} 	${col_a_id}
 
 Add value to column
