@@ -3,6 +3,7 @@ HTTPServer
 sqlite3worker
 
 robotframework
+robotframework-pabot
 
 robotframework-requests
 robotframework-jsonvalidator
