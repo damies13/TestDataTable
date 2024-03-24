@@ -31,6 +31,16 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Random Offset
+        shell: python
+        run: |
+          import random
+          import time
+          t = random.randint(1,60)
+          print("Sleeping", t, "seconds...")
+          time.sleep(t)
+          print("Done")
+
       - name: "Apt Update"
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
