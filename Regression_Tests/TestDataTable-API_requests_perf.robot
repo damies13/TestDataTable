@@ -133,7 +133,7 @@ Get TDT Value
 	# ${TDT["${column}"]}=	Set Variable    ${resp.json()['${column}']}
 	${checkval}=	Set Variable    ${resp.json()['${column}']}
 	Set Global Variable    ${${column}}    ${checkval}
-	[return]	${checkval}
+	RETURN 	${checkval}
 
 Return TDT Value
 	[Arguments] 	${table}	${column}	${value}
@@ -153,14 +153,14 @@ Create Perf_P1 Value
 	${number}    Evaluate    random.randint(5, 30)    random
 	${RANDVAL}= 	Generate Random String	${number}
 	PUT On Session	TDT	/Perf/P1/${RANDVAL}
-	[Return]	${RANDVAL}
+	RETURN 	${RANDVAL}
 
 Get Perf Column
 	[Arguments] 	${column}
 	[Documentation] 	Get Value from Perf ${column}
 	${resp}=	GET On Session	TDT	/Perf/${column}
 	Should Be Equal As Strings	${resp.status_code}	200
-	[return]	${resp.json()['${column}']}
+	RETURN 	${resp.json()['${column}']}
 
 Set Perf Column
 	[Arguments] 	${column}	${value}
