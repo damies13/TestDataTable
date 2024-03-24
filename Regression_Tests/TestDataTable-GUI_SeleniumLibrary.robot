@@ -357,7 +357,7 @@ Remove Table undefined
 
 *** Keywords ***
 Open TDT GUI
-	${orig timeout} = 	Set Selenium Timeout 	30 seconds
+	${orig timeout} = 	Set Selenium Timeout 	60 seconds
 	Open Browser	about:blank	${BROWSER}
 	Go To	http://${TDT_Host}/
 

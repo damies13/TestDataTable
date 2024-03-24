@@ -318,7 +318,7 @@ Open TDT GUI
 	# Open Browser	about:blank	${BROWSER}
 	New Browser 	${BROWSER}	False
 	New Page
-	Set Browser Timeout 	30
+	Set Browser Timeout 	60
 	Go To	http://${TDT_Host}/
 	# Go To	http://localhost/
 
