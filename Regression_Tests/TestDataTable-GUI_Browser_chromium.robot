@@ -14,6 +14,7 @@ Default Tags	GUI
 # chromium | firefox | webkit
 ${BROWSER}		chromium
 ${TABLENAME}		Regression_GUI_Browser_Chromium
+${IMPORTCOL} 		Street Data %{MATRIX_PYTHON} %{MATRIX_PLATFORM}
 
 
 *** Test Cases ***    Expression    Expected
@@ -229,10 +230,9 @@ Import Data From File
 	Should Be Equal As Strings	${hdrrow0_delim}	${hdrrow0},${hdrrow1},${hdrrow2}
 	Take Screenshot
 	${datacell0}= 	Get Text	id=preview-tablecell-1-0
-	${newhdr}=		Set Variable    Street Data
-	Fill Text		id=preview-c0	${newhdr}
+	Fill Text		id=preview-c0	${IMPORTCOL}
 	${chknewhdr}= 	Get Text 	id=preview-c0
-	Should Be Equal As Strings	${newhdr}	${newhdr}
+	Should Be Equal As Strings	${chknewhdr} 	${IMPORTCOL}
 	Take Screenshot
 
 	${old_timeout} =    Set Browser Timeout    5 minutes
@@ -252,12 +252,12 @@ Import Data From File
 	Take Screenshot
 	# Wait Until Element Is Not Visible	id=dialog-progress-bar
 	Wait Until Element Is Not Visible	id=dialog-progress-subject
-	Wait Until Element Is Visible	//*[@name="Street Data"]
+	Wait Until Element Is Visible	//*[@name="${IMPORTCOL}"]
 	Take Screenshot
 
 	Set Browser Timeout    ${old_timeout}
 
-	${colid}=	Get Attribute	//*[@name="Street Data"]	id
+	${colid}=	Get Attribute	//*[@name="${IMPORTCOL}"]	id
 	${chk1strow}= 	Get Text	id=${colid}-0
 	# This check is not reliable as file importer sends the file in sections and
 	# 	they can get written out of order
@@ -266,28 +266,28 @@ Import Data From File
 
 Export Data To File
 	[Tags]	Table	Column	Values	Export
-	Wait Until Element Is Visible	//*[@name="Street Data"]
-	${colid}=	Get Attribute	//*[@name="Street Data"]	id
+	Wait Until Element Is Visible	//*[@name="${IMPORTCOL}"]
+	${colid}=	Get Attribute	//*[@name="${IMPORTCOL}"]	id
 	${chk1strow}= 	Get Text	id=${colid}-0
 	Click	id=export-file
 	Wait Until Element Is Enabled	//span[contains(@class, 'ui-dialog-title') and contains(text(), 'Text File Export')]
 	Take Screenshot
-	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${IMPORTCOL}
 	Take Screenshot
 	${filename}= 	Get Text 	id=dialog-file-export-filename
 	Should Contain 	${filename} 	.csv
-	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
+	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${IMPORTCOL}
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		"${chk1strow}"
 	Click    id=dialog-file-export-header-row
 	${txtarea}= 	Get Text 	//div[@id='dialog-file-export-preview']/textarea
-	Should Not Contain		${txtarea}		Street Data
+	Should Not Contain		${txtarea}		${IMPORTCOL}
 	Take Screenshot
 	Click    id=dialog-file-export-header-row
-	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${IMPORTCOL}
 	Click    	id=dialog-file-export-insert-tab
 	${delim}= 	Get Text 	id=dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
-	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		Street Data
+	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${IMPORTCOL}
 	Textarea Should Contain 	//div[@id='dialog-file-export-preview']/textarea		${chk1strow}
 	${txtarea}= 	Get Text 	//div[@id='dialog-file-export-preview']/textarea
 	Should Not Contain		${txtarea}		"${chk1strow}"
