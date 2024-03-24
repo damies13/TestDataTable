@@ -155,7 +155,9 @@ Remove Last Value
 	${startval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${startval}	Column B Row ${row}
 	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Take Screenshot
 	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	Take Screenshot
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
 	${endval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
