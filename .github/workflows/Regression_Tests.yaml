@@ -12,7 +12,7 @@ on:
 
 
 jobs:
-  Agent:
+  Regression_Tests:
     strategy:
       max-parallel: 8
       matrix:
