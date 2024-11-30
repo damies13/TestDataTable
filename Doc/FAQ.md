@@ -1,5 +1,11 @@
 # TestDataTable FAQ (frequently Asked Questions)
 
+## There's been no updates for a while is this project abandoned?
+
+No this project has not been abandoned, all features I intended to implement have been implemented, so it's effectively feature complete for now.
+
+If you have features you'd like added or find a bug please raise a feature request or bug report. otherwise I'll rerun the regression suite with each python version and will update if needed.
+
 ## I don't like the colour scheme you used.
 
 No problem, just change it to a colour scheme you like, see the [Theming](./InstallationAndConfiguration.md#theming-changing-the-colour-scheme) section in the documentation for details.
