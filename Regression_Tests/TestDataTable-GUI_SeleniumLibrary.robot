@@ -72,6 +72,7 @@ Create New Column
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
 	Capture Page Screenshot
 	Input Text	id:column-name	GUI Column A
+	Sleep    50ms
 	Click Button    Add
 	Wait Until Element Is Visible	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']
 	${col_a_id}=	Get Element Attribute	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
