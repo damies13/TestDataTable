@@ -127,7 +127,7 @@ Stop Test Data Table
 	END
 
 Dict to INI
-	[Arguments]		&{data} 	${inifile}=${OUTPUT DIR}${/}${TEST NAME}${/}${TEST NAME}.ini
+	[Arguments]		${data} 	${inifile}=${OUTPUT DIR}${/}${TEST NAME}${/}${TEST NAME}.ini
 
 	FOR    ${key}    ${value}    IN    &{data}
 		Append To File 	${inifile} 		[${key}]\n
