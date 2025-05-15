@@ -11,7 +11,10 @@ Check for Hang if port can't be opened
 	# bindport = 80
 	# datadir = ${OUTPUT DIR}${/}${TEST NAME}
 	# dbfile = TestDataTable.sqlite3
-	&{server} = 	Create Dictionary 	bindport=80 	datadir=${OUTPUT DIR}${/}${TEST NAME}
+	# &{server} = 	Create Dictionary 	bindport=80 	datadir=${OUTPUT DIR}${/}${TEST NAME}
+	# port 80 doesn't fail on MacOS, only windows and linux, so set to port 1080 as there is already
+	# 	a TDT instance running there (suite Setup) so should always fail here
+	&{server} = 	Create Dictionary 	bindport=1080 	datadir=${OUTPUT DIR}${/}${TEST NAME}
 
 	# [Resources]
 	# js_jquery = https://unpkg.com/jquery@latest/dist/jquery.min.js
