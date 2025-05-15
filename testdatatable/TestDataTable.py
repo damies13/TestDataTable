@@ -1973,6 +1973,7 @@ class TestDataTable:
 
 		server_address = (srvip, srvport)
 		try:
+			self.appstarted = True
 			self.httpserver = ThreadingHTTPServer(server_address, TDT_WebServer)
 		except PermissionError:
 			self.debugmsg(0, "Permission denied when trying :",server_address)
@@ -1982,7 +1983,6 @@ class TestDataTable:
 			self.debugmsg(5, "e:", e)
 			self.on_closing()
 			return False
-
 
 		self.appstarted = True
 		self.debugmsg(5, "appstarted:", self.appstarted)
