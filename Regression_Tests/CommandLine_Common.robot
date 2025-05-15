@@ -6,8 +6,8 @@ Library 	String
 Library 	Collections
 
 *** Variables ***
-${cmd_reporter} 		rfswarm-reporter
-${pyfile}			${EXECDIR}${/}rfswarm_reporter${/}rfswarm_reporter.py
+${tdt_pyfile}		${EXECDIR}${/}testdatatable${/}TestDataTable.py
+${cmd_tdt} 			python3
 
 *** Keywords ***
 Set Platform
@@ -71,12 +71,12 @@ Open Test Data Table
 	[Arguments]		@{appargs}
 	${var}= 	Get Variables
 	Log 	${var}
-	${tdt_process}= 	Start Process 	${cmd_reporter} 	@{appargs}    alias=TDT 	stdout=${OUTPUT DIR}${/}stdout.txt 	stderr=${OUTPUT DIR}${/}stderr.txt
-	Set Suite Variable 	$tdt_process 	${tdt_process}
+	${cmdtdt_process}= 	Start Process 	${cmd_tdt} 	${tdt_pyfile} 	@{appargs}    alias=TDT 	stdout=${OUTPUT DIR}${/}stdout.txt 	stderr=${OUTPUT DIR}${/}stderr.txt
+	Set Suite Variable 	$cmdtdt_process 	${cmdtdt_process}
 
 Wait For Test Data Table
 	[Arguments]		${timeout}=15min
-	${result}= 	Wait For Process		${tdt_process} 	timeout=${timeout} 	on_timeout=terminate
+	${result}= 	Wait For Process		${cmdtdt_process} 	timeout=${timeout} 	on_timeout=terminate
 	# Should Be Equal As Integers 	${result.rc} 	0
 	# Log to console 	Manager exited with: ${result.rc}
 
@@ -95,19 +95,19 @@ Wait For Test Data Table
 	END
 
 Stop Test Data Table
-	${running}= 	Is Process Running 	${tdt_process}
+	${running}= 	Is Process Running 	${cmdtdt_process}
 	IF 	${running}
 		Sleep	3s
 		IF  '${platform}' == 'windows'	# Send Signal To Process keyword does not work on Windows
-			${result}= 	Terminate Process		${tdt_process}
+			${result}= 	Terminate Process		${cmdtdt_process}
 		ELSE
-			Send Signal To Process 	SIGINT 	${tdt_process}
-			${result}= 	Wait For Process 	${tdt_process}	timeout=30	on_timeout=kill
+			Send Signal To Process 	SIGINT 	${cmdtdt_process}
+			${result}= 	Wait For Process 	${cmdtdt_process}	timeout=30	on_timeout=kill
 		END
 	ELSE
 		TRY
 			# get result var for process even if not running any more
-			${result}= 	Get Process Result		${tdt_process}
+			${result}= 	Get Process Result		${cmdtdt_process}
 		EXCEPT 	AS 	${error}
 			Log 	error: ${error} 		console=true
 		END
