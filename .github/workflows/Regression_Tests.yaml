@@ -86,18 +86,18 @@ jobs:
           MATRIX_PLATFORM: ${{ matrix.platform }}
           MATRIX_PYTHON: ${{ matrix.python }}
 
-      - name: Archive Agent Logs
+      - name: Archive Test Data Table Test Logs
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
+          name: TDT_Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
           path: Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }}
           retention-days: 15
 
-      - name: Archive Agent Logs (longer retention if failed)
+      - name: Archive Test Data Table Test Logs (longer retention if failed)
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
+          name: TDT_Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
           path: Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }}
           retention-days: 90
