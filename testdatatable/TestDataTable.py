@@ -14,6 +14,7 @@ import configparser
 import argparse
 import threading
 import socket
+import sys
 import inspect
 
 import time
@@ -2028,6 +2029,8 @@ class TestDataTable:
 				except Exception as e:
 					self.debugmsg(9, "Exception:", e)
 					pass
+		sys.stdout.flush()
+		sys.stderr.flush()
 
 	def saveini(self):
 		self.debugmsg(7, " ")
@@ -2067,7 +2070,7 @@ class TestDataTable:
 
 				for itm in msg:
 					msglst.append(str(itm))
-				print(" ".join(msglst))
+				print(" ".join(msglst), flush = True)
 			except Exception as e:
 				# print("debugmsg: Exception:", e)
 				pass

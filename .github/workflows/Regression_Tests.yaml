@@ -12,7 +12,7 @@ on:
 
 
 jobs:
-  Regression_Tests:
+  TDT_Regression_Tests:
     strategy:
       max-parallel: 8
       matrix:
