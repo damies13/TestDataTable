@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.2.5
+#    Version v0.2.6
 #
 
 
@@ -1750,7 +1750,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 class TestDataTable:
 # class TDT_Core:
-	version="0.2.5"
+	version="0.2.6"
 	debuglvl = 0
 
 	tdt_ini = None
