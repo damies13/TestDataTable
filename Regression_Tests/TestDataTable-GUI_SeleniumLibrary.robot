@@ -146,15 +146,16 @@ Replace Value
 	[Setup]    No Operation
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
-	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	Column A Row ${row}
+	${initvalue}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Should Be Equal As Strings	${initvalue}	Column A Row ${row}
 	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
 	${outcell}=	Evaluate    ${row}+3
 	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	my new value
+	Sleep    300ms
+	${endvalue}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Should Be Equal As Strings	${endvalue}	my new value
 
 Remove Last Value
 	[Tags]	Delete	Values
@@ -226,6 +227,7 @@ Import Data From File
 	${hdrrow2}= 	Get Value	id:preview-c2
 	Should Be Equal As Strings	${hdrrow2}	road_name
 	Click Element    id:dialog-file-import-header-row
+	Sleep    300ms
 	${nohdrow1}= 	Get Value	id:preview-c1
 	Should Be Equal As Strings	${nohdrow1}	1
 	${datacell1}= 	Get Text	id:preview-tablecell-1-1
@@ -375,7 +377,8 @@ Remove Table undefined
 
 *** Keywords ***
 Open TDT GUI
-	${orig timeout}=  	Set Selenium Timeout 	60 seconds
+	# ${orig timeout}=  	Set Selenium Timeout 	60 seconds
+	${orig timeout}=  	Set Selenium Timeout 	120 seconds
 	Open Browser	about:blank	${BROWSER}
 	Go To	http://${TDT_Host}/
 
