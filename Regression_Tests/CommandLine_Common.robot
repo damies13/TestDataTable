@@ -126,8 +126,16 @@ Stop Test Data Table
 		Log 	error: ${error} 		console=true
 	END
 
+Dict to INI
+	[Arguments]		&{data} 	${inifile}=${OUTPUT DIR}${/}${TEST NAME}${/}${TEST NAME}.ini
 
-
+	FOR    ${key}    ${value}    IN    &{data}
+		Append To File 	${inifile} 		[${key}]\n
+		FOR    ${subkey}    ${subvalue}    IN    &{value}
+			Append To File 	${inifile} 		${subkey} =${subvalue}\n
+		END
+		Append To File 	${inifile} 		\n
+	END
 
 
 
