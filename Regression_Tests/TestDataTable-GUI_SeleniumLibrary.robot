@@ -6,6 +6,8 @@ Library           SeleniumLibrary
 Suite Setup		Open TDT GUI
 Suite Teardown	TDT GUI End Test
 
+Test Setup 		Go To	http://${TDT_Host}/
+
 Default Tags	GUI
 
 *** Variables ***
@@ -275,6 +277,7 @@ Export Data To File
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Click Link    	id:dialog-file-export-insert-tab
 	${delim}= 	Get Value	id:dialog-file-export-delimiter
+	Sleep    300ms
 	Should Be Equal As Strings		${delim}	\t
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		${chk1strow}
