@@ -79,6 +79,7 @@ Create New Column
 
 Add value to column
 	[Tags]	Create	Column	Values
+	[Setup]    No Operation
 	${handle}=	Switch Window 	MAIN
 	# //div[@name="Demo 2"]//td[@id="${col_a_id}-0"]/text()
 	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
@@ -98,6 +99,7 @@ Add value to column
 
 Add some test data
 	[Tags]	Create	Column	Values
+	[Setup]    No Operation
 	${handle} =	Switch Window 	MAIN
 	FOR    ${index}    IN RANGE    10
 		${incell}=	Evaluate    ${index}+1
@@ -125,6 +127,7 @@ Add some test data
 
 Edit Value
 	[Tags]	Update	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    3
 	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
@@ -140,6 +143,7 @@ Edit Value
 
 Replace Value
 	[Tags]	Update	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
 	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
@@ -154,6 +158,7 @@ Replace Value
 
 Remove Last Value
 	[Tags]	Delete	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    10
 	${startval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
@@ -170,6 +175,7 @@ Remove Last Value
 
 Remove 3rd Value
 	[Tags]	Delete	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    3
 	${lastrow}=	Set Variable    9
@@ -190,6 +196,7 @@ Remove 3rd Value
 
 Remove Column
 	[Tags]	Delete	Column	Dialogues
+	[Setup]    No Operation
 	${handle} =	Switch Window 	MAIN
 	# //th[@name="Ninja"]/span[contains(@class, "ui-icon-close")]
 	Wait Until Element Is Visible	xpath: //th[@name="GUI Column B"]/span[contains(@class, "ui-icon-close")]
@@ -276,8 +283,8 @@ Export Data To File
 	Click Element    id:dialog-file-export-header-row
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Click Link    	id:dialog-file-export-insert-tab
-	${delim}= 	Get Value	id:dialog-file-export-delimiter
 	Sleep    300ms
+	${delim}= 	Get Value	id:dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		${chk1strow}
