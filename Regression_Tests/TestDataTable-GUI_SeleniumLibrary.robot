@@ -147,19 +147,22 @@ Replace Value
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
 	${initvalue}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Capture Page Screenshot
+	# Capture Page Screenshot
 	Should Be Equal As Strings 	${initvalue} 	Column A Row ${row}
 	Value Edit Mode 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Capture Page Screenshot
+	# Capture Page Screenshot
+	Sleep    50ms
 	Clear Element Text 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
-	Capture Page Screenshot
+	# Capture Page Screenshot
+	Sleep    50ms
 	Input Text 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input 	my new value
-	Capture Page Screenshot
+	# Capture Page Screenshot
+	Sleep    50ms
 	${outcell}=	Evaluate    ${row}+3
 	Click Element 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
-	Sleep    300ms
+	Sleep    50ms
 	${endvalue}= 	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Capture Page Screenshot
+	# Capture Page Screenshot
 	Should Be Equal As Strings 	${endvalue} 	my new value
 
 Remove Last Value
