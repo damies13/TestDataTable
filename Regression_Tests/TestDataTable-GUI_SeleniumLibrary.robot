@@ -8,7 +8,7 @@ Suite Teardown	TDT GUI End Test
 
 Test Setup 		Go To	http://${TDT_Host}/
 
-Default Tags	GUI
+Test Tags	GUI 	ubuntu 	macos 	windows
 
 *** Variables ***
 # ${BROWSER}		ff

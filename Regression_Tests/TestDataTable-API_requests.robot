@@ -10,7 +10,7 @@ Library 	String
 
 Suite Setup 	Connect to TDT
 
-Default Tags 	API 	RequestsLibrary
+Test Tags	API 	RequestsLibrary 	ubuntu 	macos 	windows
 
 *** Test cases ***
 Create Blank Table
