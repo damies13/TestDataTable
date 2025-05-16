@@ -43,10 +43,13 @@ Table names with multiple spaces
 	Click	//li/a[text()='${tablename}']
 	Take Screenshot
 
-	VAR 	${col}    Test Column
-	VAR 	${row}    1
 
-	${result}=	Get Text    //div[@name="${tablename}"]//td[@id="${col}-${row}"]
+	VAR 	${col_name} 	Test Column
+	VAR 	${row_num} 		0
+
+	${col_id}=	Get Attribute	//div[@name='${TABLENAME}']//th[span[text()='${col_name}']]	id
+
+	${result}=	Get Text    //div[@name="${tablename}"]//td[@id="${col_id}-${row_num}"]
 	Should Be Equal As Strings	${result}	${tablevalue}
 
 
