@@ -368,6 +368,11 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 								.ui-dialog { max-width: 90%; }
 
+								#manytables div { margin: auto;}
+								#manytables { display: none; text-align: center;}
+
+								#manytables-menu { height: 300; }
+
 								</style> """
 
 
@@ -380,7 +385,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "$(function() {"
 				message += "	var tabs = $(\"#tables\" ).tabs();"
 
-				message += "	$( \"#buttonbar\" ).controlgroup();"
+				message += "	$( '#buttonbar' ).controlgroup();"
+				message += "	$( '#manytables div' ).controlgroup();"
 				message += "	refresh();"
 
 
@@ -672,8 +678,6 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		auto_refresh(this.value);"
 				message += "	});"
 
-
-
 				# dialog-file-import-file
 				message += "	$( \"#dialog-file-import-file\" ).on( \"change\", function() {"
 				message += "		console.log(\"#dialog-file-import-file:	this:\"+this);"
@@ -740,6 +744,8 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 				message += """	function refresh_tables(tables) {
 									var keeptables = [];
+									$("#tables ul").show();
+									console.log('Show Tabs');
 									for (var i = 0; i < tables.tables.length; i++) {
 										console.log(tables.tables[i]);
 										var tableid = tables.tables[i].tbl_id;
@@ -750,13 +756,45 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log($("[href='#"+tabid+"']").length);
 										if (!$("[href='#"+tabid+"']").length){
 											$("#tables").append('<div id="' + tabid + '" name="'+tablenme+'"  class=\"tableFixHead\"></div>');
+
 											$("#tables ul").append('<li><a href="#' + tabid + '">'
 												+ tablenme
 												+ '</a> <span class="ui-icon ui-icon-close" role="presentation" table="'
 												+ tablenme + '">Remove Tab</span></li>');
 											$( "#tables" ).tabs( "refresh" );
+
+											// manytables
+											$("#manytables select").append('<option value="#' + tabid + '" name="'+tablenme+'">'
+												+ tablenme
+												+ '</option>');
 										}
 									}
+
+									$("#manytables select").selectmenu( "refresh" );
+									// determine if we switch between tabs and option list mode
+									tabstotalwidth = 0;
+									// get width of each tabs and add the widths together
+									// $('li.ui-tabs-tab').each(function(i){
+									$('#tables li').each(function(i){
+									    tabstotalwidth = tabstotalwidth + $(this).width();
+									});
+									console.log('tabstotalwidth:' + tabstotalwidth);
+
+									// get width of tab nav panel
+									// tabsnavwidth = $('ul.ui-tabs-nav').width();
+									tabsnavwidth = $('#tables ul').width();
+									console.log('tabsnavwidth:' + tabsnavwidth);
+
+									if (tabstotalwidth > tabsnavwidth){
+										console.log('Select Menu Mode');
+										$("#tables ul").hide();
+										$("#manytables").show();
+									} else {
+										console.log('Tabs Mode');
+										$("#tables ul").show();
+										$("#manytables").hide();
+									}
+
 									console.log("keeptables: " + keeptables);
 									console.log($("#tables ul li").length);
 									for (var i = 0; i < $("#tables ul li").length; i++) {
@@ -786,7 +824,34 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										refresh_table(activetbl);
 									}
 
+									$( '#manytables' ).on( 'selectmenuchange', function(option) {
+										console.log('#manytables:	this:' + this );
+										selecttable = this.value;
+										console.log('#selecttable:' + selecttable);
+									});
+
+
 								};"""
+
+				# # message += "	$( '#manytables' ).selectmenu().selectmenu( 'menuWidget' ).addClass( 'overflow' );"
+				# # message += "	$( '#manytables' ).selectmenu().addClass( 'overflow' );"
+				# # message += "	$( '#manytables' ).addClass( 'overflow' ).on( 'selectmenuchange', function() {"
+				# message += "	$( '#manytables' ).on( 'selectmenuchange', function(option) {"
+				# message += "		console.log('#manytables:	this:' + this );"
+				# message += "		console.log('#manytables:	option:' + option );"
+				# message += "		console.log('#manytables:	option.value:' + option.value );"
+				# message += "		console.log('#manytables:	option.text:' + option.text() );"
+				# message += "		console.log('#manytables:	this:' + $(this) );"
+				# message += "		console.log('#manytables:	this:' + $(this).value );"
+				# # message += "		console.log('#manytables:	this:' + this.value + ', ' + this.text);"
+				# message += "		selecttable = this.value;"
+				# message += "		console.log('#selecttable:' + selecttable);"
+				# # message += "		auto_refresh(this.value);"
+				# message += "		console.log('#manytables:	this:' + $(this).text() );"
+				# # message += "		tableid = $('#manytables option[name==\"'+$(this).text()+']'\");"
+				# # message += "		console.log('#tableid:' + tableid);"
+				# message += "	});"
+
 
 				message += """	function refresh_table(tablename) {
 									if (!refreshrunning){
@@ -1462,7 +1527,9 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				# <fieldset>
 				# message += "<div id=\"title\" class=\"ui-widget\">Test Data Table</div>"
 				# message += "<div id=\"version\" class=\"ui-state-disabled ui-widget\">Version " + core.version + "</div>"
+
 				message += "<div id=\"buttonbar\">"
+
 				# message += "	<button>Test Data Table</button>" # spacer
 				# message += "	<button disabled><span style=\"font-size: 30%;\">Version "+core.version+"</span>&nbsp;</button>"
 				message += "	<button id='new-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Add Table\"><span class=\"ui-icon ui-icon-calculator\"></span>Add Table</button>"
@@ -1493,9 +1560,21 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "</div>"
 
 				message += "<div id='tables'>"
-				message += "<ul>"
-				message += "</ul>"
+
+				message += "	<div id='manytables' class='ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header'>"
+				message += "		<div>"
+				message += "			<select id='manytables'>"
+				message += "			</select>"
+				message += "			<button id='del-table' class=\"ui-button ui-widget ui-corner-all ui-button-icon-only\" title=\"Delete Table\"><span class=\"ui-icon ui-icon-trash\"></span>Delete Table</button>"
+				# message += "		<button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>" # wide spacer
+				message += "		</div>"
+				message += "	</div>"
+
+				message += "	<ul>"
+				message += "	</ul>"
 				message += "</div>"
+
+
 
 				message += "</body>"
 				message += "</html>"
