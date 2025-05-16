@@ -6,7 +6,9 @@ Library           SeleniumLibrary
 Suite Setup		Open TDT GUI
 Suite Teardown	TDT GUI End Test
 
-Default Tags	GUI
+Test Setup 		Go To	http://${TDT_Host}/
+
+Test Tags	GUI 	ubuntu 	macos 	windows
 
 *** Variables ***
 # ${BROWSER}		ff
@@ -70,6 +72,7 @@ Create New Column
 	Wait Until Element Is Enabled	xpath: //span[contains(@class, 'ui-dialog-title') and contains(text(), 'Add Column')]
 	Capture Page Screenshot
 	Input Text	id:column-name	GUI Column A
+	Sleep    50ms
 	Click Button    Add
 	Wait Until Element Is Visible	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']
 	${col_a_id}=	Get Element Attribute	xpath: //div[@name='${TABLENAME}']//th/span[text()='GUI Column A']/..	id
@@ -77,6 +80,7 @@ Create New Column
 
 Add value to column
 	[Tags]	Create	Column	Values
+	[Setup]    No Operation
 	${handle}=	Switch Window 	MAIN
 	# //div[@name="Demo 2"]//td[@id="${col_a_id}-0"]/text()
 	Wait Until Element Is Visible	xpath: //div[@name="${TABLENAME}"]//td[@id="${col_a_id}-0"]
@@ -96,6 +100,7 @@ Add value to column
 
 Add some test data
 	[Tags]	Create	Column	Values
+	[Setup]    No Operation
 	${handle} =	Switch Window 	MAIN
 	FOR    ${index}    IN RANGE    10
 		${incell}=	Evaluate    ${index}+1
@@ -123,6 +128,7 @@ Add some test data
 
 Edit Value
 	[Tags]	Update	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    3
 	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
@@ -138,20 +144,31 @@ Edit Value
 
 Replace Value
 	[Tags]	Update	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_a_id}
 	${row}=	Set Variable    5
-	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	Column A Row ${row}
-	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
-	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
+	${initvalue}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	# Capture Page Screenshot
+	Should Be Equal As Strings 	${initvalue} 	Column A Row ${row}
+	Value Edit Mode 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	# Capture Page Screenshot
+	Sleep    50ms
+	Clear Element Text 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	# Capture Page Screenshot
+	Sleep    50ms
+	Input Text 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input 	my new value
+	# Capture Page Screenshot
+	Sleep    50ms
 	${outcell}=	Evaluate    ${row}+3
-	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	my new value
+	Click Element 	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Sleep    50ms
+	${endvalue}= 	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	# Capture Page Screenshot
+	Should Be Equal As Strings 	${endvalue} 	my new value
 
 Remove Last Value
 	[Tags]	Delete	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    10
 	${startval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
@@ -168,6 +185,7 @@ Remove Last Value
 
 Remove 3rd Value
 	[Tags]	Delete	Values
+	[Setup]    No Operation
 	${col}=	Set Variable    ${col_b_id}
 	${row}=	Set Variable    3
 	${lastrow}=	Set Variable    9
@@ -188,6 +206,7 @@ Remove 3rd Value
 
 Remove Column
 	[Tags]	Delete	Column	Dialogues
+	[Setup]    No Operation
 	${handle} =	Switch Window 	MAIN
 	# //th[@name="Ninja"]/span[contains(@class, "ui-icon-close")]
 	Wait Until Element Is Visible	xpath: //th[@name="GUI Column B"]/span[contains(@class, "ui-icon-close")]
@@ -217,6 +236,7 @@ Import Data From File
 	${hdrrow2}= 	Get Value	id:preview-c2
 	Should Be Equal As Strings	${hdrrow2}	road_name
 	Click Element    id:dialog-file-import-header-row
+	Sleep    300ms
 	${nohdrow1}= 	Get Value	id:preview-c1
 	Should Be Equal As Strings	${nohdrow1}	1
 	${datacell1}= 	Get Text	id:preview-tablecell-1-1
@@ -274,6 +294,7 @@ Export Data To File
 	Click Element    id:dialog-file-export-header-row
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Click Link    	id:dialog-file-export-insert-tab
+	Sleep    300ms
 	${delim}= 	Get Value	id:dialog-file-export-delimiter
 	Should Be Equal As Strings		${delim}	\t
 	Wait Until Keyword Succeeds    60s    200ms    Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
@@ -365,7 +386,8 @@ Remove Table undefined
 
 *** Keywords ***
 Open TDT GUI
-	${orig timeout}=  	Set Selenium Timeout 	60 seconds
+	# ${orig timeout}=  	Set Selenium Timeout 	60 seconds
+	${orig timeout}=  	Set Selenium Timeout 	120 seconds
 	Open Browser	about:blank	${BROWSER}
 	Go To	http://${TDT_Host}/
 

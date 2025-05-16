@@ -3,6 +3,8 @@ Resource    environment.robot
 
 Library       REST    ${TDT_Host}
 
+Test Tags	API 	REST Library 	ubuntu 	macos 	windows
+
 *** Test cases ***
 Create Table regression 1
 	[Tags]	Create	Table

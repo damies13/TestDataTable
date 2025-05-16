@@ -2,7 +2,7 @@
 #
 #	Test Data Table
 #
-#    Version v0.2.5
+#    Version v0.2.6
 #
 
 
@@ -14,6 +14,7 @@ import configparser
 import argparse
 import threading
 import socket
+import sys
 import inspect
 
 import time
@@ -743,7 +744,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 										console.log(tables.tables[i]);
 										var tableid = tables.tables[i].tbl_id;
 										var tablenme = tables.tables[i].table;
-										var tabid = tableid.toString() +'_'+ tablenme.replace(/ /g, '_');
+										var tabid = tableid.toString() +'_'+ tablenme.split(' ').join('_');
 										keeptables.push(tabid);
 										console.log("tabid: " + tabid);
 										console.log($("[href='#"+tabid+"']").length);
@@ -1749,7 +1750,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 class TestDataTable:
 # class TDT_Core:
-	version="0.2.5"
+	version="0.2.6"
 	debuglvl = 0
 
 	tdt_ini = None
@@ -1973,6 +1974,7 @@ class TestDataTable:
 
 		server_address = (srvip, srvport)
 		try:
+			self.appstarted = True
 			self.httpserver = ThreadingHTTPServer(server_address, TDT_WebServer)
 		except PermissionError:
 			self.debugmsg(0, "Permission denied when trying :",server_address)
@@ -1983,10 +1985,11 @@ class TestDataTable:
 			self.on_closing()
 			return False
 
-
 		self.appstarted = True
 		self.debugmsg(5, "appstarted:", self.appstarted)
-		self.debugmsg(0, "Starting Test Data Table Server", "http://{}:{}/".format(srvdisphost, srvport))
+		serverurl = "http://{}:{}/".format(srvdisphost, srvport)
+		serverlink = self.console_link(serverurl)
+		self.debugmsg(0, "Starting Test Data Table Server", serverlink)
 		self.httpserver.serve_forever()
 
 	def run_db_cleanup(self):
@@ -2028,12 +2031,24 @@ class TestDataTable:
 				except Exception as e:
 					self.debugmsg(9, "Exception:", e)
 					pass
+		sys.stdout.flush()
+		sys.stderr.flush()
 
 	def saveini(self):
 		self.debugmsg(7, " ")
 		if self.save_ini:
 			with open(self.tdt_ini, 'w') as configfile:    # save
 			    self.config.write(configfile)
+
+	def console_link(self, uri, label=None):
+	    if label is None:
+	        label = uri
+	    parameters = ''
+
+	    # OSC 8 ; params ; URI ST <name> OSC 8 ;; ST
+	    escape_mask = '\033]8;{};{}\033\\{}\033]8;;\033\\'
+
+	    return escape_mask.format(parameters, uri, label)
 
 	def debugmsg(self, lvl, *msg):
 		msglst = []
@@ -2067,7 +2082,7 @@ class TestDataTable:
 
 				for itm in msg:
 					msglst.append(str(itm))
-				print(" ".join(msglst))
+				print(" ".join(msglst), flush = True)
 			except Exception as e:
 				# print("debugmsg: Exception:", e)
 				pass

@@ -7,7 +7,7 @@ Library   Browser
 Suite Setup		Open TDT GUI
 Suite Teardown 	TDT GUI End Test
 
-Default Tags	GUI
+Test Tags	GUI 	ubuntu 	macos 	windows
 
 *** Variables ***
 # ${BROWSER}		ff

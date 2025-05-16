@@ -12,7 +12,7 @@ on:
 
 
 jobs:
-  Regression_Tests:
+  TDT_Regression_Tests:
     strategy:
       max-parallel: 8
       matrix:
@@ -78,26 +78,41 @@ jobs:
       - name: Run rfbrowser init for Browser Library
         run: rfbrowser init
 
+      - name: Update Robot Tag
+        shell: python
+        run: |
+          import os
+          tag = "${{ matrix.platform }}"
+          tagarr = tag.split("-")
+          tag = "{}-latest".format(tagarr[0])
+          platform = "{}".format(tagarr[0])
+
+          env_file = os.getenv('GITHUB_ENV')
+          with open(env_file, "a") as myfile:
+            myfile.write("tag={}\n".format(tag))
+            myfile.write("platform={}\n".format(platform))
+
+
       - name: Robot Framework
         # run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -v STT_MIN:1 -v STT_MAX:5 Regression_Tests
-        run: robot --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -e Performance Regression_Tests
+        run: robot --include ${{ env.platform }} --outputdir Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }} -e Performance Regression_Tests
         env:
           DISPLAY: :13.0
           MATRIX_PLATFORM: ${{ matrix.platform }}
           MATRIX_PYTHON: ${{ matrix.python }}
 
-      - name: Archive Agent Logs
+      - name: Archive Test Data Table Test Logs
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
+          name: TDT_Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
           path: Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }}
           retention-days: 15
 
-      - name: Archive Agent Logs (longer retention if failed)
+      - name: Archive Test Data Table Test Logs (longer retention if failed)
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
+          name: TDT_Regression_Tests-${{ matrix.platform }}-${{ matrix.python }}
           path: Regression_Tests/Logs/${{ matrix.platform }}_${{ matrix.python }}
           retention-days: 90
