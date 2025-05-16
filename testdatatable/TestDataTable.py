@@ -1987,7 +1987,9 @@ class TestDataTable:
 
 		self.appstarted = True
 		self.debugmsg(5, "appstarted:", self.appstarted)
-		self.debugmsg(0, "Starting Test Data Table Server", "http://{}:{}/".format(srvdisphost, srvport))
+		serverurl = "http://{}:{}/".format(srvdisphost, srvport)
+		serverlink = self.console_link(serverurl)
+		self.debugmsg(0, "Starting Test Data Table Server", serverlink)
 		self.httpserver.serve_forever()
 
 	def run_db_cleanup(self):
@@ -2037,6 +2039,16 @@ class TestDataTable:
 		if self.save_ini:
 			with open(self.tdt_ini, 'w') as configfile:    # save
 			    self.config.write(configfile)
+
+	def console_link(self, uri, label=None):
+	    if label is None:
+	        label = uri
+	    parameters = ''
+
+	    # OSC 8 ; params ; URI ST <name> OSC 8 ;; ST
+	    escape_mask = '\033]8;{};{}\033\\{}\033]8;;\033\\'
+
+	    return escape_mask.format(parameters, uri, label)
 
 	def debugmsg(self, lvl, *msg):
 		msglst = []
