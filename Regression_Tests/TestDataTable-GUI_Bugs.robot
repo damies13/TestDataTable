@@ -20,7 +20,7 @@ ${IMPORTCOL} 		Street Data %{MATRIX_PYTHON} %{MATRIX_PLATFORM}
 *** Test Cases ***    Expression    Expected
 
 Table names with multiple spaces
-	[Tags] 	Create 	Table 	Tab 	Issue-#17
+	[Tags] 	Create 	Table 	Issue-#17
 
 	# Create Some Tables with Data In them
 	FOR 	${i} 	IN RANGE 	3
