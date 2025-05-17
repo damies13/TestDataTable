@@ -134,11 +134,13 @@ Edit Value
 	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
 	Value Edit Mode	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Sleep    50ms
 	Capture Page Screenshot
 	# Press Keys	None	ARROW_RIGHT
 	Input Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
 	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Sleep    50ms
 	${result}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row} abc
 
@@ -287,7 +289,7 @@ Export Data To File
 	Should Contain 	${filename} 	.csv
 
 	Wait Until Element Does Not Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		loading
-	
+
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		"${chk1strow}"
 	Click Element    id:dialog-file-export-header-row
