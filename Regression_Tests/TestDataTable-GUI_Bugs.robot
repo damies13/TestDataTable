@@ -22,22 +22,14 @@ ${IMPORTCOL} 		Street Data %{MATRIX_PYTHON} %{MATRIX_PLATFORM}
 Table names with multiple spaces
 	[Tags] 	Create 	Table 	Issue-#17
 
+	[Setup] 	API Create Business Process Tables
 	# Create Some Tables with Data In them
-	FOR 	${i} 	IN RANGE 	3
-		# 	PUT /<table name>/<column name>/<value>
-		# PUT On Session 		TDT 	/Business Process Table ${i}/Test Column/Value ${i}
-		# DELETE On Session 		TDT 	/Business_Process_Table_${i}
-		&{res}= 	HTTP 	/Business Process Table ${i}/Test Column/Value ${i} 	PUT
-
-		VAR 	${tablename} 	Business Process Table ${i}
-		VAR 	${tablevalue} 	Value ${i}
-
-	END
 
 	Go To	http://${TDT_Host}/
 	Take Screenshot
 
 	VAR 	${tablename} 	Business Process Table 2
+	VAR 	${tablevalue} 	Value 2
 
 	Wait For Elements State 	//li/a[text()='${tablename}'] 	visible
 	Click	//li/a[text()='${tablename}']
@@ -52,8 +44,21 @@ Table names with multiple spaces
 	${result}=	Get Text    //div[@name="${tablename}"]//td[@id="${col_id}-${row_num}"]
 	Should Be Equal As Strings	${result}	${tablevalue}
 
+	[Teardown] 	API Remove Business Process Tables
+
 
 *** Keywords ***
+
+API Create Business Process Tables
+	FOR 	${i} 	IN RANGE 	3
+		&{res}= 	HTTP 	/Business Process Table ${i}/Test Column/Value ${i} 	PUT
+	END
+
+API Remove Business Process Tables
+	FOR 	${i} 	IN RANGE 	3
+		&{res}= 	HTTP 	/Business Process Table ${i} 	DELETE
+	END
+
 Open TDT GUI
 	# ${orig timeout} = 	Set Selenium Timeout 	30 seconds
 	# Open Browser	about:blank	${BROWSER}
