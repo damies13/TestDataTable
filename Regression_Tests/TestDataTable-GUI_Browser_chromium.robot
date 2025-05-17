@@ -126,11 +126,13 @@ Edit Value
 	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
 	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Sleep    50ms
 	Take Screenshot
 	# Press Keys	None	ARROW_RIGHT
 	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Sleep    50ms
 	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row} abc
 
@@ -141,10 +143,13 @@ Replace Value
 	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
 	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Sleep    50ms
 	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	Sleep    50ms
 	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Sleep    50ms
 	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	my new value
 
