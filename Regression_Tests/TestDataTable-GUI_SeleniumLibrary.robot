@@ -247,7 +247,7 @@ Import Data From File
 	Click Element    id:dialog-file-import-header-row
 	Click Link    	tab
 
-	Wait Until Keyword Succeeds    60s    200ms 	Element Attribute Value Should Be 		id:dialog-file-import-delimiter 	\t
+	Wait Until Keyword Succeeds    60s    200ms 	Element Attribute Value Should Be 		id:dialog-file-import-delimiter 	value 	\t
 	# ${delim}= 	Get Value	id:dialog-file-import-delimiter
 	# Should Be Equal As Strings		${delim}	\t
 	# Wait Until Keyword Succeeds    10s    200ms    Textfield Should Contain    id:dialog-file-import-delimiter    \t
