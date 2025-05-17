@@ -246,8 +246,10 @@ Import Data From File
 	Capture Page Screenshot
 	Click Element    id:dialog-file-import-header-row
 	Click Link    	tab
-	${delim}= 	Get Value	id:dialog-file-import-delimiter
-	Should Be Equal As Strings		${delim}	\t
+
+	Wait Until Keyword Succeeds    60s    200ms 	Element Attribute Value Should Be 		id:dialog-file-import-delimiter 	\t
+	# ${delim}= 	Get Value	id:dialog-file-import-delimiter
+	# Should Be Equal As Strings		${delim}	\t
 	# Wait Until Keyword Succeeds    10s    200ms    Textfield Should Contain    id:dialog-file-import-delimiter    \t
 	${hdrrow0_delim}= 	Get Value	id:preview-c0
 	Should Be Equal As Strings	${hdrrow0_delim}	${hdrrow0},${hdrrow1},${hdrrow2}
