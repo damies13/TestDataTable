@@ -630,6 +630,14 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		refresh_table(tablename);"
 				message += "	});"
 
+				message += "	$( \"#del-table\" ).button().on( \"click\", function() {"
+				message += "		console.log( $( this ) );"
+				message += "		console.log( $( this ).attr(\"table\") );"
+				message += "		var tablename = $('#manytables-button span.ui-selectmenu-text').text();"
+				message += "		console.log('--- tablename:' + tablename + ' ----' );"
+				message += "		$(\"#delete-table-name\").text(tablename);"
+				message += "		dlgDelTable.dialog( \"open\" );"
+				message += "	});"
 
 				message += "	$( \"#new-table\" ).button().on( \"click\", function() {"
 				message += "		$('#table-name').val('');"
@@ -677,6 +685,22 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 				message += "		refreshinterval = this.value;"
 				message += "		auto_refresh(this.value);"
 				message += "	});"
+
+				message += "	$( '#manytables' ).on( 'selectmenuchange', function(option) {"
+				message += "		console.log('#manytables:	this:' + this );"
+				# message += "		tablename = $('#manytables-button span.ui-selectmenu-text').text()"
+				message += "		var tablename = $('#manytables-button span.ui-selectmenu-text').text();"
+				message += "		console.log('--- tablename:' + tablename + ' ----' );"
+				# message += "		console.log('TableName:' + $('#manytables-button span.ui-selectmenu-text').text() );"
+				# message += "		var tableid = $('select#manytables option[name=\"' + $('#manytables-button span.ui-selectmenu-text').text() + '\"]').attr('value');"
+				message += "		var tableid = $('select#manytables option[name=\"' + tablename + '\"]').attr('value');"
+				message += "		console.log('#tableid:' + tableid);"
+				message += "		refreshrunning = false;"
+				message += "		$('#tables li a[href=\"' + tableid + '\"]').click();"
+				# message += "		$('#tables li a[href=\"' + $('select#manytables option[name=\"' + $('#manytables-button span.ui-selectmenu-text').text() + '\"]').attr('value') + '\"]').click()"
+				message += "		refresh_table($('#manytables-button span.ui-selectmenu-text').text());"
+				message += "	});"
+
 
 				# dialog-file-import-file
 				message += "	$( \"#dialog-file-import-file\" ).on( \"change\", function() {"
@@ -807,6 +831,21 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 											$("#tables ul li:nth-child("+(i+1)+")").remove();
 										}
 									}
+
+									console.log("keeptables: " + keeptables);
+									console.log($("#tables ul li").length);
+									for (var i = 0; i < $("select#manytables option").length; i++) {
+										console.log($("select#manytables option")[i]);
+										var thistbl = $("select#manytables option:nth-child("+(i+1)+")").attr("value");
+										thistbl = thistbl.substr(1);
+										console.log("thistbl: "+thistbl);
+										if (!keeptables.includes(thistbl)){
+											console.log("remove thistbl: "+thistbl);
+											$("select#manytables option:nth-child("+(i+1)+")").remove();
+										}
+									}
+									$("#manytables select").selectmenu( "refresh" );
+
 									var active = $( "#tables" ).tabs( "option", "active" );
 									console.log("active: " + active);
 									if (!active) {
@@ -818,20 +857,37 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									if (activetbl.length <1){
 										active = 0;
 										console.log("active: " + active);
-										var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").trigger("click");
 									} else {
 										console.log("activetbl: "+activetbl);
 										refresh_table(activetbl);
 									}
 
-									$( '#manytables' ).on( 'selectmenuchange', function(option) {
-										console.log('#manytables:	this:' + this );
-										selecttable = this.value;
-										console.log('#selecttable:' + selecttable);
-									});
-
+									var activetbl = $("#tables ul li:nth-child("+(active+1)+") a ").trigger("click");
+									$("#manytables-menu li:nth-child("+(active+1)+") div").click()
+									var tablename = $("#tables ul li:nth-child("+(active+1)+") a ").text();
+									$('#manytables span.ui-selectmenu-text').text(tablename)
 
 								};"""
+
+				# message += "		$('#tables li a[href=\"' + tableid + '\"]').click();"
+
+									# $( '#manytables' ).on( 'selectmenuchange', function(option) {
+									# 	console.log('#manytables:	this:' + this );
+									#
+									# 	selecttable = $('#manytables-button span.ui-selectmenu-text').text()
+									# 	console.log('#selecttable:' + selecttable);
+									#
+									# 	tableid = $('select#manytables option[name="'+selecttable+'"]').attr('value');
+									# 	console.log('#tableid:' + tableid);
+									#
+									# });
+
+
+										# selecttable = this.value;
+										# console.log('#selecttable:' + selecttable);
+										#
+										# selecttablealt = $('#'+$('#manytables-button').attr('aria-labelledby')).text()
+										# console.log('#selecttablealt:' + selecttablealt);
 
 				# # message += "	$( '#manytables' ).selectmenu().selectmenu( 'menuWidget' ).addClass( 'overflow' );"
 				# # message += "	$( '#manytables' ).selectmenu().addClass( 'overflow' );"
