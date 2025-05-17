@@ -288,9 +288,8 @@ Export Data To File
 	${filename}= 	Get Value	id:dialog-file-export-filename
 	Should Contain 	${filename} 	.csv
 
-	Wait Until Element Does Not Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		loading
-
-	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
+	# Wait for text area to have Street Data
+	Wait Until Keyword Succeeds    60s    200ms 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		Street Data
 	Textarea Should Contain 	xpath://div[@id='dialog-file-export-preview']/textarea		"${chk1strow}"
 	Click Element    id:dialog-file-export-header-row
 	${txtarea}= 	Get Value	xpath://div[@id='dialog-file-export-preview']/textarea
