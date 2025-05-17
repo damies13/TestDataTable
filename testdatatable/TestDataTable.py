@@ -1364,7 +1364,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 									$("#dialog-progress").progressbar( "value", 100 );
 									setTimeout(function(){
 										dlgProgress.dialog( \"close\" );
-									}, 500);
+									}, 1000);
 
 									var tabactive = $( "#tables" ).tabs( "option", "active" );
 									var tblname = $("#tables ul li:nth-child("+(tabactive+1)+") a ").text();
