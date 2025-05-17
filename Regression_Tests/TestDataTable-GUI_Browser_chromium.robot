@@ -167,12 +167,12 @@ Remove Last Value
 	Take Screenshot
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Wait until page does not contain element  //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 	${endval}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Take Screenshot
 	Should Not Be Equal As Strings	${endval}	${startval}
 	# Should Be Equal As Strings	"${endval}"	" "
 	# " " != " "
-	Wait until page does not contain element  //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 
 
 Remove 3rd Value

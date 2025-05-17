@@ -179,10 +179,10 @@ Remove Last Value
 	Clear Element Text	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
 	${outcell}=	Evaluate    ${row}+3
 	Click Element	xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
+	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 	${endval}=	Get Text    xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Not Be Equal As Strings	${endval}	${startval}
 	Should Be Equal As Strings	"${endval}"	" "
-	Wait until page does not contain element  xpath: //div[@name="${TABLENAME}"]//td[@id="${col}-${row}" and contains(@class, "has-value")]
 
 
 Remove 3rd Value
