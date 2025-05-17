@@ -133,9 +133,10 @@ Edit Value
 	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	${result} abc
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
-	Sleep    50ms
-	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	Column A Row ${row} abc
+	# Sleep    50ms
+	Wait For Condition 		Text 	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"] 	== 	Column A Row ${row} abc
+	# ${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	# Should Be Equal As Strings	${result}	Column A Row ${row} abc
 
 Replace Value
 	[Tags]	Update	Values
@@ -144,12 +145,15 @@ Replace Value
 	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
 	Should Be Equal As Strings	${result}	Column A Row ${row}
 	Value Edit Mode	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	Sleep    50ms
 	Clear Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input
+	Sleep    50ms
 	Fill Text	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]/input	my new value
 	${outcell}=	Evaluate    ${row}+3
 	Click	//div[@name="${TABLENAME}"]//td[@id="${col}-${outcell}"]
-	${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
-	Should Be Equal As Strings	${result}	my new value
+	Wait For Condition 		Text 	//div[@name="${TABLENAME}"]//td[@id="${col}-${row}"] 	== 	my new value
+	# ${result}=	Get Text    //div[@name="${TABLENAME}"]//td[@id="${col}-${row}"]
+	# Should Be Equal As Strings	${result}	my new value
 
 Remove Last Value
 	[Tags]	Delete	Values
