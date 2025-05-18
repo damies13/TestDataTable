@@ -85,7 +85,7 @@ jobs:
           if m is not None:
             issueno = m[1]
             print('issueno		:', issueno)
-            issueresp = requests.get("https://api.github.com/repos/damies13/rfswarm/issues/{}".format(issueno))
+            issueresp = requests.get("https://api.github.com/repos/damies13/TestDataTable/issues/{}".format(issueno))
             issuedata = issueresp.json()
             # print('issuedata', issuedata)
             if 'milestone' in issuedata:

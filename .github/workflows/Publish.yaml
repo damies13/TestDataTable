@@ -31,7 +31,7 @@ jobs:
           import requests
           branchname = os.getenv("branchname")
           print("branchname:", branchname)
-          milestones = requests.get('https://api.github.com/repos/damies13/rfswarm/milestones')
+          milestones = requests.get('https://api.github.com/repos/damies13/TestDataTable/milestones')
           dopublish = 0
           for ms in milestones.json():
             print(ms['title'])
