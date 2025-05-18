@@ -1,0 +1,244 @@
+---
+name: Package
+
+# on: workflow_call
+on:
+  workflow_call:
+    outputs:
+      isrelease:
+        value: ${{ jobs.Package_For_PIP.outputs.isrelease }}
+      ismilestone:
+        value: ${{ jobs.Package_For_PIP.outputs.ismilestone }}
+      numver:
+        value: ${{ jobs.Package_For_PIP.outputs.numver }}
+      version:
+        value: ${{ jobs.Package_For_PIP.outputs.version }}
+      runagent:
+        value: ${{ jobs.Package_For_PIP.outputs.runagent }}
+      runmanager:
+        value: ${{ jobs.Package_For_PIP.outputs.runmanager }}
+      runreporter:
+        value: ${{ jobs.Package_For_PIP.outputs.runreporter }}
+
+jobs:
+  Package_For_PIP:
+    runs-on: ubuntu-latest
+    outputs:
+      isrelease: ${{ env.isrelease }}
+      ismilestone: ${{ env.ismilestone }}
+      numver: ${{ env.numver }}
+      version: ${{ env.version }}
+      runagent: ${{ steps.run_agent.outputs.files }}
+      runmanager: ${{ steps.run_manager.outputs.files }}
+      runreporter: ${{ steps.run_reporter.outputs.files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Apt Update
+        run: |
+          sudo apt update -y
+      - name: PIP Install
+        run: pip install --upgrade build setuptools twine wheel
+      - name: Get Branch Name
+        run: |
+          branchname=$(git rev-parse --abbrev-ref HEAD)
+          echo "branchname=$branchname" >> "$GITHUB_ENV"
+      - name: Get Current Release Tag
+        run: |
+          currrelease=$(git describe --abbrev=0 --tags)
+          echo "currrelease=$currrelease" >> "$GITHUB_ENV"
+      - name: Determine if this is a release branch
+        run: |
+          isrelease=0
+          if [[ $branchname =~ v[0-9]\. ]]; then
+            isrelease=1
+          fi
+          echo "isrelease=$isrelease" >> "$GITHUB_ENV"
+      - name: Determine if this is master branch
+        run: |
+          ismaster=0
+          if [[ $branchname == master ]]; then
+            ismaster=1
+          fi
+          echo "ismaster=$ismaster" >> "$GITHUB_ENV"
+          echo "base=" >> "$GITHUB_ENV"
+
+      - name: Check Branch for Issue Number with Milestone
+        # if: ${{ env.isrelease == 1 }}
+        shell: python
+        # https://api.github.com/repos/damies13/rfswarm/milestones
+        # \\d escaped for surper-linter@v6
+        run: |
+          import os
+          import re
+          import requests
+          branchname = os.getenv("branchname")
+          milestonever="master"
+          ismilestone=0
+          print('branchname	:', branchname)
+          m = re.search("#(\\d*)", branchname)
+          if m is not None:
+            issueno = m[1]
+            print('issueno		:', issueno)
+            issueresp = requests.get("https://api.github.com/repos/damies13/rfswarm/issues/{}".format(issueno))
+            issuedata = issueresp.json()
+            # print('issuedata', issuedata)
+            if 'milestone' in issuedata:
+              milestone = issuedata['milestone']
+              if 'title' in milestone:
+                milestonever = milestone['title']
+                print('milestonever	:', milestonever)
+                ismilestone=1
+          env_file = os.getenv('GITHUB_ENV')
+          with open(env_file, "a") as myfile:
+            myfile.write("milestone={}\n".format(milestonever))
+            myfile.write("ismilestone={}\n".format(ismilestone))
+            myfile.write("base={}\n".format(milestonever))
+
+      - name: Get Date String
+        if: ${{ env.isrelease == 0 && env.ismaster == 0 }}
+        run: |
+          datestr=$(date +%Y%m%d%H%M%S)
+          echo "datestr=$datestr" >> "$GITHUB_ENV"
+
+      - name: Set Version Number to Branch Name
+        if: ${{ env.isrelease == 1 }}
+        run: |
+          numver=$(echo "$branchname" | sed -E 's/v([^-]*)/\1/')
+          echo "numver=$numver" >> "$GITHUB_ENV"
+          version=v$numver
+          echo "version=$version" >> "$GITHUB_ENV"
+      - name: Set Version Number to Milestone Name
+        if: ${{ env.ismilestone == 1 }}
+        run: |
+          numver=$(echo "$milestone" | sed -E 's/v([^-]*)/\1/')
+          numver=$numver.dev$datestr
+          echo "numver=$numver" >> "$GITHUB_ENV"
+          version=v$numver
+          echo "version=$version" >> "$GITHUB_ENV"
+      - name: Set New Version Number
+        if: ${{ env.isrelease == 0 && env.ismilestone == 0 }}
+        run: |
+          numver=$(echo "$currrelease" | sed -E 's/v([^-]*)/\1/')
+          mapfile -d . -t numverparts < <(echo "$numver")
+          len=${#numverparts[@]}
+          if [ "$len" -gt "2" ]; then
+            numver=${numverparts[0]}.${numverparts[1]}.$(( numverparts[2] + 1))
+          elif [ "$len" -eq "2" ]; then
+            numver=${numverparts[0]}.${numverparts[1]}.1
+          else
+            numver=${numverparts[0]}.0.1
+          fi
+          numver=$numver.dev$datestr
+          echo "numver=$numver" >> "$GITHUB_ENV"
+          version=v$numver
+          echo "version=$version" >> "$GITHUB_ENV"
+      - name: "Echo Vars 2"
+        run: |
+          echo numver: ${{ env.numver }}
+          echo version: ${{ env.version }}
+
+      - name: Update Version Number in python files
+        run: |
+          pwd
+          ls -la
+          # echo "get files"
+          files=$(find . -name 'rfswarm*.py')
+          for file in $files
+          do
+            # echo "version variable : $file"
+            sed -i -e "s/version = \"[^\"]*\"^/version = \"${numver}\"/" "$file"
+            sed -i -e "s/version=\"[^\"]*\"^/version = \"${numver}\"/" "$file"
+            # echo "version comment : $file"
+            sed -i -e "s/#    Version .*/#    Version ${numver}/" "$file"
+          done
+          files=$(find . -name 'setup-*.py')
+          for file in $files
+          do
+            # echo "version variable : $file"
+            sed -i -e "s/version = \"[^\"]*\"/version=\"${numver}\"/" "$file"
+            sed -i -e "s/version=\"[^\"]*\"/version=\"${numver}\"/" "$file"
+            # echo "version comment : $file"
+            # sed -i -e "s/#    Version .*/#    Version ${numver}/" "$file"
+          done
+          # echo "--------------- head rfswarm_agent.py ---------------"
+          # head -50  rfswarm_agent/rfswarm_agent.py
+          echo "--------------- head setup-manager.py ---------------"
+          head -10  setup-manager.py
+          echo "--------------- end head setup-manager.py ---------------"
+
+      - name: Clear Dist
+        run: |
+          rm -fR dist/
+      - name: Clear Build for Manager
+        run: |
+          rm -fR build/
+      - name: Build Manager
+        run: |
+          python3 setup-manager.py sdist bdist_wheel
+      - name: Clear Build for Agent
+        run: |
+          rm -fR build/
+      - name: Build Agent
+        run: |
+          python3 setup-agent.py sdist bdist_wheel
+      - name: Clear Build for Reporter
+        run: |
+          rm -fR build/
+      - name: Build Reporter
+        run: |
+          python3 setup-reporter.py sdist bdist_wheel
+      - name: Show Dist
+        run: |
+          ls -la dist
+
+      - name: Archive pip packages in dist
+        uses: actions/upload-artifact@v4
+        # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow
+        with:
+          name: dist
+          path: dist
+          retention-days: 5
+
+      - name: Check Run Agent Tests
+        id: run_agent
+        uses: dorny/paths-filter@v3
+        with:
+          base: '${{ env.base }}'
+          filters: |
+            files:
+              - 'rfswarm_agent/**'
+              - 'Tests/Regression/Agent/**'
+              - '.github/workflows/Regression_Tests_Agent.yaml'
+              - 'setup-agent.py'
+
+      - name: Check Run Manager Tests
+        id: run_manager
+        uses: dorny/paths-filter@v3
+        with:
+          base: '${{ env.base }}'
+          filters: |
+            files:
+              - 'rfswarm_manager/**'
+              - 'Tests/Regression/Manager/**'
+              - '.github/workflows/Regression_Tests_Manager.yaml'
+              - 'setup-manager.py'
+
+      - name: Check Run Reporter Tests
+        id: run_reporter
+        uses: dorny/paths-filter@v3
+        with:
+          base: '${{ env.base }}'
+          filters: |
+            files:
+              - 'rfswarm_reporter/**'
+              - 'Tests/Regression/Reporter/**'
+              - '.github/workflows/Regression_Tests_Reporter.yaml'
+              - 'setup-reporter.py'
+
+#

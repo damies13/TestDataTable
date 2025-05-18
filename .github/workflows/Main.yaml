@@ -1,0 +1,28 @@
+---
+name: Package Test Publish
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+jobs:
+  Package_For_PIP:
+    uses: ./.github/workflows/Package.yaml
+
+  TDT_Regression_Tests:
+    if: needs.Package_For_PIP.outputs.runagent == 'true'
+    needs:
+      - Package_For_PIP
+    uses: ./.github/workflows/Regression_Tests.yaml
+
+  Publish_Package:
+    if: github.repository_owner == 'damies13' && needs.Package_For_PIP.outputs.isrelease == 1
+    # if: github.repository_owner == 'damies13'
+    needs:
+    - Package_For_PIP
+    # - Regression_Tests
+    - TDT_Regression_Tests
+    uses: ./.github/workflows/Publish.yaml

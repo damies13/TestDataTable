@@ -1,10 +1,11 @@
 ---
 name: Regression Tests
 
-on:
-  push:                                 # Run when changes pushed to any branch
-  schedule:                             # Run as per cron shedule on default branch (master)
-    - cron:  '13 13 13 3,6,9,12 *'
+on: workflow_call
+# on:
+#   push:                                 # Run when changes pushed to any branch
+#   schedule:                             # Run as per cron shedule on default branch (master)
+#     - cron:  '13 13 13 3,6,9,12 *'
 
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
