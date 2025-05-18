@@ -51,7 +51,7 @@ The following is an example of setting up JMeter to use TestDataTable, you don't
 		1. Now you can use this variable created by the JSON Extractor in you Thread Group, e.g. $\{Retrieved\}
 
 
-	1. Getting a value from a TDT column
+	1. Sending a value to a TDT column
 
 		1. Right click your Thread Group and select Add, Sampler, HTTP Request
 
