@@ -42,6 +42,10 @@ Your in luck, we used Robot Framework for our Regression testing of TestDataTabl
 
 Your in luck, [there are some examples with screen shots here](../TestTools/JMeter/JMeter.md)
 
+## I'm using NeoLoad do you have examples of how to use TestDataTable with NeoLoad?
+
+Your in luck, [there are some examples with screen shots here](../TestTools/NeoLoad/NeoLoad.md)
+
 
 ## I'm using another test tool do you have examples of how to use TestDataTable with other tools?
 
