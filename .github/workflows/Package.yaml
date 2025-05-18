@@ -13,12 +13,8 @@ on:
         value: ${{ jobs.Package_For_PIP.outputs.numver }}
       version:
         value: ${{ jobs.Package_For_PIP.outputs.version }}
-      runagent:
-        value: ${{ jobs.Package_For_PIP.outputs.runagent }}
-      runmanager:
-        value: ${{ jobs.Package_For_PIP.outputs.runmanager }}
-      runreporter:
-        value: ${{ jobs.Package_For_PIP.outputs.runreporter }}
+      runtests:
+        value: ${{ jobs.Package_For_PIP.outputs.runtests }}
 
 jobs:
   Package_For_PIP:
