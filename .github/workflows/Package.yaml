@@ -28,9 +28,7 @@ jobs:
       ismilestone: ${{ env.ismilestone }}
       numver: ${{ env.numver }}
       version: ${{ env.version }}
-      runagent: ${{ steps.run_agent.outputs.files }}
-      runmanager: ${{ steps.run_manager.outputs.files }}
-      runreporter: ${{ steps.run_reporter.outputs.files }}
+      runtests: ${{ steps.run_tests.outputs.files }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -148,7 +146,7 @@ jobs:
           pwd
           ls -la
           # echo "get files"
-          files=$(find . -name 'rfswarm*.py')
+          files=$(find . -name 'TestDataTable.py')
           for file in $files
           do
             # echo "version variable : $file"
@@ -157,7 +155,7 @@ jobs:
             # echo "version comment : $file"
             sed -i -e "s/#    Version .*/#    Version ${numver}/" "$file"
           done
-          files=$(find . -name 'setup-*.py')
+          files=$(find . -name 'setup.py')
           for file in $files
           do
             # echo "version variable : $file"
@@ -173,24 +171,12 @@ jobs:
       - name: Clear Dist
         run: |
           rm -fR dist/
-      - name: Clear Build for Manager
+      - name: Clear Build
         run: |
           rm -fR build/
-      - name: Build Manager
+      - name: Build TestDataTable
         run: |
-          python3 setup-manager.py sdist bdist_wheel
-      - name: Clear Build for Agent
-        run: |
-          rm -fR build/
-      - name: Build Agent
-        run: |
-          python3 setup-agent.py sdist bdist_wheel
-      - name: Clear Build for Reporter
-        run: |
-          rm -fR build/
-      - name: Build Reporter
-        run: |
-          python3 setup-reporter.py sdist bdist_wheel
+          python3 setup.py sdist bdist_wheel
       - name: Show Dist
         run: |
           ls -la dist
@@ -203,40 +189,17 @@ jobs:
           path: dist
           retention-days: 5
 
-      - name: Check Run Agent Tests
-        id: run_agent
+      - name: Check Run TDT Tests
+        id: run_tests
         uses: dorny/paths-filter@v3
         with:
           base: '${{ env.base }}'
           filters: |
             files:
-              - 'rfswarm_agent/**'
-              - 'Tests/Regression/Agent/**'
-              - '.github/workflows/Regression_Tests_Agent.yaml'
-              - 'setup-agent.py'
+              - 'testdatatable/**'
+              - 'Regression_Tests/**'
+              - '.github/workflows/*.yaml'
+              - 'setup.py'
 
-      - name: Check Run Manager Tests
-        id: run_manager
-        uses: dorny/paths-filter@v3
-        with:
-          base: '${{ env.base }}'
-          filters: |
-            files:
-              - 'rfswarm_manager/**'
-              - 'Tests/Regression/Manager/**'
-              - '.github/workflows/Regression_Tests_Manager.yaml'
-              - 'setup-manager.py'
-
-      - name: Check Run Reporter Tests
-        id: run_reporter
-        uses: dorny/paths-filter@v3
-        with:
-          base: '${{ env.base }}'
-          filters: |
-            files:
-              - 'rfswarm_reporter/**'
-              - 'Tests/Regression/Reporter/**'
-              - '.github/workflows/Regression_Tests_Reporter.yaml'
-              - 'setup-reporter.py'
 
 #

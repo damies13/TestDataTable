@@ -1885,7 +1885,7 @@ class TDT_WebServer(BaseHTTPRequestHandler):
 
 class TestDataTable:
 # class TDT_Core:
-	version="0.2.6"
+	version = "0.2.6"
 	debuglvl = 0
 
 	tdt_ini = None

@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/Package.yaml
 
   TDT_Regression_Tests:
-    if: needs.Package_For_PIP.outputs.runagent == 'true'
+    if: needs.Package_For_PIP.outputs.runtests == 'true'
     needs:
       - Package_For_PIP
     uses: ./.github/workflows/Regression_Tests.yaml
