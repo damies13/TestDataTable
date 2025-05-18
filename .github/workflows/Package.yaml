@@ -194,8 +194,22 @@ jobs:
             files:
               - 'testdatatable/**'
               - 'Regression_Tests/**'
-              - '.github/workflows/*.yaml'
+              - '.github/workflows/Regression_Tests.yaml'
               - 'setup.py'
+
+  Package_Windows_Installer:
+    runs-on: windows-latest
+    needs:
+      - Package_For_PIP
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
 
 
 #

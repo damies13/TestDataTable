@@ -9,20 +9,20 @@ on:
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 jobs:
-  Package_For_PIP:
+  Package:
     uses: ./.github/workflows/Package.yaml
 
   TDT_Regression_Tests:
     if: needs.Package_For_PIP.outputs.runtests == 'true'
     needs:
-      - Package_For_PIP
+      - Package
     uses: ./.github/workflows/Regression_Tests.yaml
 
-  Publish_Package:
+  Publish:
     if: github.repository_owner == 'damies13' && needs.Package_For_PIP.outputs.isrelease == 1
     # if: github.repository_owner == 'damies13'
     needs:
-    - Package_For_PIP
+    - Package
     # - Regression_Tests
     - TDT_Regression_Tests
     uses: ./.github/workflows/Publish.yaml
