@@ -219,6 +219,9 @@ jobs:
       - name: Install Wix Util Extension
         run: wix extension add WixToolset.Util.wixext/6.0.0
 
+      - name: Check Wix extension list
+        run: wix extension list
+
       # - name: Check paths
       #   run: |
       #       echo ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
@@ -227,7 +230,8 @@ jobs:
 
       - name: MSI Build
         # run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
-        run: wix build -ext WixUtilExtension -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
+        # run: wix build -ext WixUtilExtension -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
+        run: wix build -ext WixToolset.Util.wixext -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
         # working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
