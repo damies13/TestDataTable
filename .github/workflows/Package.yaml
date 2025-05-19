@@ -216,14 +216,15 @@ jobs:
       - name: Check Wix version
         run: wix --version
 
-      - name: Check paths
-        run: |
-            echo ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
-            echo ($PWD.Path + "\dist\TestDataTable.msi")
-            dir ($PWD.Path + "\Packaging\Windows\MSI")
+      # - name: Check paths
+      #   run: |
+      #       echo ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
+      #       echo ($PWD.Path + "\dist\TestDataTable.msi")
+      #       dir ($PWD.Path + "\Packaging\Windows\MSI")
 
       - name: MSI Build
-        run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
+        # run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
+        run: wix build -ext WixUtilExtension -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
         # working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
