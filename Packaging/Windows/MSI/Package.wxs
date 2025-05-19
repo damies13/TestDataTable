@@ -21,8 +21,8 @@
 				DisplayName="TestDataTable v0.3.0"
 				Vital="yes"
 				SourceFile="pip.exe"
-				InstallCommand="install -U testdatatable"
-				UninstallCommand="uninstall testdatatable"
+				InstallArguments="install -U testdatatable"
+				UninstallArguments="uninstall testdatatable"
 				DetectCondition="NOT tdtinstalled" />
 				/>
 				<!-- InstallCommand="install -U testdatatable==0.2.6" -->
@@ -129,16 +129,16 @@
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
 				SourceFile="python-3.13.3-amd64.exe"
-				InstallCommand="/passive"
-				UninstallCommand="/passive /uninstall"
+				InstallArguments="/passive"
+				UninstallArguments="/passive /uninstall"
 				DetectCondition="VersionNT64 AND NOT pypip" />
 			<ExePackage Id="Python_3.13_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
 				SourceFile="python-3.13.3.exe"
-				InstallCommand="/passive"
-				UninstallCommand="/passive /uninstall"
+				InstallArguments="/passive"
+				UninstallArguments="/passive /uninstall"
 				DetectCondition="NOT VersionNT64 AND NOT pypip" />
 			<!-- <ExePackage Id="Python_3.13_x64"
 				DisplayName="Python 3.13"
