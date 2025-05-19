@@ -23,7 +23,7 @@
 				SourceFile="pip.exe"
 				InstallArguments="install -U testdatatable"
 				UninstallArguments="uninstall testdatatable"
-				DetectCondition="NOT tdtinstalled" />
+				DetectCondition="NOT TDTINSTALLED" />
 				/>
 				<!-- InstallCommand="install -U testdatatable==0.2.6" -->
 
@@ -105,7 +105,7 @@
 		</Property>
 
 
-		<Property Id="tdtinstalled">
+		<Property Id="TDTINSTALLED">
 			<DirectorySearch Id="py_installpath" Path="PY_INSTALLPATH">
 				<DirectorySearch Id="py_lib" Path="Lib">
 					<DirectorySearch Id="py_site_packages" Path="site-packages">
