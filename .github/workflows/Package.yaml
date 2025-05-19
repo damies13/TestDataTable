@@ -219,8 +219,8 @@ jobs:
       # - name: Install Wix Util Extension
       #   run: wix extension add WixToolset.Util.wixext/6.0.0
 
-      - name: Check Wix extension list
-        run: wix extension list
+      # - name: Check Wix extension list
+      #   run: wix extension list
 
       # - name: Check paths
       #   run: |
