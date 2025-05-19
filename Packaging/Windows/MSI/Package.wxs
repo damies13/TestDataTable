@@ -17,7 +17,7 @@
 			<!-- Install Application -->
 
 			<ExePackage Id="TestDataTable_0.3.0"
-				After="Python_3.13"
+				After="Python_3x"
 				DisplayName="TestDataTable v0.3.0"
 				Vital="yes"
 				InstallArguments="install -U testdatatable"
