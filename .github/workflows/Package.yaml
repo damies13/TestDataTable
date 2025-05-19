@@ -229,10 +229,10 @@ jobs:
       #       dir ($PWD.Path + "\Packaging\Windows\MSI")
 
       - name: MSI Build
-        # run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
+        run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
         # run: wix build -ext WixUtilExtension -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
         # run: wix build -ext WixToolset.Util.wixext -out \dist\TestDataTable.msi \Packaging\Windows\MSI\Package.wxs
-        run: wix build -ext WixToolset.Util.wixext -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
+        # run: wix build -ext WixToolset.Util.wixext -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
         # working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
