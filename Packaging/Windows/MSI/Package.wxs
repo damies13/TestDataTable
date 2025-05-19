@@ -12,7 +12,7 @@
 			Version="0.3.0">
 		<Chain>
 			<!-- Install Prerequsites -->
-			<PackageGroupRef Id="Python_3.13"/>
+			<PackageGroupRef Id="Python_3x"/>
 
 			<!-- Install Application -->
 
@@ -137,10 +137,11 @@
 
 		<!-- Install Python 3.13 -->
 		<!-- https://docs.python.org/3/using/windows.html -->
-		<PackageGroup Id="Python_3.13">
+		<PackageGroup Id="Python_3x">
 			<ExePackage Id="Python_3.13_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
+				Name="python-3.13.3-amd64.exe"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
@@ -151,6 +152,7 @@
 			<ExePackage Id="Python_3.13_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
+				Name="python-3.13.3.exe"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
