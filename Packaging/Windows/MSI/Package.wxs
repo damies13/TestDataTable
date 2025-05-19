@@ -122,7 +122,7 @@
 		</Property>
 
 		<Property Id="PIPEXE">
-			<DirectorySearch Id="py_installpath" Path="PY_INSTALLPATH">
+			<DirectorySearch Id="pippy_installpath" Path="PY_INSTALLPATH">
 				<DirectorySearch Id="py_scripts" Path="Scripts">
 					<FileSearch Id="pipexe" Name="pip.exe" />
 				</DirectorySearch>
