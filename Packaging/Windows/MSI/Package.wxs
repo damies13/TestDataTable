@@ -91,7 +91,7 @@
 		</Property>
 
 
-		<Property Id="py_installpath">
+		<Property Id="PY_INSTALLPATH">
 			<RegistrySearch Id="hkcu_py39_path" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" />
 			<RegistrySearch Id="hklm_py39_path" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" />
 			<RegistrySearch Id="hkcu_py310_path" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledPath" Type="directory" />
@@ -106,7 +106,7 @@
 
 
 		<Property Id="tdtinstalled">
-			<DirectorySearch Id="py_installpath" Path="py_installpath">
+			<DirectorySearch Id="py_installpath" Path="PY_INSTALLPATH">
 				<DirectorySearch Id="py_lib" Path="Lib">
 					<DirectorySearch Id="py_site_packages" Path="site-packages">
 						<DirectorySearch Id="py_dist_info" Path="testdatatable-0.3.0.dist-info">
