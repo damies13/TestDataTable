@@ -216,6 +216,9 @@ jobs:
       - name: Check Wix version
         run: wix --version
 
+      - name: Install Wix Util Extension
+        run: wix extension add WixToolset.Util.wixext/6.0.0
+
       # - name: Check paths
       #   run: |
       #       echo ($PWD.Path + "\Packaging\Windows\MSI\Package.wxs")
