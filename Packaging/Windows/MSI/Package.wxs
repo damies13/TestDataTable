@@ -1,7 +1,8 @@
-<Wix
+<!-- <Wix
 		xmlns="http://wixtoolset.org/schemas/v4/wxs"
 		xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
-		>
+		> -->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" >
 	<Bundle
 			Id="damies13.TestDataTable"
 			Name="TestDataTable"
@@ -34,7 +35,7 @@
 		<!-- 	HKEY_CURRENT_USER\Software\Python\<Company>\<Tag>
 				HKEY_LOCAL_MACHINE\Software\Python\<Company>\<Tag> -->
 
-		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.9\InstalledFeatures" Value="pip" Variable="hkcu_py39" />
+		<!-- <util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.9\InstalledFeatures" Value="pip" Variable="hkcu_py39" />
 		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.9\InstalledFeatures" Value="pip" Variable="hklm_py39" />
 
 		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.10\InstalledFeatures" Value="pip" Variable="hkcu_py310" />
@@ -47,7 +48,22 @@
 		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.12\InstalledFeatures" Value="pip" Variable="hklm_py312" />
 
 		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hkcu_py313" />
-		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hklm_py313" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hklm_py313" /> -->
+
+		<Property Id="hkcu_py39"> <RegistrySearch Id="hkcu_py39" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hklm_py39"> <RegistrySearch Id="hklm_py39" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+
+		<Property Id="hkcu_py310"> <RegistrySearch Id="hkcu_py310" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hklm_py310"> <RegistrySearch Id="hklm_py310" Root="HKLM" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+
+		<Property Id="hkcu_py311"> <RegistrySearch Id="hkcu_py311" Root="HKCU" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hklm_py311"> <RegistrySearch Id="hklm_py311" Root="HKLM" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+
+		<Property Id="hkcu_py312"> <RegistrySearch Id="hkcu_py312" Root="HKCU" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hklm_py312"> <RegistrySearch Id="hklm_py312" Root="HKLM" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+
+		<Property Id="hkcu_py313"> <RegistrySearch Id="hkcu_py313" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hklm_py313"> <RegistrySearch Id="hklm_py313" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 
 		<!-- Install Python 3.13 -->
 		<PackageGroup Id="Python_3.13">
