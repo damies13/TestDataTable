@@ -23,7 +23,7 @@
 				UninstallArguments="uninstall testdatatable"
 				DetectCondition="NOT TDTINSTALLED"
 				>
-					<ExePackagePayload Name="PIPEXE" />
+					<ExePackagePayload Name="[PIPEXE]" />
 				</ExePackage>
 				<!-- After="Python_3x" -->
 				<!-- SourceFile="pip.exe" -->
