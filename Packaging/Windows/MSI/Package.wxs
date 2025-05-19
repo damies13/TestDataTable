@@ -10,7 +10,7 @@
 			UpgradeCode="3fdf5c0a-073a-4f85-83ef-11b979759166"
 			AboutUrl="https://github.com/damies13/TestDataTable/blob/master/README.md"
 			Version="0.3.0">
-		<BootstrapperApplicationRef />
+		<BootstrapperApplicationRef Id="damies13.TestDataTable" />
 		<Chain>
 			<!-- Install Prerequsites -->
 			<PackageGroupRef Id="Python_3.13"/>
@@ -22,6 +22,8 @@
 				Vital="yes"
 				SourceFile="pip.exe"
 				InstallCommand="install -U testdatatable"
+				UninstallCommand="uninstall testdatatable"
+				DetectCondition="NOT tdtinstalled" />
 				/>
 				<!-- InstallCommand="install -U testdatatable==0.2.6" -->
 
@@ -50,35 +52,108 @@
 		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hkcu_py313" />
 		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hklm_py313" /> -->
 
-		<Property Id="hkcu_py39"> <RegistrySearch Id="hkcu_py39" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<!-- <Property Id="hkcu_py39"> <RegistrySearch Id="hkcu_py39" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 		<Property Id="hklm_py39"> <RegistrySearch Id="hklm_py39" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hkcu_py39_path"> <RegistrySearch Id="hkcu_py39_path" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" /> </Property>
+		<Property Id="hklm_py39_path"> <RegistrySearch Id="hklm_py39_path" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" /> </Property>
 
 		<Property Id="hkcu_py310"> <RegistrySearch Id="hkcu_py310" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 		<Property Id="hklm_py310"> <RegistrySearch Id="hklm_py310" Root="HKLM" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hkcu_py310_path"> <RegistrySearch Id="hkcu_py310_path" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledPath" Type="directory" /> </Property>
+		<Property Id="hklm_py310_path"> <RegistrySearch Id="hklm_py310_path" Root="HKLM" Key="Software\Python\PythonCore\3.10\InstalledPath" Type="directory" /> </Property>
 
 		<Property Id="hkcu_py311"> <RegistrySearch Id="hkcu_py311" Root="HKCU" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 		<Property Id="hklm_py311"> <RegistrySearch Id="hklm_py311" Root="HKLM" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hkcu_py311_path"> <RegistrySearch Id="hkcu_py311_path" Root="HKCU" Key="Software\Python\PythonCore\3.11\InstalledPath" Type="directory" /> </Property>
+		<Property Id="hklm_py311_path"> <RegistrySearch Id="hklm_py311_path" Root="HKLM" Key="Software\Python\PythonCore\3.11\InstalledPath" Type="directory" /> </Property>
 
 		<Property Id="hkcu_py312"> <RegistrySearch Id="hkcu_py312" Root="HKCU" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 		<Property Id="hklm_py312"> <RegistrySearch Id="hklm_py312" Root="HKLM" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hkcu_py312_path"> <RegistrySearch Id="hkcu_py312_path" Root="HKCU" Key="Software\Python\PythonCore\3.12\InstalledPath" Type="directory" /> </Property>
+		<Property Id="hklm_py312_path"> <RegistrySearch Id="hklm_py312_path" Root="HKLM" Key="Software\Python\PythonCore\3.12\InstalledPath" Type="directory" /> </Property>
 
 		<Property Id="hkcu_py313"> <RegistrySearch Id="hkcu_py313" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" /> </Property>
 		<Property Id="hklm_py313"> <RegistrySearch Id="hklm_py313" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" /> </Property>
+		<Property Id="hkcu_py313_path"> <RegistrySearch Id="hkcu_py313_path" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" /> </Property>
+		<Property Id="hklm_py313_path"> <RegistrySearch Id="hklm_py313_path" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" /> </Property> -->
+
+		<Property Id="pypip">
+			<RegistrySearch Id="hkcu_py39" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hklm_py39" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hkcu_py310" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hklm_py310" Root="HKLM" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hkcu_py311" Root="HKCU" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hklm_py311" Root="HKLM" Key="Software\Python\PythonCore\3.11\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hkcu_py312" Root="HKCU" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hklm_py312" Root="HKLM" Key="Software\Python\PythonCore\3.12\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hkcu_py313" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" />
+			<RegistrySearch Id="hklm_py313" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledFeatures" Name="pip" Type="raw" />
+		</Property>
+
+
+		<Property Id="py_installpath">
+			<RegistrySearch Id="hkcu_py39_path" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hklm_py39_path" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hkcu_py310_path" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hklm_py310_path" Root="HKLM" Key="Software\Python\PythonCore\3.10\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hkcu_py311_path" Root="HKCU" Key="Software\Python\PythonCore\3.11\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hklm_py311_path" Root="HKLM" Key="Software\Python\PythonCore\3.11\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hkcu_py312_path" Root="HKCU" Key="Software\Python\PythonCore\3.12\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hklm_py312_path" Root="HKLM" Key="Software\Python\PythonCore\3.12\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hkcu_py313_path" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" />
+			<RegistrySearch Id="hklm_py313_path" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" />
+		</Property>
+
+
+		<Property Id="tdtinstalled">
+			<DirectorySearch Id="py_installpath" Path="py_installpath">
+				<DirectorySearch Id="py_lib" Path="Lib">
+					<DirectorySearch Id="py_site-packages" Path="site-packages">
+						<DirectorySearch Id="py_dist-info-0.2.6" Path="testdatatable-0.2.6.dist-info">
+							<FileSearch Id="ep" Name="entry_points.txt" />
+						</DirectorySearch>
+						<DirectorySearch Id="py_dist-info" Path="testdatatable-0.3.0.dist-info">
+							<FileSearch Id="ep" Name="entry_points.txt" />
+						</DirectorySearch>
+					</DirectorySearch>
+				</DirectorySearch>
+			</DirectorySearch>
+		</Property>
+
 
 		<!-- Install Python 3.13 -->
+		<!-- https://docs.python.org/3/using/windows.html -->
 		<PackageGroup Id="Python_3.13">
 			<ExePackage Id="Python_3.13_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
+				SourceFile="python-3.13.3-amd64.exe"
+				InstallCommand="/passive"
+				UninstallCommand="/passive /uninstall"
+				DetectCondition="VersionNT64 AND NOT pypip" />
+			<ExePackage Id="Python_3.13_x86"
+				DisplayName="Python 3.13"
+				Vital="yes"
+				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
+				SourceFile="python-3.13.3.exe"
+				InstallCommand="/passive"
+				UninstallCommand="/passive /uninstall"
+				DetectCondition="NOT VersionNT64 AND NOT pypip" />
+			<!-- <ExePackage Id="Python_3.13_x64"
+				DisplayName="Python 3.13"
+				Vital="yes"
+				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
+				SourceFile="python-3.13.3-amd64.exe"
 				InstallCommand="/passive /norestart"
 				DetectCondition="VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" />
 			<ExePackage Id="Python_3.13_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
+				SourceFile="python-3.13.3.exe"
 				InstallCommand="/passive /norestart"
-				DetectCondition="NOT VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" />
+				DetectCondition="NOT VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" /> -->
 		</PackageGroup>
 
 	</Fragment>
