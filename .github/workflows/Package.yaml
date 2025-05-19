@@ -210,8 +210,14 @@ jobs:
         with:
           python-version: 3.x
 
+      - name: Install Wix
+        run: dotnet tool install --global wix
+
+      - name: Check Wix version
+        run: wix --version
+
       - name: MSI Build
-        run: dotnet build
+        run: wix build -out ./dist/TestDataTable.msi 
         working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
