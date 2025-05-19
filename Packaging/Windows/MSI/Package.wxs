@@ -77,7 +77,7 @@
 		<Property Id="hkcu_py313_path"> <RegistrySearch Id="hkcu_py313_path" Root="HKCU" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" /> </Property>
 		<Property Id="hklm_py313_path"> <RegistrySearch Id="hklm_py313_path" Root="HKLM" Key="Software\Python\PythonCore\3.13\InstalledPath" Type="directory" /> </Property> -->
 
-		<Property Id="pypip">
+		<Property Id="PYPIP">
 			<RegistrySearch Id="hkcu_py39" Root="HKCU" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" />
 			<RegistrySearch Id="hklm_py39" Root="HKLM" Key="Software\Python\PythonCore\3.9\InstalledFeatures" Name="pip" Type="raw" />
 			<RegistrySearch Id="hkcu_py310" Root="HKCU" Key="Software\Python\PythonCore\3.10\InstalledFeatures" Name="pip" Type="raw" />
@@ -108,17 +108,18 @@
 		<Property Id="tdtinstalled">
 			<DirectorySearch Id="py_installpath" Path="py_installpath">
 				<DirectorySearch Id="py_lib" Path="Lib">
-					<DirectorySearch Id="py_site-packages" Path="site-packages">
-						<DirectorySearch Id="py_dist-info-0.2.6" Path="testdatatable-0.2.6.dist-info">
-							<FileSearch Id="ep" Name="entry_points.txt" />
-						</DirectorySearch>
-						<DirectorySearch Id="py_dist-info" Path="testdatatable-0.3.0.dist-info">
+					<DirectorySearch Id="py_site_packages" Path="site-packages">
+						<DirectorySearch Id="py_dist_info" Path="testdatatable-0.3.0.dist-info">
 							<FileSearch Id="ep" Name="entry_points.txt" />
 						</DirectorySearch>
 					</DirectorySearch>
 				</DirectorySearch>
 			</DirectorySearch>
 		</Property>
+
+		<!-- <DirectorySearch Id="py_dist_info_0.2.6" Path="testdatatable-0.2.6.dist-info">
+			<FileSearch Id="ep" Name="entry_points.txt" />
+		</DirectorySearch> -->
 
 
 		<!-- Install Python 3.13 -->
@@ -131,7 +132,7 @@
 				SourceFile="python-3.13.3-amd64.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
-				DetectCondition="VersionNT64 AND NOT pypip" />
+				DetectCondition="VersionNT64 AND NOT PYPIP" />
 			<ExePackage Id="Python_3.13_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
@@ -139,7 +140,7 @@
 				SourceFile="python-3.13.3.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
-				DetectCondition="NOT VersionNT64 AND NOT pypip" />
+				DetectCondition="NOT VersionNT64 AND NOT PYPIP" />
 			<!-- <ExePackage Id="Python_3.13_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
