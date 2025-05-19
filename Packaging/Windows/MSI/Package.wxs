@@ -1,6 +1,67 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Id="AcmeCorp.QuickStartExample" Name="QuickStart Example"
-           Manufacturer="ACME Corp" Version="0.0.1">
-    <File Source="example.txt" />
-  </Package>
+	<Bundle
+			Id="damies13.TestDataTable"
+			Name="TestDataTable"
+			Manufacturer="damies13"
+			UpgradeCode="3fdf5c0a-073a-4f85-83ef-11b979759166"
+			AboutUrl="https://github.com/damies13/TestDataTable/blob/master/README.md"
+			Version="0.3.0">
+		<BootstrapperApplicationRef />
+		<Chain>
+			<!-- Install Prerequsites -->
+			<PackageGroupRef Id="Python_3.13"/>
+
+			<!-- Install Application -->
+
+			<ExePackage Id="TestDataTable_0.3.0"
+				DisplayName="TestDataTable v0.3.0"
+				Vital="yes"
+				SourceFile="pip.exe"
+				InstallCommand="install -U testdatatable"
+				/>
+				<!-- InstallCommand="install -U testdatatable==0.2.6" -->
+
+		</Chain>
+	</Bundle>
+
+	<Fragment>
+
+		<!-- Check for Python 3.9 - 3.13 -->
+
+		<!-- 	HKEY_CURRENT_USER\Software\Python\<Company>\<Tag>
+				HKEY_LOCAL_MACHINE\Software\Python\<Company>\<Tag> -->
+
+		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.9\InstalledFeatures" Value="pip" Variable="hkcu_py39" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.9\InstalledFeatures" Value="pip" Variable="hklm_py39" />
+
+		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.10\InstalledFeatures" Value="pip" Variable="hkcu_py310" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.10\InstalledFeatures" Value="pip" Variable="hklm_py310" />
+
+		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.11\InstalledFeatures" Value="pip" Variable="hkcu_py311" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.11\InstalledFeatures" Value="pip" Variable="hklm_py311" />
+
+		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.12\InstalledFeatures" Value="pip" Variable="hkcu_py312" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.12\InstalledFeatures" Value="pip" Variable="hklm_py312" />
+
+		<util:RegistrySearch Root="HKCU" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hkcu_py313" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Python\PythonCore\3.13\InstalledFeatures" Value="pip" Variable="hklm_py313" />
+
+		<!-- Install Python 3.13 -->
+		<PackageGroup Id="Python_3.13">
+			<ExePackage Id="Python_3.13_x64"
+				DisplayName="Python 3.13"
+				Vital="yes"
+				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
+				InstallCommand="/passive /norestart"
+				DetectCondition="VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" />
+			<ExePackage Id="Python_3.13_x86"
+				DisplayName="Python 3.13"
+				Vital="yes"
+				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
+				InstallCommand="/passive /norestart"
+				DetectCondition="NOT VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" />
+		</PackageGroup>
+
+	</Fragment>
+
 </Wix>
