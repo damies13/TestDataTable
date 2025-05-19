@@ -218,12 +218,12 @@ jobs:
 
       - name: Check paths
         run: |
-            echo $PWD.Path\Packaging\Windows\MSI\Package.wsx
-            echo $PWD.Path\dist\TestDataTable.msi
-            dir $PWD.Path\Packaging\Windows\MSI
+            echo ($PWD.Path + "\Packaging\Windows\MSI\Package.wsx")
+            echo ($PWD.Path + "\dist\TestDataTable.msi")
+            dir ($PWD.Path + "\Packaging\Windows\MSI")
 
       - name: MSI Build
-        run: wix build -out $PWD.Path\dist\TestDataTable.msi $PWD.Path\Packaging\Windows\MSI\Package.wsx
+        run: wix build -out ($PWD.Path + "\dist\TestDataTable.msi") ($PWD.Path + "\Packaging\Windows\MSI\Package.wsx")
         # working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
