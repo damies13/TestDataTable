@@ -217,7 +217,7 @@ jobs:
         run: wix --version
 
       - name: MSI Build
-        run: wix build -out ./dist/TestDataTable.msi ./Packaging/Windows/MSI/Package.wsx
+        run: wix build -out .\dist\TestDataTable.msi .\Packaging\Windows\MSI\Package.wsx
         # working-directory: ./Packaging/Windows/MSI
 
       - name: Show Dist
