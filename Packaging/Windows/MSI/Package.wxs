@@ -17,14 +17,19 @@
 			<!-- Install Application -->
 
 			<ExePackage Id="TestDataTable_0.3.0"
+				After="Python_3.13"
 				DisplayName="TestDataTable v0.3.0"
 				Vital="yes"
-				SourceFile="pip.exe"
 				InstallArguments="install -U testdatatable"
 				UninstallArguments="uninstall testdatatable"
-				DetectCondition="NOT TDTINSTALLED" />
-				/>
+				DetectCondition="NOT TDTINSTALLED"
+				>
+					<ExePackagePayload id="pipexecutable" Name="PIPEXE" />
+				<ExePackage>
+				<!-- SourceFile="pip.exe" -->
 				<!-- InstallCommand="install -U testdatatable==0.2.6" -->
+
+				<!-- PIPEXE -->
 
 		</Chain>
 	</Bundle>
@@ -116,6 +121,15 @@
 			</DirectorySearch>
 		</Property>
 
+		<Property Id="PIPEXE">
+			<DirectorySearch Id="py_installpath" Path="PY_INSTALLPATH">
+				<DirectorySearch Id="py_scripts" Path="Scripts">
+					<FileSearch Id="pipexe" Name="pip.exe" />
+				</DirectorySearch>
+			</DirectorySearch>
+		</Property>
+
+
 		<!-- <DirectorySearch Id="py_dist_info_0.2.6" Path="testdatatable-0.2.6.dist-info">
 			<FileSearch Id="ep" Name="entry_points.txt" />
 		</DirectorySearch> -->
@@ -128,18 +142,22 @@
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
-				SourceFile="python-3.13.3-amd64.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
 				DetectCondition="VersionNT64 AND NOT PYPIP" />
+
+				<!-- SourceFile="python-3.13.3-amd64.exe" -->
+
 			<ExePackage Id="Python_3.13_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
-				SourceFile="python-3.13.3.exe"
 				InstallArguments="/passive"
 				UninstallArguments="/passive /uninstall"
 				DetectCondition="NOT VersionNT64 AND NOT PYPIP" />
+
+				<!-- SourceFile="python-3.13.3.exe" -->
+
 			<!-- <ExePackage Id="Python_3.13_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
