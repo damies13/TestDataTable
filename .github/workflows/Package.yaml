@@ -210,6 +210,20 @@ jobs:
         with:
           python-version: 3.x
 
+      - name: MSI Build
+        run: dotnet build
+        working-directory: ./Packaging/Windows/MSI
 
+      - name: Show Dist
+        run: |
+          dir Packaging/Windows/MSI
+
+      - name: see what we got from the build?
+        uses: actions/upload-artifact@v4
+        # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow
+        with:
+          name: msi
+          path: Packaging/Windows/MSI
+          retention-days: 5
 
 #

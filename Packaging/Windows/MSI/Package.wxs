@@ -1,0 +1,6 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Id="AcmeCorp.QuickStartExample" Name="QuickStart Example"
+           Manufacturer="ACME Corp" Version="0.0.1">
+    <File Source="example.txt" />
+  </Package>
+</Wix>
