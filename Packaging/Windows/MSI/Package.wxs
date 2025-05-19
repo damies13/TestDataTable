@@ -10,7 +10,6 @@
 			UpgradeCode="3fdf5c0a-073a-4f85-83ef-11b979759166"
 			AboutUrl="https://github.com/damies13/TestDataTable/blob/master/README.md"
 			Version="0.3.0">
-		<BootstrapperApplicationRef Id="damies13.TestDataTable" />
 		<Chain>
 			<!-- Install Prerequsites -->
 			<PackageGroupRef Id="Python_3.13"/>
