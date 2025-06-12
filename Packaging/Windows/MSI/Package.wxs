@@ -138,7 +138,7 @@
 		<!-- Install Python 3.13 -->
 		<!-- https://docs.python.org/3/using/windows.html -->
 		<PackageGroup Id="Python_3x">
-			<ExePackage Id="Python_3.13_x64"
+			<ExePackage Id="Name="pip"_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				Name="python-3.13.3-amd64.exe"
@@ -149,7 +149,7 @@
 
 				<!-- SourceFile="python-3.13.3-amd64.exe" -->
 
-			<ExePackage Id="Python_3.13_x86"
+			<ExePackage Id="Name="pip"_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				Name="python-3.13.3.exe"
@@ -160,14 +160,14 @@
 
 				<!-- SourceFile="python-3.13.3.exe" -->
 
-			<!-- <ExePackage Id="Python_3.13_x64"
+			<!-- <ExePackage Id="Name="pip"_x64"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
 				SourceFile="python-3.13.3-amd64.exe"
 				InstallCommand="/passive /norestart"
 				DetectCondition="VersionNT64 AND NOT (hkcu_py39 OR hklm_py39 OR hkcu_py310 OR hklm_py310 OR hkcu_py311 OR hklm_py311 OR hkcu_py312 OR hklm_py312 OR hkcu_py313 OR hklm_py313)" />
-			<ExePackage Id="Python_3.13_x86"
+			<ExePackage Id="Name="pip"_x86"
 				DisplayName="Python 3.13"
 				Vital="yes"
 				DownloadUrl="https://www.python.org/ftp/python/3.13.3/python-3.13.3.exe"
