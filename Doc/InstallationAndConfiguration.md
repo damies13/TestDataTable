@@ -3,12 +3,17 @@
 - [PIP Installation](#pip-installation)
 - [Configuration](#configuration)
 - [Command Line Interface](#command-line-interface)
-- [Manual Installation](#manual-installation)
+- [Manual Installation (for TestDataTable Development)](#manual-installation)
 
+TestDataTable is a Python Application and needs Python 3.7 or higher to run. The easiest and recommended way to install TestDataTable is to ensure you have a suitable python version and then use the Python Installer (PIP).
+
+- Windows : Windows does not have python installed by default, you can check Add Remove Programs to see if it's installed, if not head over to the [Python Downloads Page](https://www.python.org/downloads/windows/).
+- MacOS : MacOS usually has python installed, you can open a terminal and run `python3 -V` to check, if it's not installed or it's a version older than 3.7, head over to the [Python Downloads Page](https://www.python.org/downloads/macos/).
+- Linux : Linux distributions usually have python installed, you can open a terminal and run `python3 -V` to check, if it's not installed or it's a version older than 3.7, consult your distribution's documentation on how to install it. Some Linux distributions don't include Python Installer (PIP), so you may also need to consult your distribution's documentation on how to install pip.
 
 ## PIP Installation
 
-If you already have Python with pip installed, you can simply run:
+If you already have Python with pip installed, you can simply run the following command on a terminal (or command line) window:
 
 ```
 pip install testdatatable
@@ -25,7 +30,9 @@ Otherwise refer to the [manual installation instructions](#manual-installation).
 
 ## Configuration
 
-The first time you run TestDataTable an ini file with the default configuration will be created in the same directory as the TestDataTable.py file similar to the example below:
+The first time you run TestDataTable an ini file with the default configuration will be created. The location of this configuration file will be shown below the version on the terminal.
+
+An example configuration file:
 
 ```
 [Server]
@@ -130,6 +137,7 @@ optional arguments:
 ```
 
 ## Manual Installation
+This information is intended for TestDataTable Developers
 
 - The TestDataTable machine needs to use a minimum of Python 3.7
 > ThreadingHTTPServer feature of HTTPServer requires was added in Python 3.7
@@ -142,7 +150,7 @@ pip* install configparser setuptools HTTPServer sqlite3worker
 
 \*some systems might need you to use pip3 and or sudo
 
-After these components are installed you can simply run:
+After these components are installed you can clone this repository to your local machine, change to the repository directory and run:
 ```
 python* TestDataTable.py
 ```
